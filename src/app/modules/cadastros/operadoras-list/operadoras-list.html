@@ -1,0 +1,17 @@
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h3>Operadoras</h3>
+  <button mat-raised-button color="primary" (click)="navigateToForm()">
+    <mat-icon>add</mat-icon>
+    Nova Operadora
+  </button>
+</div>
+
+<div class="ag-theme-alpine" style="width: 100%; height: 600px;">
+  <ag-grid-angular
+    style="width: 100%; height: 100%;"
+    [columnDefs]="columnDefs"
+    [gridOptions]="gridOptions"
+    [datasource]="datasource"
+    (gridReady)="onGridReady($event)">
+  </ag-grid-angular>
+</div>

@@ -1,0 +1,104 @@
+<div class="container mt-4">
+  <h2>{{ isEditMode ? 'Editar Operadora' : 'Nova Operadora' }}</h2>
+  <form [formGroup]="form" (ngSubmit)="save()">
+    <div class="row">
+      <!-- Coluna da Esquerda -->
+      <div class="col-md-6">
+        <mat-form-field class="w-100">
+          <mat-label>Registro ANS</mat-label>
+          <input matInput formControlName="registroAns" required>
+        </mat-form-field>
+
+        <mat-form-field class="w-100">
+          <mat-label>CNPJ</mat-label>
+          <input matInput formControlName="cnpj" mask="00.000.000/0000-00" required>
+        </mat-form-field>
+
+        <mat-form-field class="w-100">
+          <mat-label>Razão Social</mat-label>
+          <input matInput formControlName="razaoSocial" required>
+        </mat-form-field>
+
+        <mat-form-field class="w-100">
+          <mat-label>Nome Fantasia</mat-label>
+          <input matInput formControlName="nomeFantasia">
+        </mat-form-field>
+
+        <mat-form-field class="w-100">
+          <mat-label>Data Registro ANS</mat-label>
+          <input matInput [matDatepicker]="picker" formControlName="dataRegistroAns">
+          <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+          <mat-datepicker #picker></mat-datepicker>
+        </mat-form-field>
+
+        <div class="mt-3">
+            <mat-checkbox formControlName="ativo">Ativo</mat-checkbox>
+        </div>
+      </div>
+
+      <!-- Coluna da Direita -->
+      <div class="col-md-6">
+        <mat-form-field class="w-100">
+          <mat-label>E-mail Corporativo</mat-label>
+          <input matInput formControlName="emailCorporativo" type="email">
+        </mat-form-field>
+
+        <mat-form-field class="w-100">
+          <mat-label>Telefone Principal</mat-label>
+          <input matInput formControlName="telefonePrincipal" mask="(00) 0000-0000||(00) 0 0000-0000">
+        </mat-form-field>
+
+        <mat-form-field class="w-100">
+          <mat-label>CEP</mat-label>
+          <input matInput formControlName="cep" mask="00000-000">
+        </mat-form-field>
+
+        <div class="row">
+          <div class="col-md-8">
+            <mat-form-field class="w-100">
+              <mat-label>Cidade</mat-label>
+              <input matInput formControlName="cidade">
+            </mat-form-field>
+          </div>
+          <div class="col-md-4">
+            <mat-form-field class="w-100">
+              <mat-label>UF</mat-label>
+              <input matInput formControlName="uf">
+            </mat-form-field>
+          </div>
+        </div>
+
+        <mat-form-field class="w-100">
+          <mat-label>Bairro</mat-label>
+          <input matInput formControlName="bairro">
+        </mat-form-field>
+
+        <mat-form-field class="w-100">
+          <mat-label>Logradouro</mat-label>
+          <input matInput formControlName="enderecoLogradouro">
+        </mat-form-field>
+
+        <div class="row">
+          <div class="col-md-4">
+            <mat-form-field class="w-100">
+              <mat-label>Número</mat-label>
+              <input matInput formControlName="enderecoNumero">
+            </mat-form-field>
+          </div>
+          <div class="col-md-8">
+            <mat-form-field class="w-100">
+              <mat-label>Complemento</mat-label>
+              <input matInput formControlName="enderecoComplemento">
+            </mat-form-field>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Ações -->
+    <div class="d-flex justify-content-end mt-3">
+      <button mat-stroked-button type="button" (click)="cancel()" class="me-2">Cancelar</button>
+      <button mat-raised-button color="primary" type="submit" [disabled]="form.invalid">Salvar</button>
+    </div>
+  </form>
+</div>
