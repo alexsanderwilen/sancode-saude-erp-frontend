@@ -7,28 +7,12 @@ import { CommonModule } from '@angular/common';
   standalone: true,
   imports: [CommonModule],
   template: `
-    <span class="status-chip" [ngClass]="params.value ? 'active' : 'inactive'">
-      {{ params.value ? 'Sim' : 'Não' }}
+    <span class="badge" [ngClass]="params.value ? 'text-bg-success' : 'text-bg-danger'">
+      {{ params.value ? 'Ativo' : 'Inativo' }}
     </span>
   `,
   styles: [`
-    .status-chip {
-      display: inline-flex;
-      align-items: center;
-      padding: 4px 8px;
-      border-radius: 16px;
-      font-size: 12px;
-      font-weight: 500;
-      color: #fff;
-    }
-
-    .status-chip.active {
-      background-color: #4caf50; /* Green */
-    }
-
-    .status-chip.inactive {
-      background-color: #f44336; /* Red */
-    }
+    /* Removendo estilos customizados, pois usaremos classes Bootstrap */
   `]
 })
 export class StatusChipRenderer implements ICellRendererAngularComp {

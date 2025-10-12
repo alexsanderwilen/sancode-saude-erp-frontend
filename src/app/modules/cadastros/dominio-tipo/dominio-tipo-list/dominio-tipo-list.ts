@@ -48,8 +48,8 @@ export class DominioTipoListComponent implements OnInit {
     { field: 'tipoDoTipo', headerName: 'Tipo', sortable: true, filter: true, flex: 1 },
     { field: 'descricao', headerName: 'Descrição', sortable: true, filter: true, flex: 2 },
     {
-      field: 'ativo',
-      headerName: 'Ativo',
+      field: 'status',
+      headerName: 'Status',
       sortable: true,
       filter: true,
       width: 120,

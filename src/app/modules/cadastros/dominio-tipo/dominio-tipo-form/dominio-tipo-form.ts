@@ -58,7 +58,7 @@ export class DominioTipoFormComponent implements OnInit {
       id: [null],
       tipoDoTipo: ['', Validators.required],
       descricao: ['', Validators.required],
-      ativo: [true],
+      status: [true],
     });
   }
 

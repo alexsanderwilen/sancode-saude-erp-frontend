@@ -136,9 +136,9 @@ export class OperadorasFormComponent implements OnInit {
   loadDominioTipos(): void {
     this.dominioTipoService.findAll().subscribe({
       next: (data: DominioTipo[]) => {
-        this.dominioTiposEndereco = data.filter((dt: DominioTipo) => dt.tipoDoTipo === 'ENDERECO' && dt.ativo);
-        this.dominioTiposTelefone = data.filter((dt: DominioTipo) => dt.tipoDoTipo === 'TELEFONE' && dt.ativo);
-        this.dominioTiposEmail = data.filter((dt: DominioTipo) => dt.tipoDoTipo === 'EMAIL' && dt.ativo);
+        this.dominioTiposEndereco = data.filter((dt: DominioTipo) => dt.tipoDoTipo === 'ENDERECO' && dt.status);
+        this.dominioTiposTelefone = data.filter((dt: DominioTipo) => dt.tipoDoTipo === 'TELEFONE' && dt.status);
+        this.dominioTiposEmail = data.filter((dt: DominioTipo) => dt.tipoDoTipo === 'EMAIL' && dt.status);
       },
       error: (error: any) => {
         console.error('Erro ao carregar tipos de domínio:', error);
