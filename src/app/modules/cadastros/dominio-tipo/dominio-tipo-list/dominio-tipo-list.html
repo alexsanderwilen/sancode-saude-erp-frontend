@@ -1,19 +1,17 @@
-<mat-card class="list-card">
-  <mat-toolbar class="list-toolbar">
-    <span class="list-title">Tipos de Domínio</span>
-    <span class="spacer"></span>
-    <button class="btn btn-primary" (click)="addDominioTipo()">
-      <i class="fa fa-plus"></i> Novo Tipo
-    </button>
-  </mat-toolbar>
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h3>Tipos de Domínio</h3>
+  <button mat-raised-button color="primary" (click)="addDominioTipo()">
+    <mat-icon>add</mat-icon>
+    Novo Tipo de Domínio
+  </button>
+</div>
 
-  <div class="ag-theme-alpine" style="height: 500px; width: 100%;">
-    <ag-grid-angular
-      style="width: 100%; height: 100%;"
-      [gridOptions]="gridOptions"
-      [columnDefs]="columnDefs"
-      (gridReady)="onGridReady($event)"
-    >
-    </ag-grid-angular>
-  </div>
-</mat-card>
+<div class="ag-theme-alpine" style="height: 500px; width: 100%;">
+  <ag-grid-angular
+    style="width: 100%; height: 100%;"
+    [gridOptions]="gridOptions"
+    [columnDefs]="columnDefs"
+    (gridReady)="onGridReady($event)"
+  >
+  </ag-grid-angular>
+</div>

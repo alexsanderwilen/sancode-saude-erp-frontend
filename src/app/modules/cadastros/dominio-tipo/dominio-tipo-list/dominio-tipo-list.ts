@@ -9,6 +9,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatCardModule } from '@angular/material/card';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatIconModule } from '@angular/material/icon'; // Adicionado
 import { Router } from '@angular/router';
 import { DominioTipo } from '../dominio-tipo.model';
 import { DominioTipoService } from '../dominio-tipo.service';
@@ -27,11 +28,10 @@ import { StatusChipRenderer } from './status-chip-renderer.component';
     MatFormFieldModule,
 
     MatButtonModule,
-    MatToolbarModule,
-    MatCardModule,
     MatSnackBarModule,
     MatDialogModule,
     AgGridModule,
+    MatIconModule,
   ],
   templateUrl: './dominio-tipo-list.html',
   styleUrl: './dominio-tipo-list.scss',
