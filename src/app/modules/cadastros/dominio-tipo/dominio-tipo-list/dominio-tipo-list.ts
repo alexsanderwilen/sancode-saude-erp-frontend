@@ -5,7 +5,7 @@ import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatIconModule } from '@angular/material/icon';
+
 import { MatButtonModule } from '@angular/material/button';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatCardModule } from '@angular/material/card';
@@ -27,7 +27,7 @@ import { debounceTime, distinctUntilChanged, Subject } from 'rxjs';
     MatSortModule,
     MatInputModule,
     MatFormFieldModule,
-    MatIconModule,
+
     MatButtonModule,
     MatToolbarModule,
     MatCardModule,
