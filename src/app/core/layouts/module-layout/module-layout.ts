@@ -1,0 +1,17 @@
+import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { RouterOutlet } from '@angular/router';
+
+@Component({
+  selector: 'app-module-layout',
+  standalone: true,
+  imports: [
+    CommonModule,
+    RouterOutlet
+  ],
+  templateUrl: './module-layout.html',
+  styleUrl: './module-layout.scss'
+})
+export class ModuleLayoutComponent {
+
+}
