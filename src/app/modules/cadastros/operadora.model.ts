@@ -1,20 +1,44 @@
+export interface OperadoraEndereco {
+  id?: string;
+  tipo: string;
+  cep: string;
+  logradouro: string;
+  numero: string;
+  complemento?: string;
+  bairro: string;
+  cidade: string;
+  uf: string;
+  pais: string;
+  latitude?: number;
+  longitude?: number;
+}
+
+export interface OperadoraTelefone {
+  id?: string;
+  tipo: string;
+  ddd: string;
+  numero: string;
+  ramal?: string;
+  whatsapp: boolean;
+}
+
+export interface OperadoraEmail {
+  id?: string;
+  tipo: string;
+  email: string;
+}
+
 export interface Operadora {
   idOperadora?: string;
   registroAns: string;
   razaoSocial: string;
-  nomeFantasia: string;
+  nomeFantasia?: string;
   cnpj: string;
   dataRegistroAns: string; // Using string for simplicity, can be Date
-  emailCorporativo: string;
-  telefonePrincipal: string;
-  enderecoLogradouro: string;
-  enderecoNumero: string;
-  enderecoComplemento: string;
-  bairro: string;
-  cidade: string;
-  uf: string;
-  cep: string;
   ativo: boolean;
+  enderecos: OperadoraEndereco[];
+  telefones: OperadoraTelefone[];
+  emails: OperadoraEmail[];
 }
 
 export interface Page<T> {

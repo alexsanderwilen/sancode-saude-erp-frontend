@@ -7,11 +7,22 @@ import { Operadora } from '../operadora.model';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { Router, RouterModule } from '@angular/router';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { ConfirmDialogComponent } from '../../../shared/components/confirm-dialog/confirm-dialog';
 
 @Component({
   selector: 'app-operadoras-list',
   standalone: true,
-  imports: [CommonModule, AgGridModule, MatButtonModule, MatIconModule, RouterModule],
+  imports: [
+    CommonModule,
+    AgGridModule,
+    MatButtonModule,
+    MatIconModule,
+    RouterModule,
+    MatDialogModule,
+    MatSnackBarModule
+  ],
   templateUrl: './operadoras-list.html',
   styleUrl: './operadoras-list.scss'
 })
@@ -19,6 +30,8 @@ export class OperadorasListComponent {
 
   private readonly operadoraService = inject(OperadoraService);
   private readonly router = inject(Router);
+  private readonly dialog = inject(MatDialog);
+  private readonly snackBar = inject(MatSnackBar);
 
   private gridApi!: GridApi<Operadora>;
   public datasource!: IDatasource;
@@ -38,7 +51,7 @@ export class OperadorasListComponent {
       }
     },
     {
-      headerName: 'Ações', 
+      headerName: 'Ações',
       width: 120,
       cellRenderer: () => `
         <button title="Editar" data-action="edit" class="btn btn-sm btn-outline-primary"><i class="fa fa-pencil" data-action="edit"></i></button>
@@ -77,14 +90,31 @@ export class OperadorasListComponent {
       },
     };
   }
-  
+
   onActionClick(params: CellClickedEvent): void {
     const action = (params.event?.target as HTMLElement).dataset['action'];
     if (action === 'edit') {
       this.router.navigate(['/cadastros/operadoras/editar', params.data.idOperadora]);
     } else if (action === 'delete') {
-      // TODO: Implement delete confirmation dialog
-      console.log('Delete', params.data.idOperadora);
+      this.dialog.open(ConfirmDialogComponent, {
+        data: {
+          title: 'Confirmar Exclusão',
+          message: `Tem certeza que deseja excluir a operadora ${params.data.razaoSocial}?`
+        }
+      }).afterClosed().subscribe(result => {
+        if (result) {
+          this.operadoraService.delete(params.data.idOperadora!).subscribe({
+            next: () => {
+              this.snackBar.open('Operadora excluída com sucesso!', 'Fechar', { duration: 3000 });
+              this.gridApi.refreshInfiniteCache(); // Atualiza a grid
+            },
+            error: (err) => {
+              console.error('Erro ao excluir operadora:', err);
+              this.snackBar.open('Erro ao excluir operadora. Detalhes: ' + (err.error?.message || err.message), 'Fechar', { duration: 5000 });
+            }
+          });
+        }
+      });
     }
   }
 

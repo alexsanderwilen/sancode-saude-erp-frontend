@@ -1,6 +1,6 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators, FormArray, UntypedFormGroup } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -10,9 +10,12 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { provideNativeDateAdapter } from '@angular/material/core';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
+import { MatIconModule } from '@angular/material/icon';
+import { MatTabsModule } from '@angular/material/tabs';
+import { MatCardModule } from '@angular/material/card';
 
 import { OperadoraService } from '../operadora.service';
-import { Operadora } from '../operadora.model';
+import { Operadora, OperadoraEndereco, OperadoraTelefone, OperadoraEmail } from '../operadora.model';
 
 @Component({
   selector: 'app-operadoras-form',
@@ -27,7 +30,10 @@ import { Operadora } from '../operadora.model';
     MatSnackBarModule,
     MatDatepickerModule,
     MatCheckboxModule,
-    NgxMaskDirective
+    NgxMaskDirective,
+    MatIconModule,
+    MatTabsModule,
+    MatCardModule
   ],
   providers: [provideNativeDateAdapter(), provideNgxMask()],
   templateUrl: './operadoras-form.html',
@@ -52,16 +58,10 @@ export class OperadorasFormComponent implements OnInit {
       razaoSocial: ['', [Validators.required, Validators.maxLength(255)]],
       nomeFantasia: [''],
       dataRegistroAns: [null],
-      emailCorporativo: ['', [Validators.email]],
-      telefonePrincipal: [''],
-      cep: [''],
-      uf: [''],
-      cidade: [''],
-      bairro: [''],
-      enderecoLogradouro: [''],
-      enderecoNumero: [''],
-      enderecoComplemento: [''],
-      ativo: [true]
+      ativo: [true],
+      enderecos: this.formBuilder.array([]), // FormArray para endereços
+      telefones: this.formBuilder.array([]), // FormArray para telefones
+      emails: this.formBuilder.array([]) // FormArray para e-mails
     });
   }
 
@@ -71,13 +71,100 @@ export class OperadorasFormComponent implements OnInit {
       this.isEditMode = true;
       this.operadoraService.getById(this.operadoraId).subscribe(operadora => {
         this.form.patchValue(operadora);
+        // Popular FormArray de endereços
+        operadora.enderecos.forEach(endereco => this.enderecos.push(this.createEnderecoFormGroup(endereco)));
+        // Popular FormArray de telefones
+        operadora.telefones.forEach(telefone => this.telefones.push(this.createTelefoneFormGroup(telefone)));
+        // Popular FormArray de e-mails
+        operadora.emails.forEach(email => this.emails.push(this.createEmailFormGroup(email)));
       });
+    } else {
+      // Adicionar um item vazio por padrão para novos cadastros
+      this.addEndereco();
+      this.addTelefone();
+      this.addEmail();
     }
+  }
+
+  // Getters para os FormArray
+  get enderecos(): FormArray {
+    return this.form.get('enderecos') as FormArray;
+  }
+
+  get telefones(): FormArray {
+    return this.form.get('telefones') as FormArray;
+  }
+
+  get emails(): FormArray {
+    return this.form.get('emails') as FormArray;
+  }
+
+  // Métodos para criar FormGroup para cada tipo de item
+  createEnderecoFormGroup(endereco?: OperadoraEndereco): FormGroup {
+    return this.formBuilder.group({
+      id: [endereco?.id],
+      tipo: [endereco?.tipo || '', Validators.required],
+      cep: [endereco?.cep || '', Validators.required],
+      logradouro: [endereco?.logradouro || '', Validators.required],
+      numero: [endereco?.numero || '', Validators.required],
+      complemento: [endereco?.complemento || ''],
+      bairro: [endereco?.bairro || '', Validators.required],
+      cidade: [endereco?.cidade || '', Validators.required],
+      uf: [endereco?.uf || '', Validators.required],
+      pais: [endereco?.pais || 'BRASIL', Validators.required],
+      latitude: [endereco?.latitude],
+      longitude: [endereco?.longitude]
+    });
+  }
+
+  createTelefoneFormGroup(telefone?: OperadoraTelefone): FormGroup {
+    return this.formBuilder.group({
+      id: [telefone?.id],
+      tipo: [telefone?.tipo || '', Validators.required],
+      ddd: [telefone?.ddd || '', Validators.required],
+      numero: [telefone?.numero || '', Validators.required],
+      ramal: [telefone?.ramal || ''],
+      whatsapp: [telefone?.whatsapp || false]
+    });
+  }
+
+  createEmailFormGroup(email?: OperadoraEmail): FormGroup {
+    return this.formBuilder.group({
+      id: [email?.id],
+      tipo: [email?.tipo || '', Validators.required],
+      email: [email?.email || '', [Validators.required, Validators.email]]
+    });
+  }
+
+  // Métodos para adicionar itens
+  addEndereco(): void {
+    this.enderecos.push(this.createEnderecoFormGroup());
+  }
+
+  addTelefone(): void {
+    this.telefones.push(this.createTelefoneFormGroup());
+  }
+
+  addEmail(): void {
+    this.emails.push(this.createEmailFormGroup());
+  }
+
+  // Métodos para remover itens
+  removeEndereco(index: number): void {
+    this.enderecos.removeAt(index);
+  }
+
+  removeTelefone(index: number): void {
+    this.telefones.removeAt(index);
+  }
+
+  removeEmail(index: number): void {
+    this.emails.removeAt(index);
   }
 
   save(): void {
     if (this.form.invalid) {
-      this.snackBar.open('Formulário inválido!', 'Fechar', { duration: 3000 });
+      this.snackBar.open('Formulário inválido! Verifique todos os campos.', 'Fechar', { duration: 3000 });
       return;
     }
 
@@ -91,8 +178,9 @@ export class OperadorasFormComponent implements OnInit {
         this.snackBar.open('Operadora salva com sucesso!', 'Fechar', { duration: 3000 });
         this.router.navigate(['/cadastros/operadoras']);
       },
-      error: () => {
-        this.snackBar.open('Erro ao salvar operadora.', 'Fechar', { duration: 3000 });
+      error: (err) => {
+        console.error('Erro ao salvar operadora:', err);
+        this.snackBar.open('Erro ao salvar operadora. Detalhes: ' + (err.error?.message || err.message), 'Fechar', { duration: 5000 });
       }
     });
   }
