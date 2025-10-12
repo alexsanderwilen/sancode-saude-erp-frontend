@@ -8,6 +8,18 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
 import { OperadoraTelefone } from '../../operadora.model';
+import { MatSelectModule } from '@angular/material/select';
+import { DominioTipo } from '../../dominio-tipo/dominio-tipo.model';
+
+interface TelefoneDialogData {
+  id?: string;
+  tipo: string;
+  ddd: string;
+  numero: string;
+  ramal?: string;
+  whatsapp: boolean;
+  dominioTipos: DominioTipo[];
+}
 
 @Component({
   selector: 'app-telefone-dialog',
@@ -21,18 +33,21 @@ import { OperadoraTelefone } from '../../operadora.model';
     MatInputModule,
     MatButtonModule,
     MatCheckboxModule,
-    NgxMaskDirective
+    NgxMaskDirective,
+    MatSelectModule
   ],
   providers: [provideNgxMask()]
 })
 export class TelefoneDialogComponent {
   form: FormGroup;
+  dominioTipos: DominioTipo[];
 
   constructor(
     private formBuilder: FormBuilder,
     public dialogRef: MatDialogRef<TelefoneDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: OperadoraTelefone
+    @Inject(MAT_DIALOG_DATA) public data: TelefoneDialogData
   ) {
+    this.dominioTipos = data.dominioTipos;
     this.form = this.formBuilder.group({
       id: [data?.id],
       tipo: [data?.tipo || '', Validators.required],

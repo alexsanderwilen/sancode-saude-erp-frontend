@@ -6,6 +6,15 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { OperadoraEmail } from '../../operadora.model';
+import { MatSelectModule } from '@angular/material/select';
+import { DominioTipo } from '../../dominio-tipo/dominio-tipo.model';
+
+interface EmailDialogData {
+  id?: string;
+  tipo: string;
+  email: string;
+  dominioTipos: DominioTipo[];
+}
 
 @Component({
   selector: 'app-email-dialog',
@@ -17,17 +26,20 @@ import { OperadoraEmail } from '../../operadora.model';
     MatDialogModule,
     MatFormFieldModule,
     MatInputModule,
-    MatButtonModule
+    MatButtonModule,
+    MatSelectModule
   ]
 })
 export class EmailDialogComponent {
   form: FormGroup;
+  dominioTipos: DominioTipo[];
 
   constructor(
     private formBuilder: FormBuilder,
     public dialogRef: MatDialogRef<EmailDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: OperadoraEmail
+    @Inject(MAT_DIALOG_DATA) public data: EmailDialogData
   ) {
+    this.dominioTipos = data.dominioTipos;
     this.form = this.formBuilder.group({
       id: [data?.id],
       tipo: [data?.tipo || '', Validators.required],

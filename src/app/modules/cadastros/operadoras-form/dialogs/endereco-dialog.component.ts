@@ -7,6 +7,24 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
 import { OperadoraEndereco } from '../../operadora.model';
+import { MatSelectModule } from '@angular/material/select';
+import { DominioTipo } from '../../dominio-tipo/dominio-tipo.model';
+
+interface EnderecoDialogData {
+  id?: string;
+  tipo: string;
+  cep: string;
+  logradouro: string;
+  numero: string;
+  complemento?: string;
+  bairro: string;
+  cidade: string;
+  uf: string;
+  pais: string;
+  latitude?: number;
+  longitude?: number;
+  dominioTipos: DominioTipo[];
+}
 
 @Component({
   selector: 'app-endereco-dialog',
@@ -19,18 +37,21 @@ import { OperadoraEndereco } from '../../operadora.model';
     MatFormFieldModule,
     MatInputModule,
     MatButtonModule,
-    NgxMaskDirective
+    NgxMaskDirective,
+    MatSelectModule
   ],
   providers: [provideNgxMask()]
 })
 export class EnderecoDialogComponent {
   form: FormGroup;
+  dominioTipos: DominioTipo[];
 
   constructor(
     private formBuilder: FormBuilder,
     public dialogRef: MatDialogRef<EnderecoDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: OperadoraEndereco
+    @Inject(MAT_DIALOG_DATA) public data: EnderecoDialogData
   ) {
+    this.dominioTipos = data.dominioTipos;
     this.form = this.formBuilder.group({
       id: [data?.id],
       tipo: [data?.tipo || '', Validators.required],

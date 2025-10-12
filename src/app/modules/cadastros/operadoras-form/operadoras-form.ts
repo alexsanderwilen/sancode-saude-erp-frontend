@@ -15,6 +15,7 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { MatCardModule } from '@angular/material/card';
 import { AgGridModule } from 'ag-grid-angular';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatSelectModule } from '@angular/material/select';
 
 import { OperadoraService } from '../operadora.service';
 import { Operadora, OperadoraEndereco, OperadoraTelefone, OperadoraEmail } from '../operadora.model';
@@ -22,6 +23,8 @@ import { EnderecoDialogComponent } from './dialogs/endereco-dialog.component';
 import { TelefoneDialogComponent } from './dialogs/telefone-dialog.component';
 import { EmailDialogComponent } from './dialogs/email-dialog.component';
 import { ConfirmDialogComponent } from '../../../shared/components/confirm-dialog/confirm-dialog';
+import { DominioTipoService } from '../dominio-tipo/dominio-tipo.service';
+import { DominioTipo } from '../dominio-tipo/dominio-tipo.model';
 
 @Component({
   selector: 'app-operadoras-form',
@@ -41,7 +44,8 @@ import { ConfirmDialogComponent } from '../../../shared/components/confirm-dialo
     MatTabsModule,
     MatCardModule,
     AgGridModule,
-    MatDialogModule
+    MatDialogModule,
+    MatSelectModule
   ],
   providers: [provideNativeDateAdapter(), provideNgxMask()],
   templateUrl: './operadoras-form.html',
@@ -55,6 +59,7 @@ export class OperadorasFormComponent implements OnInit {
   private readonly operadoraService = inject(OperadoraService);
   private readonly snackBar = inject(MatSnackBar);
   private readonly dialog = inject(MatDialog);
+  private readonly dominioTipoService = inject(DominioTipoService);
 
   form: FormGroup;
   isEditMode = false;
@@ -67,6 +72,10 @@ export class OperadorasFormComponent implements OnInit {
   colDefsEnderecos: any[];
   colDefsTelefones: any[];
   colDefsEmails: any[];
+
+  dominioTiposEndereco: DominioTipo[] = [];
+  dominioTiposTelefone: DominioTipo[] = [];
+  dominioTiposEmail: DominioTipo[] = [];
 
   constructor() {
     this.form = this.formBuilder.group({
@@ -110,6 +119,8 @@ export class OperadorasFormComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.loadDominioTipos();
+
     this.operadoraId = this.route.snapshot.params['id'];
     if (this.operadoraId) {
       this.isEditMode = true;
@@ -120,6 +131,20 @@ export class OperadorasFormComponent implements OnInit {
         operadora.emails.forEach(email => this.emails.push(this.createEmailFormGroup(email)));
       });
     }
+  }
+
+  loadDominioTipos(): void {
+    this.dominioTipoService.findAll().subscribe({
+      next: (data: DominioTipo[]) => {
+        this.dominioTiposEndereco = data.filter((dt: DominioTipo) => dt.tipoDoTipo === 'ENDERECO' && dt.ativo);
+        this.dominioTiposTelefone = data.filter((dt: DominioTipo) => dt.tipoDoTipo === 'TELEFONE' && dt.ativo);
+        this.dominioTiposEmail = data.filter((dt: DominioTipo) => dt.tipoDoTipo === 'EMAIL' && dt.ativo);
+      },
+      error: (error: any) => {
+        console.error('Erro ao carregar tipos de domínio:', error);
+        this.snackBar.open('Erro ao carregar tipos de domínio.', 'Fechar', { duration: 3000 });
+      },
+    });
   }
 
   get enderecos(): FormArray {
@@ -196,17 +221,18 @@ export class OperadorasFormComponent implements OnInit {
 
   openDialog(type: string, index?: number, data?: any): void {
     let dialogRef;
-    switch (type) {
-      case 'enderecos':
-        dialogRef = this.dialog.open(EnderecoDialogComponent, { data });
-        break;
-      case 'telefones':
-        dialogRef = this.dialog.open(TelefoneDialogComponent, { data });
-        break;
-      case 'emails':
-        dialogRef = this.dialog.open(EmailDialogComponent, { data });
-        break;
+    let dialogData = { ...data };
+    if (type === 'enderecos') {
+      dialogData.dominioTipos = this.dominioTiposEndereco;
+      dialogRef = this.dialog.open(EnderecoDialogComponent, { data: dialogData });
+    } else if (type === 'telefones') {
+      dialogData.dominioTipos = this.dominioTiposTelefone;
+      dialogRef = this.dialog.open(TelefoneDialogComponent, { data: dialogData });
+    } else if (type === 'emails') {
+      dialogData.dominioTipos = this.dominioTiposEmail;
+      dialogRef = this.dialog.open(EmailDialogComponent, { data: dialogData });
     }
+
 
     dialogRef?.afterClosed().subscribe(result => {
       if (result) {
