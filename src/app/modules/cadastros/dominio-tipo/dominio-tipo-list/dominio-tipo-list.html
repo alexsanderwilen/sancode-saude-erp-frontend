@@ -2,11 +2,10 @@
   <mat-toolbar class="list-toolbar">
     <span class="list-title">Tipos de Domínio</span>
     <span class="spacer"></span>
-    <mat-form-field appearance="outline" class="list-search-field">
-      <mat-label>Pesquisar</mat-label>
-      <input matInput (keyup)="onSearch($event)" placeholder="Buscar por descrição ou tipo" />
-      <i class="fa fa-search" matSuffix></i>
-    </mat-form-field>
+    <div class="input-group w-25 me-3">
+      <input type="text" class="form-control" placeholder="Pesquisar" (keyup)="onSearch($event)">
+      <span class="input-group-text"><i class="fa fa-search"></i></span>
+    </div>
     <button class="btn btn-primary" (click)="addDominioTipo()">
       <i class="fa fa-plus"></i> Novo Tipo
     </button>
