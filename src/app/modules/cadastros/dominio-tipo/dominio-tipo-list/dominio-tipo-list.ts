@@ -1,8 +1,6 @@
-import { Component, inject, OnInit, ViewChild } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MatTableDataSource, MatTableModule } from '@angular/material/table';
-import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
-import { MatSort, MatSortModule } from '@angular/material/sort';
+
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 
@@ -15,16 +13,16 @@ import { Router } from '@angular/router';
 import { DominioTipo } from '../dominio-tipo.model';
 import { DominioTipoService } from '../dominio-tipo.service';
 import { ConfirmDialogComponent } from '../../../../shared/components/confirm-dialog/confirm-dialog';
-import { debounceTime, distinctUntilChanged, Subject } from 'rxjs';
+
+import { AgGridModule } from 'ag-grid-angular';
+import { ColDef, GridApi, GridOptions, GridReadyEvent } from 'ag-grid-community';
+import { StatusChipRenderer } from './status-chip-renderer.component';
 
 @Component({
   selector: 'app-dominio-tipo-list',
   standalone: true,
   imports: [
     CommonModule,
-    MatTableModule,
-    MatPaginatorModule,
-    MatSortModule,
     MatInputModule,
     MatFormFieldModule,
 
@@ -33,17 +31,60 @@ import { debounceTime, distinctUntilChanged, Subject } from 'rxjs';
     MatCardModule,
     MatSnackBarModule,
     MatDialogModule,
+    AgGridModule,
   ],
   templateUrl: './dominio-tipo-list.html',
   styleUrl: './dominio-tipo-list.scss',
 })
 export class DominioTipoListComponent implements OnInit {
-  displayedColumns: string[] = ['id', 'tipoDoTipo', 'descricao', 'ativo', 'actions'];
-  dataSource = new MatTableDataSource<DominioTipo>();
-  private searchTerms = new Subject<string>();
+  gridOptions: GridOptions = {
+    pagination: true,
+    paginationPageSize: 10,
+    paginationPageSizeSelector: [10, 20, 50],
+    domLayout: 'normal',
+  };
+  columnDefs: ColDef[] = [
+    { field: 'id', headerName: 'ID', sortable: true, filter: true, width: 90 },
+    { field: 'tipoDoTipo', headerName: 'Tipo', sortable: true, filter: true, flex: 1 },
+    { field: 'descricao', headerName: 'Descrição', sortable: true, filter: true, flex: 2 },
+    {
+      field: 'ativo',
+      headerName: 'Ativo',
+      sortable: true,
+      filter: true,
+      width: 120,
+      cellRenderer: StatusChipRenderer,
+    },
+    {
+      headerName: 'Ações',
+      width: 150,
+      cellRenderer: (params: any) => {
+        const eDiv = document.createElement('div');
+        eDiv.innerHTML = `
+          <button title="Editar" data-action="edit" class="btn btn-sm btn-outline-primary me-1">
+            <i class="fa fa-pencil" data-action="edit"></i>
+          </button>
+          <button title="Excluir" data-action="delete" class="btn btn-sm btn-outline-danger">
+            <i class="fa fa-trash" data-action="delete"></i>
+          </button>
+        `;
 
-  @ViewChild(MatPaginator) paginator!: MatPaginator;
-  @ViewChild(MatSort) sort!: MatSort;
+        const editButton = eDiv.querySelector('.btn-outline-primary');
+        if (editButton) {
+          editButton.addEventListener('click', () => this.editDominioTipo(params.data.id));
+        }
+
+        const deleteButton = eDiv.querySelector('.btn-outline-danger');
+        if (deleteButton) {
+          deleteButton.addEventListener('click', () => this.deleteDominioTipo(params.data.id));
+        }
+
+        return eDiv;
+      },
+    },
+  ];
+
+  private gridApi!: GridApi;
 
   private dominioTipoService = inject(DominioTipoService);
   private router = inject(Router);
@@ -51,24 +92,20 @@ export class DominioTipoListComponent implements OnInit {
   private dialog = inject(MatDialog);
 
   ngOnInit(): void {
-    this.loadDominioTipos();
-    this.searchTerms.pipe(
-      debounceTime(300),
-      distinctUntilChanged()
-    ).subscribe(term => {
-      this.applyFilter(term);
-    });
+    // Lógica de busca removida
   }
 
-  ngAfterViewInit() {
-    this.dataSource.paginator = this.paginator;
-    this.dataSource.sort = this.sort;
+  onGridReady(params: GridReadyEvent) {
+    this.gridApi = params.api;
+    this.loadDominioTipos();
   }
 
   loadDominioTipos(): void {
     this.dominioTipoService.findAll().subscribe({
       next: (data) => {
-        this.dataSource.data = data;
+        if (this.gridApi) {
+          this.gridApi.updateGridOptions({ rowData: data });
+        }
       },
       error: (error) => {
         console.error('Erro ao carregar tipos de domínio:', error);
@@ -77,17 +114,9 @@ export class DominioTipoListComponent implements OnInit {
     });
   }
 
-  onSearch(event: Event): void {
-    const filterValue = (event.target as HTMLInputElement).value;
-    this.searchTerms.next(filterValue.trim().toLowerCase());
-  }
-
-  applyFilter(filterValue: string): void {
-    this.dataSource.filter = filterValue;
-    if (this.dataSource.paginator) {
-      this.dataSource.paginator.firstPage();
-    }
-  }
+  // Métodos de busca removidos
+  // onSearch(event: Event): void { ... }
+  // applyFilter(filterValue: string): void { ... }
 
   addDominioTipo(): void {
     this.router.navigate(['/cadastros/dominio-tipos/new']);
