@@ -21,6 +21,7 @@ import { Operadora, OperadoraEndereco, OperadoraTelefone, OperadoraEmail } from 
 import { EnderecoDialogComponent } from './dialogs/endereco-dialog.component';
 import { TelefoneDialogComponent } from './dialogs/telefone-dialog.component';
 import { EmailDialogComponent } from './dialogs/email-dialog.component';
+import { ConfirmDialogComponent } from '../../../shared/components/confirm-dialog/confirm-dialog';
 
 @Component({
   selector: 'app-operadoras-form',
@@ -226,8 +227,17 @@ export class OperadorasFormComponent implements OnInit {
   }
 
   removerItem(type: string, index: number): void {
-    const formArray = this.form.get(type) as FormArray;
-    formArray.removeAt(index);
+    this.dialog.open(ConfirmDialogComponent, {
+      data: {
+        title: 'Confirmar Exclusão',
+        message: `Tem certeza que deseja excluir este ${type.slice(0, -1)}?`
+      }
+    }).afterClosed().subscribe(result => {
+      if (result) {
+        const formArray = this.form.get(type) as FormArray;
+        formArray.removeAt(index);
+      }
+    });
   }
 
   save(): void {
