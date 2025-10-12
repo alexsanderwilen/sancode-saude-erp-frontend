@@ -1,23 +1,25 @@
-<mat-toolbar color="accent">
-  <a mat-button routerLink="/cadastros" [routerLinkActiveOptions]="{exact: true}" routerLinkActive="active-link">
-    <mat-icon>home</mat-icon>
-    <span class="ms-2">Início</span>
-  </a>
-  <a mat-button routerLink="/cadastros/operadoras" routerLinkActive="active-link">
-    Operadoras
-  </a>
-  <a mat-button routerLink="/cadastros/dominio-tipos" routerLinkActive="active-link">
-    Tipos de Domínio
-  </a>
-  <!-- Futuros links de cadastro (ex: Prestadores) virão aqui -->
+<div class="sancode-cadastro-theme">
+  <mat-toolbar color="accent">
+    <a mat-button routerLink="/cadastros" [routerLinkActiveOptions]="{exact: true}" routerLinkActive="active-link">
+      <mat-icon>home</mat-icon>
+      <span class="ms-2">Início</span>
+    </a>
+    <a mat-button routerLink="/cadastros/operadoras" routerLinkActive="active-link">
+      Operadoras
+    </a>
+    <a mat-button routerLink="/cadastros/dominio-tipos" routerLinkActive="active-link">
+      Tipos de Domínio
+    </a>
+    <!-- Futuros links de cadastro (ex: Prestadores) virão aqui -->
 
-  <span class="spacer"></span>
+    <span class="spacer"></span>
 
-  <a mat-icon-button routerLink="/home" matTooltip="Voltar para o menu principal">
-    <mat-icon>exit_to_app</mat-icon>
-  </a>
-</mat-toolbar>
+    <a mat-icon-button routerLink="/home" matTooltip="Voltar para o menu principal">
+      <mat-icon>exit_to_app</mat-icon>
+    </a>
+  </mat-toolbar>
 
-<div class="container-fluid p-4">
-  <router-outlet></router-outlet>
+  <div class="container-fluid p-4">
+    <router-outlet></router-outlet>
+  </div>
 </div>

@@ -1,5 +1,5 @@
 <mat-card class="form-card">
-  <mat-toolbar color="primary">
+  <mat-toolbar color="accent">
     <span class="form-title">{{ isEditMode ? 'Editar Tipo de Domínio' : 'Novo Tipo de Domínio' }}</span>
   </mat-toolbar>
 
@@ -30,10 +30,10 @@
       </mat-slide-toggle>
 
       <div class="form-actions">
-        <button mat-raised-button type="button" (click)="cancel()">
+        <button mat-raised-button color="warn" type="button" (click)="cancel()">
           Cancelar
         </button>
-        <button mat-raised-button color="primary" type="submit" [disabled]="form.invalid">
+        <button mat-raised-button color="accent" type="submit" [disabled]="form.invalid">
           Salvar
         </button>
       </div>

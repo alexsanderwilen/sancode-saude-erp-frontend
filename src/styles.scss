@@ -1,1 +1,47 @@
-/* You can add global styles to this file, and also import other style files */
+@use '@angular/material' as mat;
+@include mat.core();
+
+// 1. Definição do Tema Global da Aplicação
+//    ------------------------------------
+//    Use as paletas padrão do Material ou defina as suas.
+$sancode-health-primary: mat.m2-define-palette(mat.$m2-indigo-palette);
+$sancode-health-accent: mat.m2-define-palette(mat.$m2-pink-palette, A200, A100, A400);
+$sancode-health-warn: mat.m2-define-palette(mat.$m2-red-palette);
+
+// Crie o objeto de tema global.
+$sancode-health-theme: mat.m2-define-light-theme((
+  color: (
+    primary: $sancode-health-primary,
+    accent: $sancode-health-accent,
+    warn: $sancode-health-warn,
+  ),
+  typography: mat.m2-define-typography-config(),
+  density: 0,
+));
+
+// Inclua o mixin de tema para aplicar o tema global.
+@include mat.all-component-themes($sancode-health-theme);
+
+
+// 2. Definição do Tema Específico para o Módulo de Cadastros
+//    ------------------------------------------------------
+//    Este tema será aplicado apenas onde a classe 'sancode-cadastro-theme' for usada.
+$sancode-health-cadastro-primary: mat.m2-define-palette(mat.$m2-green-palette);
+$sancode-health-cadastro-accent: mat.m2-define-palette(mat.$m2-light-blue-palette, A200, A100, A400);
+$sancode-health-cadastro-warn: mat.m2-define-palette(mat.$m2-red-palette); // Pode ser o mesmo warn global
+
+// Crie o objeto de tema para o módulo de Cadastros.
+$sancode-health-cadastro-theme: mat.m2-define-light-theme((
+  color: (
+    primary: $sancode-health-cadastro-primary,
+    accent: $sancode-health-cadastro-accent,
+    warn: $sancode-health-cadastro-warn,
+  ),
+  typography: mat.m2-define-typography-config(),
+  density: 0,
+));
+
+// Crie uma classe CSS para aplicar este tema.
+.sancode-cadastro-theme {
+  @include mat.all-component-themes($sancode-health-cadastro-theme);
+}
