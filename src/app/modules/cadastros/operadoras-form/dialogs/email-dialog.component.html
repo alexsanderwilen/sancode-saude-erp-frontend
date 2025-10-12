@@ -1,0 +1,21 @@
+<h1 mat-dialog-title>{{ data ? 'Editar E-mail' : 'Novo E-mail' }}</h1>
+<div mat-dialog-content [formGroup]="form">
+  <div class="row">
+    <div class="col-md-6">
+      <mat-form-field class="w-100">
+        <mat-label>Tipo</mat-label>
+        <input matInput formControlName="tipo" required>
+      </mat-form-field>
+    </div>
+    <div class="col-md-6">
+      <mat-form-field class="w-100">
+        <mat-label>E-mail</mat-label>
+        <input matInput formControlName="email" type="email" required>
+      </mat-form-field>
+    </div>
+  </div>
+</div>
+<div mat-dialog-actions>
+  <button mat-button (click)="onNoClick()">Cancelar</button>
+  <button mat-button [mat-dialog-close]="form.value" [disabled]="!form.valid">Salvar</button>
+</div>

@@ -1,6 +1,6 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators, FormArray, UntypedFormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators, FormArray } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -13,9 +13,14 @@ import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatCardModule } from '@angular/material/card';
+import { AgGridModule } from 'ag-grid-angular';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 
 import { OperadoraService } from '../operadora.service';
 import { Operadora, OperadoraEndereco, OperadoraTelefone, OperadoraEmail } from '../operadora.model';
+import { EnderecoDialogComponent } from './dialogs/endereco-dialog.component';
+import { TelefoneDialogComponent } from './dialogs/telefone-dialog.component';
+import { EmailDialogComponent } from './dialogs/email-dialog.component';
 
 @Component({
   selector: 'app-operadoras-form',
@@ -33,7 +38,9 @@ import { Operadora, OperadoraEndereco, OperadoraTelefone, OperadoraEmail } from 
     NgxMaskDirective,
     MatIconModule,
     MatTabsModule,
-    MatCardModule
+    MatCardModule,
+    AgGridModule,
+    MatDialogModule
   ],
   providers: [provideNativeDateAdapter(), provideNgxMask()],
   templateUrl: './operadoras-form.html',
@@ -46,10 +53,19 @@ export class OperadorasFormComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);
   private readonly operadoraService = inject(OperadoraService);
   private readonly snackBar = inject(MatSnackBar);
+  private readonly dialog = inject(MatDialog);
 
   form: FormGroup;
   isEditMode = false;
   private operadoraId?: string;
+
+  gridOptionsEnderecos: any;
+  gridOptionsTelefones: any;
+  gridOptionsEmails: any;
+
+  colDefsEnderecos: any[];
+  colDefsTelefones: any[];
+  colDefsEmails: any[];
 
   constructor() {
     this.form = this.formBuilder.group({
@@ -59,10 +75,37 @@ export class OperadorasFormComponent implements OnInit {
       nomeFantasia: [''],
       dataRegistroAns: [null],
       ativo: [true],
-      enderecos: this.formBuilder.array([]), // FormArray para endereços
-      telefones: this.formBuilder.array([]), // FormArray para telefones
-      emails: this.formBuilder.array([]) // FormArray para e-mails
+      enderecos: this.formBuilder.array([]),
+      telefones: this.formBuilder.array([]),
+      emails: this.formBuilder.array([])
     });
+
+    this.colDefsEnderecos = [
+      { headerName: 'Tipo', field: 'tipo', sortable: true, filter: true },
+      { headerName: 'CEP', field: 'cep', sortable: true, filter: true },
+      { headerName: 'Logradouro', field: 'logradouro', sortable: true, filter: true },
+      { headerName: 'Cidade', field: 'cidade', sortable: true, filter: true },
+      { headerName: 'UF', field: 'uf', sortable: true, filter: true },
+      { headerName: 'Ações', cellRenderer: this.actionsRenderer.bind(this) }
+    ];
+
+    this.colDefsTelefones = [
+      { headerName: 'Tipo', field: 'tipo', sortable: true, filter: true },
+      { headerName: 'DDD', field: 'ddd', sortable: true, filter: true },
+      { headerName: 'Número', field: 'numero', sortable: true, filter: true },
+      { headerName: 'WhatsApp', field: 'whatsapp', sortable: true, filter: true },
+      { headerName: 'Ações', cellRenderer: this.actionsRenderer.bind(this) }
+    ];
+
+    this.colDefsEmails = [
+      { headerName: 'Tipo', field: 'tipo', sortable: true, filter: true },
+      { headerName: 'E-mail', field: 'email', sortable: true, filter: true },
+      { headerName: 'Ações', cellRenderer: this.actionsRenderer.bind(this) }
+    ];
+
+    this.gridOptionsEnderecos = { context: { componentParent: this, type: 'enderecos' }, suppressRowClickSelection: true };
+    this.gridOptionsTelefones = { context: { componentParent: this, type: 'telefones' }, suppressRowClickSelection: true };
+    this.gridOptionsEmails = { context: { componentParent: this, type: 'emails' }, suppressRowClickSelection: true };
   }
 
   ngOnInit(): void {
@@ -71,22 +114,13 @@ export class OperadorasFormComponent implements OnInit {
       this.isEditMode = true;
       this.operadoraService.getById(this.operadoraId).subscribe(operadora => {
         this.form.patchValue(operadora);
-        // Popular FormArray de endereços
         operadora.enderecos.forEach(endereco => this.enderecos.push(this.createEnderecoFormGroup(endereco)));
-        // Popular FormArray de telefones
         operadora.telefones.forEach(telefone => this.telefones.push(this.createTelefoneFormGroup(telefone)));
-        // Popular FormArray de e-mails
         operadora.emails.forEach(email => this.emails.push(this.createEmailFormGroup(email)));
       });
-    } else {
-      // Adicionar um item vazio por padrão para novos cadastros
-      this.addEndereco();
-      this.addTelefone();
-      this.addEmail();
     }
   }
 
-  // Getters para os FormArray
   get enderecos(): FormArray {
     return this.form.get('enderecos') as FormArray;
   }
@@ -99,7 +133,6 @@ export class OperadorasFormComponent implements OnInit {
     return this.form.get('emails') as FormArray;
   }
 
-  // Métodos para criar FormGroup para cada tipo de item
   createEnderecoFormGroup(endereco?: OperadoraEndereco): FormGroup {
     return this.formBuilder.group({
       id: [endereco?.id],
@@ -136,30 +169,65 @@ export class OperadorasFormComponent implements OnInit {
     });
   }
 
-  // Métodos para adicionar itens
-  addEndereco(): void {
-    this.enderecos.push(this.createEnderecoFormGroup());
+  actionsRenderer(params: any) {
+    const div = document.createElement('div');
+    div.innerHTML = `
+      <button title="Editar" data-action="edit" class="btn btn-sm btn-outline-primary"><i class="fa fa-pencil" data-action="edit"></i></button>
+      <button title="Excluir" data-action="delete" class="btn btn-sm btn-outline-danger"><i class="fa fa-trash" data-action="delete"></i></button>
+    `;
+    const editButton = div.querySelector('[data-action="edit"]');
+    const deleteButton = div.querySelector('[data-action="delete"]');
+
+    editButton?.addEventListener('click', (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      params.context.componentParent.openDialog(params.context.type, params.node.rowIndex, params.data);
+    });
+
+    deleteButton?.addEventListener('click', (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      params.context.componentParent.removerItem(params.context.type, params.node.rowIndex);
+    });
+
+    return div;
   }
 
-  addTelefone(): void {
-    this.telefones.push(this.createTelefoneFormGroup());
+  openDialog(type: string, index?: number, data?: any): void {
+    let dialogRef;
+    switch (type) {
+      case 'enderecos':
+        dialogRef = this.dialog.open(EnderecoDialogComponent, { data });
+        break;
+      case 'telefones':
+        dialogRef = this.dialog.open(TelefoneDialogComponent, { data });
+        break;
+      case 'emails':
+        dialogRef = this.dialog.open(EmailDialogComponent, { data });
+        break;
+    }
+
+    dialogRef?.afterClosed().subscribe(result => {
+      if (result) {
+        const formArray = this.form.get(type) as FormArray;
+        if (index !== undefined) {
+          formArray.at(index).patchValue(result);
+        } else {
+          if (type === 'enderecos') {
+            formArray.push(this.createEnderecoFormGroup(result));
+          } else if (type === 'telefones') {
+            formArray.push(this.createTelefoneFormGroup(result));
+          } else if (type === 'emails') {
+            formArray.push(this.createEmailFormGroup(result));
+          }
+        }
+      }
+    });
   }
 
-  addEmail(): void {
-    this.emails.push(this.createEmailFormGroup());
-  }
-
-  // Métodos para remover itens
-  removeEndereco(index: number): void {
-    this.enderecos.removeAt(index);
-  }
-
-  removeTelefone(index: number): void {
-    this.telefones.removeAt(index);
-  }
-
-  removeEmail(index: number): void {
-    this.emails.removeAt(index);
+  removerItem(type: string, index: number): void {
+    const formArray = this.form.get(type) as FormArray;
+    formArray.removeAt(index);
   }
 
   save(): void {
