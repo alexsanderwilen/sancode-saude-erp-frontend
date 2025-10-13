@@ -230,7 +230,7 @@ export class OperadorasFormComponent implements OnInit {
       dialogRef = this.dialog.open(OperadoraTelefoneFormComponent, { data: dialogData });
     } else if (type === 'emails') {
       dialogData.dominioTipos = this.dominioTiposEmail;
-      dialogRef = this.dialog.open(OperadoraEmailFormComponent, { data: dialogData });
+      dialogRef = this.dialog.open(OperadoraEmailFormComponent, { data: dialogData, width: '500px' });
     }
 
 
