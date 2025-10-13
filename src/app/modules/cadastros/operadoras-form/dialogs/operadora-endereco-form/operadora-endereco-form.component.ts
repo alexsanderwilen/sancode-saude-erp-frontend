@@ -8,6 +8,8 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { MatSelectModule } from '@angular/material/select';
+import { DominioTipo } from '../../../dominio-tipo/dominio-tipo.model';
 
 @Component({
   selector: 'app-operadora-endereco-form',
@@ -19,13 +21,15 @@ import { MatIconModule } from '@angular/material/icon';
     MatFormFieldModule,
     MatInputModule,
     MatButtonModule,
-    MatIconModule
+    MatIconModule,
+    MatSelectModule
   ],
   templateUrl: './operadora-endereco-form.component.html',
 })
 export class OperadoraEnderecoFormComponent implements OnInit {
   form!: FormGroup;
   isEditMode: boolean = false;
+  dominioTipos: DominioTipo[] = [];
 
   constructor(
     private fb: FormBuilder,
@@ -34,9 +38,12 @@ export class OperadoraEnderecoFormComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.isEditMode = !!this.data;
+    this.isEditMode = !!this.data?.id;
+    this.dominioTipos = this.data?.dominioTipos || [];
+
     this.form = this.fb.group({
       id: [this.data?.id || null],
+      tipo: [this.data?.tipo || '', Validators.required],
       cep: [this.data?.cep || '', Validators.required],
       logradouro: [this.data?.logradouro || '', Validators.required],
       numero: [this.data?.numero || '', Validators.required],

@@ -7,6 +7,8 @@ import { BaseModalFormComponent } from '../../../../../shared/components/base-mo
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
+import { MatSelectModule } from '@angular/material/select';
+import { DominioTipo } from '../../../dominio-tipo/dominio-tipo.model';
 
 @Component({
   selector: 'app-operadora-email-form',
@@ -17,13 +19,15 @@ import { MatButtonModule } from '@angular/material/button';
     BaseModalFormComponent,
     MatFormFieldModule,
     MatInputModule,
-    MatButtonModule
+    MatButtonModule,
+    MatSelectModule
   ],
   templateUrl: './operadora-email-form.component.html',
 })
 export class OperadoraEmailFormComponent implements OnInit {
   form!: FormGroup;
   isEditMode: boolean = false;
+  dominioTipos: DominioTipo[] = [];
 
   constructor(
     private fb: FormBuilder,
@@ -33,6 +37,8 @@ export class OperadoraEmailFormComponent implements OnInit {
 
   ngOnInit(): void {
     this.isEditMode = !!this.data?.id;
+    this.dominioTipos = this.data?.dominioTipos || [];
+
     this.form = this.fb.group({
       id: [this.data?.id || null],
       tipo: [this.data?.tipo || '', Validators.required],
