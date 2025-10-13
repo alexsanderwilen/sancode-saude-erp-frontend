@@ -15,9 +15,7 @@ export const CADASTROS_ROUTES: Routes = [
       { path: 'operadoras', component: OperadorasListComponent, title: 'Operadoras' },
       { path: 'operadoras/nova', component: OperadorasFormComponent, title: 'Nova Operadora' },
       { path: 'operadoras/editar/:id', component: OperadorasFormComponent, title: 'Editar Operadora' },
-      { path: 'dominio-tipos', component: DominioTipoListComponent, title: 'Tipos de Domínio' },
-      { path: 'dominio-tipos/new', component: DominioTipoFormComponent, title: 'Novo Tipo de Domínio' },
-      { path: 'dominio-tipos/edit/:id', component: DominioTipoFormComponent, title: 'Editar Tipo de Domínio' }
+      { path: 'dominio-tipos', component: DominioTipoListComponent, title: 'Tipos de Domínio' }
     ]
   }
 ];

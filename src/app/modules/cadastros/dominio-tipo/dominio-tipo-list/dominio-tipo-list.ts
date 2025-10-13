@@ -5,15 +5,13 @@ import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 
 import { MatButtonModule } from '@angular/material/button';
-import { MatToolbarModule } from '@angular/material/toolbar';
-import { MatCardModule } from '@angular/material/card';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { MatIconModule } from '@angular/material/icon'; // Adicionado
-import { Router } from '@angular/router';
+import { MatIconModule } from '@angular/material/icon'; 
 import { DominioTipo } from '../dominio-tipo.model';
 import { DominioTipoService } from '../dominio-tipo.service';
 import { ConfirmDialogComponent } from '../../../../shared/components/confirm-dialog/confirm-dialog';
+import { DominioTipoFormComponent } from '../dominio-tipo-form/dominio-tipo-form';
 
 import { AgGridModule } from 'ag-grid-angular';
 import { ColDef, GridApi, GridOptions, GridReadyEvent } from 'ag-grid-community';
@@ -26,7 +24,6 @@ import { StatusChipRenderer } from './status-chip-renderer.component';
     CommonModule,
     MatInputModule,
     MatFormFieldModule,
-
     MatButtonModule,
     MatSnackBarModule,
     MatDialogModule,
@@ -71,7 +68,7 @@ export class DominioTipoListComponent implements OnInit {
 
         const editButton = eDiv.querySelector('.btn-outline-primary');
         if (editButton) {
-          editButton.addEventListener('click', () => this.editDominioTipo(params.data.id));
+          editButton.addEventListener('click', () => this.openDialog(params.data));
         }
 
         const deleteButton = eDiv.querySelector('.btn-outline-danger');
@@ -87,13 +84,10 @@ export class DominioTipoListComponent implements OnInit {
   private gridApi!: GridApi;
 
   private dominioTipoService = inject(DominioTipoService);
-  private router = inject(Router);
   private snackBar = inject(MatSnackBar);
   private dialog = inject(MatDialog);
 
-  ngOnInit(): void {
-    // Lógica de busca removida
-  }
+  ngOnInit(): void {}
 
   onGridReady(params: GridReadyEvent) {
     this.gridApi = params.api;
@@ -114,16 +108,35 @@ export class DominioTipoListComponent implements OnInit {
     });
   }
 
-  // Métodos de busca removidos
-  // onSearch(event: Event): void { ... }
-  // applyFilter(filterValue: string): void { ... }
+  openDialog(data?: DominioTipo): void {
+    const dialogRef = this.dialog.open(DominioTipoFormComponent, {
+      width: '700px',
+      data: data
+    });
 
-  addDominioTipo(): void {
-    this.router.navigate(['/cadastros/dominio-tipos/new']);
-  }
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        const isEdit = !!data;
+        const request = isEdit 
+          ? this.dominioTipoService.update(data!.id, result)
+          : this.dominioTipoService.create(result);
+        
+        const successMessage = isEdit 
+          ? 'Tipo de domínio atualizado com sucesso!'
+          : 'Tipo de domínio criado com sucesso!';
 
-  editDominioTipo(id: number): void {
-    this.router.navigate([`/cadastros/dominio-tipos/edit/${id}`]);
+        request.subscribe({
+          next: () => {
+            this.snackBar.open(successMessage, 'Fechar', { duration: 3000 });
+            this.loadDominioTipos();
+          },
+          error: (error) => {
+            console.error('Erro ao salvar tipo de domínio:', error);
+            this.snackBar.open('Erro ao salvar tipo de domínio.', 'Fechar', { duration: 3000 });
+          }
+        });
+      }
+    });
   }
 
   deleteDominioTipo(id: number): void {
