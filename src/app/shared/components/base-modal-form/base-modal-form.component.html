@@ -1,0 +1,21 @@
+<div [ngClass]="getThemeClass()">
+  <!-- Cabeçalho Padrão -->
+  <mat-toolbar color="accent">
+    <span>{{ title }}</span>
+    <span class="flex-spacer"></span>
+    <button mat-icon-button (click)="onCancel()">
+      <mat-icon>close</mat-icon>
+    </button>
+  </mat-toolbar>
+
+  <!-- Conteúdo do Formulário Projetado -->
+  <div class="modal-content p-4">
+    <ng-content></ng-content> <!-- O conteúdo do formulário específico virá aqui -->
+  </div>
+
+  <!-- Ações Padrão -->
+  <mat-dialog-actions align="end">
+    <button mat-button (click)="onCancel()">Cancelar</button>
+    <button mat-raised-button color="primary" (click)="onSave()">Salvar</button>
+  </mat-dialog-actions>
+</div>

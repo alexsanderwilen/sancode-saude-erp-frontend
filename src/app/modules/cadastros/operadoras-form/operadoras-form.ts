@@ -19,12 +19,12 @@ import { MatSelectModule } from '@angular/material/select';
 
 import { OperadoraService } from '../operadora.service';
 import { Operadora, OperadoraEndereco, OperadoraTelefone, OperadoraEmail } from '../operadora.model';
-import { EnderecoDialogComponent } from './dialogs/endereco-dialog.component';
-import { TelefoneDialogComponent } from './dialogs/telefone-dialog.component';
-import { EmailDialogComponent } from './dialogs/email-dialog.component';
 import { ConfirmDialogComponent } from '../../../shared/components/confirm-dialog/confirm-dialog';
 import { DominioTipoService } from '../dominio-tipo/dominio-tipo.service';
 import { DominioTipo } from '../dominio-tipo/dominio-tipo.model';
+import { OperadoraEnderecoFormComponent } from './dialogs/operadora-endereco-form/operadora-endereco-form.component';
+import { OperadoraTelefoneFormComponent } from './dialogs/operadora-telefone-form/operadora-telefone-form.component';
+import { OperadoraEmailFormComponent } from './dialogs/operadora-email-form/operadora-email-form.component';
 
 @Component({
   selector: 'app-operadoras-form',
@@ -224,13 +224,13 @@ export class OperadorasFormComponent implements OnInit {
     let dialogData = { ...data };
     if (type === 'enderecos') {
       dialogData.dominioTipos = this.dominioTiposEndereco;
-      dialogRef = this.dialog.open(EnderecoDialogComponent, { data: dialogData });
+      dialogRef = this.dialog.open(OperadoraEnderecoFormComponent, { data: dialogData });
     } else if (type === 'telefones') {
       dialogData.dominioTipos = this.dominioTiposTelefone;
-      dialogRef = this.dialog.open(TelefoneDialogComponent, { data: dialogData });
+      dialogRef = this.dialog.open(OperadoraTelefoneFormComponent, { data: dialogData });
     } else if (type === 'emails') {
       dialogData.dominioTipos = this.dominioTiposEmail;
-      dialogRef = this.dialog.open(EmailDialogComponent, { data: dialogData });
+      dialogRef = this.dialog.open(OperadoraEmailFormComponent, { data: dialogData });
     }
 
 

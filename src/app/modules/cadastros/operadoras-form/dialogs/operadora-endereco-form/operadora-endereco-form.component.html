@@ -1,0 +1,62 @@
+<app-base-modal-form 
+  [title]="isEditMode ? 'Editar Endereço' : 'Novo Endereço'" 
+  (save)="onSave()" 
+  (cancel)="onCancel()">
+
+  <form [formGroup]="form">
+    <div class="row">
+      <div class="col-md-4">
+        <mat-form-field class="w-100">
+          <mat-label>CEP</mat-label>
+          <input matInput formControlName="cep" required>
+          <button mat-icon-button matSuffix (click)="buscarCep()">
+            <mat-icon>search</mat-icon>
+          </button>
+        </mat-form-field>
+      </div>
+      <div class="col-md-8">
+        <mat-form-field class="w-100">
+          <mat-label>Logradouro</mat-label>
+          <input matInput formControlName="logradouro" required>
+        </mat-form-field>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-4">
+        <mat-form-field class="w-100">
+          <mat-label>Número</mat-label>
+          <input matInput formControlName="numero" required>
+        </mat-form-field>
+      </div>
+      <div class="col-md-8">
+        <mat-form-field class="w-100">
+          <mat-label>Complemento</mat-label>
+          <input matInput formControlName="complemento">
+        </mat-form-field>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-5">
+        <mat-form-field class="w-100">
+          <mat-label>Bairro</mat-label>
+          <input matInput formControlName="bairro" required>
+        </mat-form-field>
+      </div>
+      <div class="col-md-5">
+        <mat-form-field class="w-100">
+          <mat-label>Cidade</mat-label>
+          <input matInput formControlName="cidade" required>
+        </mat-form-field>
+      </div>
+      <div class="col-md-2">
+        <mat-form-field class="w-100">
+          <mat-label>UF</mat-label>
+          <input matInput formControlName="uf" required>
+        </mat-form-field>
+      </div>
+    </div>
+  </form>
+
+</app-base-modal-form>
