@@ -10,6 +10,7 @@ import { Router, RouterModule } from '@angular/router';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { ConfirmDialogComponent } from '../../../shared/components/confirm-dialog/confirm-dialog';
+import { AgGridLocaleService } from '../../../shared/services/ag-grid-locale.service';
 
 @Component({
   selector: 'app-operadoras-list',
@@ -28,17 +29,9 @@ import { ConfirmDialogComponent } from '../../../shared/components/confirm-dialo
 })
 export class OperadorasListComponent {
 
-  private readonly operadoraService = inject(OperadoraService);
-  private readonly router = inject(Router);
-  private readonly dialog = inject(MatDialog);
-  private readonly snackBar = inject(MatSnackBar);
-
   private gridApi!: GridApi<Operadora>;
   public datasource!: IDatasource;
-
-  constructor() {
-    this.datasource = this.createDatasource();
-  }
+  public gridOptions: GridOptions<Operadora>;
 
   public columnDefs: ColDef[] = [
     { headerName: 'Registro ANS', field: 'registroAns', sortable: true, filter: true },
@@ -60,13 +53,23 @@ export class OperadorasListComponent {
     }
   ];
 
-  public gridOptions: GridOptions<Operadora> = {
-    rowModelType: 'infinite',
-    pagination: true,
-    paginationPageSize: 20,
-    cacheBlockSize: 20,
-    onCellClicked: (params: CellClickedEvent) => this.onActionClick(params)
-  };
+  constructor(
+    private operadoraService: OperadoraService,
+    private router: Router,
+    private dialog: MatDialog,
+    private snackBar: MatSnackBar,
+    private agGridLocaleService: AgGridLocaleService
+  ) {
+    this.datasource = this.createDatasource();
+    this.gridOptions = {
+      ...this.agGridLocaleService.getDefaultGridOptions(),
+      rowModelType: 'infinite',
+      pagination: true,
+      paginationPageSize: 20,
+      cacheBlockSize: 20,
+      onCellClicked: (params: CellClickedEvent) => this.onActionClick(params)
+    };
+  }
 
   onGridReady(params: GridReadyEvent<Operadora>): void {
     this.gridApi = params.api;

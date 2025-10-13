@@ -12,6 +12,7 @@ import { DominioTipo } from '../dominio-tipo.model';
 import { DominioTipoService } from '../dominio-tipo.service';
 import { ConfirmDialogComponent } from '../../../../shared/components/confirm-dialog/confirm-dialog';
 import { DominioTipoFormComponent } from '../dominio-tipo-form/dominio-tipo-form';
+import { AgGridLocaleService } from '../../../../shared/services/ag-grid-locale.service';
 
 import { AgGridModule } from 'ag-grid-angular';
 import { ColDef, GridApi, GridOptions, GridReadyEvent } from 'ag-grid-community';
@@ -34,12 +35,10 @@ import { StatusChipRenderer } from './status-chip-renderer.component';
   styleUrl: './dominio-tipo-list.scss',
 })
 export class DominioTipoListComponent implements OnInit {
-  gridOptions: GridOptions = {
-    pagination: true,
-    paginationPageSize: 10,
-    paginationPageSizeSelector: [10, 20, 50],
-    domLayout: 'normal',
-  };
+  private readonly snackBar = inject(MatSnackBar);
+  private readonly dialog = inject(MatDialog);
+
+  gridOptions: GridOptions;
   columnDefs: ColDef[] = [
     { field: 'id', headerName: 'ID', sortable: true, filter: true, width: 90 },
     { field: 'tipoDoTipo', headerName: 'Tipo', sortable: true, filter: true, flex: 1 },
@@ -83,9 +82,15 @@ export class DominioTipoListComponent implements OnInit {
 
   private gridApi!: GridApi;
 
-  private dominioTipoService = inject(DominioTipoService);
-  private snackBar = inject(MatSnackBar);
-  private dialog = inject(MatDialog);
+  constructor(private dominioTipoService: DominioTipoService, private agGridLocaleService: AgGridLocaleService) {
+    this.gridOptions = {
+      ...this.agGridLocaleService.getDefaultGridOptions(),
+      pagination: true,
+      paginationPageSize: 10,
+      paginationPageSizeSelector: [10, 20, 50],
+      domLayout: 'normal',
+    };
+  }
 
   ngOnInit(): void {}
 

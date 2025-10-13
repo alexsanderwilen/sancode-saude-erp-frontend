@@ -25,6 +25,7 @@ import { DominioTipo } from '../dominio-tipo/dominio-tipo.model';
 import { OperadoraEnderecoFormComponent } from './dialogs/operadora-endereco-form/operadora-endereco-form.component';
 import { OperadoraTelefoneFormComponent } from './dialogs/operadora-telefone-form/operadora-telefone-form.component';
 import { OperadoraEmailFormComponent } from './dialogs/operadora-email-form/operadora-email-form.component';
+import { AgGridLocaleService } from '../../../shared/services/ag-grid-locale.service';
 
 @Component({
   selector: 'app-operadoras-form',
@@ -53,14 +54,6 @@ import { OperadoraEmailFormComponent } from './dialogs/operadora-email-form/oper
 })
 export class OperadorasFormComponent implements OnInit {
 
-  private readonly formBuilder = inject(FormBuilder);
-  private readonly router = inject(Router);
-  private readonly route = inject(ActivatedRoute);
-  private readonly operadoraService = inject(OperadoraService);
-  private readonly snackBar = inject(MatSnackBar);
-  private readonly dialog = inject(MatDialog);
-  private readonly dominioTipoService = inject(DominioTipoService);
-
   form: FormGroup;
   isEditMode = false;
   private operadoraId?: string;
@@ -77,7 +70,16 @@ export class OperadorasFormComponent implements OnInit {
   dominioTiposTelefone: DominioTipo[] = [];
   dominioTiposEmail: DominioTipo[] = [];
 
-  constructor() {
+  constructor(
+    private formBuilder: FormBuilder,
+    private router: Router,
+    private route: ActivatedRoute,
+    private operadoraService: OperadoraService,
+    private snackBar: MatSnackBar,
+    private dialog: MatDialog,
+    private dominioTipoService: DominioTipoService,
+    private agGridLocaleService: AgGridLocaleService
+  ) {
     this.form = this.formBuilder.group({
       registroAns: ['', [Validators.required, Validators.maxLength(6)]],
       cnpj: ['', [Validators.required]],
@@ -113,9 +115,21 @@ export class OperadorasFormComponent implements OnInit {
       { headerName: 'Ações', cellRenderer: this.actionsRenderer.bind(this) }
     ];
 
-    this.gridOptionsEnderecos = { context: { componentParent: this, type: 'enderecos' }, suppressRowClickSelection: true };
-    this.gridOptionsTelefones = { context: { componentParent: this, type: 'telefones' }, suppressRowClickSelection: true };
-    this.gridOptionsEmails = { context: { componentParent: this, type: 'emails' }, suppressRowClickSelection: true };
+    this.gridOptionsEnderecos = { 
+      ...this.agGridLocaleService.getDefaultGridOptions(),
+      context: { componentParent: this, type: 'enderecos' }, 
+      suppressRowClickSelection: true 
+    };
+    this.gridOptionsTelefones = { 
+      ...this.agGridLocaleService.getDefaultGridOptions(),
+      context: { componentParent: this, type: 'telefones' }, 
+      suppressRowClickSelection: true
+    };
+    this.gridOptionsEmails = { 
+      ...this.agGridLocaleService.getDefaultGridOptions(),
+      context: { componentParent: this, type: 'emails' }, 
+      suppressRowClickSelection: true
+    };
   }
 
   ngOnInit(): void {
