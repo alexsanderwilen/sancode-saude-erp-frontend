@@ -109,7 +109,7 @@ export class OperadorasFormComponent implements OnInit {
 
     this.colDefsEmails = [
       { headerName: 'Tipo', field: 'tipo', sortable: true, filter: true },
-      { headerName: 'E-mail', field: 'email', sortable: true, filter: true },
+      { headerName: 'E-mail', field: 'email', sortable: true, filter: true, flex: 1 },
       { headerName: 'Ações', cellRenderer: this.actionsRenderer.bind(this) }
     ];
 
