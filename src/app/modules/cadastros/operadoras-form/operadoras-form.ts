@@ -224,13 +224,13 @@ export class OperadorasFormComponent implements OnInit {
     let dialogData = { ...data };
     if (type === 'enderecos') {
       dialogData.dominioTipos = this.dominioTiposEndereco;
-      dialogRef = this.dialog.open(OperadoraEnderecoFormComponent, { data: dialogData });
+      dialogRef = this.dialog.open(OperadoraEnderecoFormComponent, { data: dialogData, panelClass: 'sancode-cadastro-theme' });
     } else if (type === 'telefones') {
       dialogData.dominioTipos = this.dominioTiposTelefone;
-      dialogRef = this.dialog.open(OperadoraTelefoneFormComponent, { data: dialogData });
+      dialogRef = this.dialog.open(OperadoraTelefoneFormComponent, { data: dialogData, panelClass: 'sancode-cadastro-theme' });
     } else if (type === 'emails') {
       dialogData.dominioTipos = this.dominioTiposEmail;
-      dialogRef = this.dialog.open(OperadoraEmailFormComponent, { data: dialogData, width: '500px' });
+      dialogRef = this.dialog.open(OperadoraEmailFormComponent, { data: dialogData, width: '500px', panelClass: 'sancode-cadastro-theme' });
     }
 
 
