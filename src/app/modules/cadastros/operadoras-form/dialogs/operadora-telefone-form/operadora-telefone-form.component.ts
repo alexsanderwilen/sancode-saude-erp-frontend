@@ -9,6 +9,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatSelectModule } from '@angular/material/select';
+import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
 import { DominioTipo } from '../../../dominio-tipo/dominio-tipo.model';
 
 @Component({
@@ -22,8 +23,10 @@ import { DominioTipo } from '../../../dominio-tipo/dominio-tipo.model';
     MatInputModule,
     MatButtonModule,
     MatCheckboxModule,
-    MatSelectModule
+    MatSelectModule,
+    NgxMaskDirective
   ],
+  providers: [provideNgxMask()],
   templateUrl: './operadora-telefone-form.component.html',
 })
 export class OperadoraTelefoneFormComponent implements OnInit {

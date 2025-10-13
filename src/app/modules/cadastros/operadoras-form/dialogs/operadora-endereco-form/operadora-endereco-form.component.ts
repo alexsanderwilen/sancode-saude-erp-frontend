@@ -9,6 +9,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSelectModule } from '@angular/material/select';
+import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
 import { DominioTipo } from '../../../dominio-tipo/dominio-tipo.model';
 
 @Component({
@@ -22,8 +23,10 @@ import { DominioTipo } from '../../../dominio-tipo/dominio-tipo.model';
     MatInputModule,
     MatButtonModule,
     MatIconModule,
-    MatSelectModule
+    MatSelectModule,
+    NgxMaskDirective
   ],
+  providers: [provideNgxMask()],
   templateUrl: './operadora-endereco-form.component.html',
 })
 export class OperadoraEnderecoFormComponent implements OnInit {

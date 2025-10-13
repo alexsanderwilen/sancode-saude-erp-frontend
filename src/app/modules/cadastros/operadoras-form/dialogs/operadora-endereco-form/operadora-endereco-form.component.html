@@ -21,7 +21,7 @@
       <div class="col-md-4">
         <mat-form-field class="w-100">
           <mat-label>CEP</mat-label>
-          <input matInput formControlName="cep" required>
+          <input matInput formControlName="cep" required mask="00000-000">
           <button mat-icon-button matSuffix (click)="buscarCep()">
             <mat-icon>search</mat-icon>
           </button>
