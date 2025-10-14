@@ -14,12 +14,13 @@ export const routes: Routes = [
     canActivate: [AuthGuard],
     children: [
       { path: 'home', component: HomeComponent, title: 'Home' },
-      {
-        path: 'cadastros',
-        loadChildren: () => import('./modules/cadastros/cadastros.routes').then(m => m.CADASTROS_ROUTES)
-      },
       { path: '', redirectTo: 'home', pathMatch: 'full' }
     ]
+  },
+  {
+    path: 'cadastros',
+    canActivate: [AuthGuard],
+    loadChildren: () => import('./modules/cadastros/cadastros.routes').then(m => m.CADASTROS_ROUTES)
   },
   { path: '**', redirectTo: '' }
 ];
