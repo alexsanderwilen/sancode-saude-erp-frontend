@@ -1,70 +1,127 @@
-import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
-import { Observable, of } from 'rxjs';
-import { Usuario } from '../usuario.model';
-import { UsuarioService } from '../usuario.service';
-import { ColDef } from 'ag-grid-community';
+import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AgGridModule } from 'ag-grid-angular';
-import { MatCardModule } from '@angular/material/card';
+import { ColDef, GridApi, GridOptions, IDatasource, GridReadyEvent, CellClickedEvent, IGetRowsParams } from 'ag-grid-community';
+import { UsuarioService } from '../usuario.service';
+import { Usuario } from '../usuario.model';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { Router, RouterModule } from '@angular/router';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { ConfirmDialogComponent } from '../../../../shared/components/confirm-dialog/confirm-dialog';
+import { AgGridLocaleService } from '../../../../shared/services/ag-grid-locale.service';
 
 @Component({
   selector: 'app-usuarios-list',
   standalone: true,
-  imports: [CommonModule, AgGridModule, MatCardModule, MatButtonModule, MatIconModule],
+  imports: [
+    CommonModule,
+    AgGridModule,
+    MatButtonModule,
+    MatIconModule,
+    RouterModule,
+    MatDialogModule,
+    MatSnackBarModule
+  ],
   templateUrl: './usuarios-list.component.html',
   styleUrls: ['./usuarios-list.component.scss']
 })
-export class UsuariosListComponent implements OnInit {
+export class UsuariosListComponent {
 
-  public rowData$: Observable<Usuario[]> = of([]);
+  private gridApi!: GridApi<Usuario>;
+  public datasource!: IDatasource;
+  public gridOptions: GridOptions<Usuario>;
 
-  public colDefs: ColDef[] = [
-    { headerName: 'ID', field: 'id', sortable: true, filter: true, maxWidth: 100 },
-    { headerName: 'Nome Completo', field: 'nomeCompleto', sortable: true, filter: true },
+  public columnDefs: ColDef[] = [
+    { headerName: 'ID', field: 'id', sortable: true, filter: true, width: 100 },
+    { headerName: 'Nome Completo', field: 'nomeCompleto', flex: 1, sortable: true, filter: true },
     { headerName: 'Username', field: 'username', sortable: true, filter: true },
     { headerName: 'Email', field: 'email', sortable: true, filter: true },
-    { headerName: 'Status', field: 'status', sortable: true, filter: true, maxWidth: 120 },
+    {
+      headerName: 'Status', field: 'status', width: 120, cellRenderer: (params: { value: string; }) => {
+        const status = params.value;
+        const badgeClass = status === 'ATIVO' ? 'badge text-bg-success' : 'badge text-bg-danger';
+        return `<span class="${badgeClass}">${status}</span>`;
+      }
+    },
     {
       headerName: 'Ações',
-      cellRenderer: (params: any) => {
-        const eGui = document.createElement('div');
-        eGui.innerHTML = `
-          <button mat-icon-button (click)="onEdit(${params.data.id})">
-            <mat-icon>edit</mat-icon>
-          </button>
-          <button mat-icon-button (click)="onDelete(${params.data.id})">
-            <mat-icon>delete</mat-icon>
-          </button>
-        `;
-        // Attach event listeners to the buttons
-        eGui.querySelector('[mat-icon-button][(click^="onEdit"] ')
-          ?.addEventListener('click', () => this.onEdit(params.data.id));
-        eGui.querySelector('[mat-icon-button][(click^="onDelete"] ')
-          ?.addEventListener('click', () => this.onDelete(params.data.id));
-        return eGui;
-      },
-      width: 120
+      width: 120,
+      cellRenderer: () => `
+        <button title="Editar" data-action="edit" class="btn btn-sm btn-outline-primary"><i class="fa fa-pencil" data-action="edit"></i></button>
+        <button title="Excluir" data-action="delete" class="btn btn-sm btn-outline-danger"><i class="fa fa-trash" data-action="delete"></i></button>
+      `,
+      sortable: false, filter: false
     }
   ];
 
-  constructor(private usuarioService: UsuarioService, private router: Router) { }
-
-  ngOnInit(): void {
-    this.rowData$ = this.usuarioService.getUsuarios();
+  constructor(
+    private usuarioService: UsuarioService,
+    private router: Router,
+    private dialog: MatDialog,
+    private snackBar: MatSnackBar,
+    private agGridLocaleService: AgGridLocaleService
+  ) {
+    this.datasource = this.createDatasource();
+    this.gridOptions = {
+      ...this.agGridLocaleService.getDefaultGridOptions(),
+      rowModelType: 'infinite',
+      pagination: true,
+      paginationPageSize: 20,
+      cacheBlockSize: 20,
+      onCellClicked: (params: CellClickedEvent) => this.onActionClick(params)
+    };
   }
 
-  onEdit(id: number): void {
-    this.router.navigate(['/usuarios/cadastro/edit', id]);
+  onGridReady(params: GridReadyEvent<Usuario>): void {
+    this.gridApi = params.api;
   }
 
-  onDelete(id: number): void {
-    // TODO: Adicionar confirmação antes de deletar
-    this.usuarioService.deleteUsuario(id).subscribe(() => {
-      this.rowData$ = this.usuarioService.getUsuarios();
-    });
+  createDatasource(): IDatasource {
+    return {
+      getRows: (params: IGetRowsParams) => {
+        const page = params.startRow / this.gridOptions.paginationPageSize!;
+        const sortModel = params.sortModel;
+        const sort = sortModel.length ? sortModel[0].colId : 'nomeCompleto';
+        const order = sortModel.length ? sortModel[0].sort : 'asc';
+
+        this.usuarioService.getUsuarios(page, this.gridOptions.paginationPageSize!, sort, order)
+          .subscribe(data => {
+            params.successCallback(
+              data.content,
+              data.totalElements
+            );
+          });
+      },
+    };
+  }
+
+  onActionClick(params: CellClickedEvent): void {
+    const action = (params.event?.target as HTMLElement).dataset['action'];
+    if (action === 'edit') {
+      this.router.navigate(['/usuarios/cadastro/edit', params.data.id]);
+    } else if (action === 'delete') {
+      this.dialog.open(ConfirmDialogComponent, {
+        data: {
+          title: 'Confirmar Exclusão',
+          message: `Tem certeza que deseja excluir o usuário ${params.data.nomeCompleto}?`
+        }
+      }).afterClosed().subscribe(result => {
+        if (result) {
+          this.usuarioService.deleteUsuario(params.data.id!).subscribe({
+            next: () => {
+              this.snackBar.open('Usuário excluído com sucesso!', 'Fechar', { duration: 3000 });
+              this.gridApi.refreshInfiniteCache(); // Atualiza a grid
+            },
+            error: (err) => {
+              console.error('Erro ao excluir usuário:', err);
+              this.snackBar.open('Erro ao excluir usuário.', 'Fechar', { duration: 5000 });
+            }
+          });
+        }
+      });
+    }
   }
 
   navigateToNew(): void {

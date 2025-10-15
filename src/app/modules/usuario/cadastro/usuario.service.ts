@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Usuario } from './usuario.model';
 import { environment } from '../../../../environments/environment';
@@ -13,8 +13,12 @@ export class UsuarioService {
 
   constructor(private http: HttpClient) { }
 
-  getUsuarios(): Observable<Usuario[]> {
-    return this.http.get<Usuario[]>(this.apiUrl);
+  getUsuarios(page: number, size: number, sort: string, order: string): Observable<any> {
+    const params = new HttpParams()
+      .set('page', page.toString())
+      .set('size', size.toString())
+      .set('sort', `${sort},${order}`);
+    return this.http.get<any>(this.apiUrl, { params });
   }
 
   getUsuario(id: number): Observable<Usuario> {
