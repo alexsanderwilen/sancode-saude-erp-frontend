@@ -137,8 +137,19 @@ export class UsuariosFormComponent implements OnInit {
   actionsRenderer(params: any) {
     const div = document.createElement('div');
     div.innerHTML = `<button title="Editar" class="btn btn-sm btn-outline-primary"><i class="fa fa-pencil"></i></button> <button title="Excluir" class="btn btn-sm btn-outline-danger"><i class="fa fa-trash"></i></button>`;
-    div.querySelector('button:first-child')!.addEventListener('click', () => params.context.componentParent.openDialog(params.context.type, params.node.rowIndex, params.data));
-    div.querySelector('button:last-child')!.addEventListener('click', () => params.context.componentParent.removerItem(params.context.type, params.node.rowIndex));
+    const editButton = div.querySelector('button:first-child')!;
+    editButton.addEventListener('click', (event) => {
+      event.preventDefault(); // Adicionar esta linha
+      event.stopPropagation();
+      params.context.componentParent.openDialog(params.context.type, params.node.rowIndex, params.data);
+    });
+
+    const deleteButton = div.querySelector('button:last-child')!;
+    deleteButton.addEventListener('click', (event) => {
+      event.preventDefault(); // Adicionar esta linha
+      event.stopPropagation();
+      params.context.componentParent.removerItem(params.context.type, params.node.rowIndex);
+    });
     return div;
   }
 
