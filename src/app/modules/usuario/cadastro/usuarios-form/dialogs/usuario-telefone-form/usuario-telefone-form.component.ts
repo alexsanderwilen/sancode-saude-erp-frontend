@@ -6,6 +6,9 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatSelectModule } from '@angular/material/select';
+import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
+import { DominioTipo } from '../../../../../cadastros/dominio-tipo/dominio-tipo.model';
 
 @Component({
   selector: 'app-usuario-telefone-form',
@@ -17,13 +20,17 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
     MatFormFieldModule,
     MatInputModule,
     MatButtonModule,
-    MatCheckboxModule
+    MatCheckboxModule,
+    MatSelectModule,
+    NgxMaskDirective
   ],
+  providers: [provideNgxMask()],
   templateUrl: './usuario-telefone-form.component.html',
   styleUrls: ['./usuario-telefone-form.component.scss']
 })
 export class UsuarioTelefoneFormComponent implements OnInit {
   form!: FormGroup;
+  dominioTipos: DominioTipo[] = [];
 
   constructor(
     private fb: FormBuilder,
@@ -32,6 +39,7 @@ export class UsuarioTelefoneFormComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    this.dominioTipos = this.data?.dominioTipos || [];
     this.form = this.fb.group({
       tipo: [this.data?.tipo || '', Validators.required],
       ddd: [this.data?.ddd || '', Validators.required],

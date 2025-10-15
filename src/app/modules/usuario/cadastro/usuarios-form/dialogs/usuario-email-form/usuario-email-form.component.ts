@@ -5,6 +5,8 @@ import { CommonModule } from '@angular/common';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
+import { MatSelectModule } from '@angular/material/select';
+import { DominioTipo } from '../../../../../cadastros/dominio-tipo/dominio-tipo.model';
 
 @Component({
   selector: 'app-usuario-email-form',
@@ -15,7 +17,8 @@ import { MatButtonModule } from '@angular/material/button';
     MatDialogModule,
     MatFormFieldModule,
     MatInputModule,
-    MatButtonModule
+    MatButtonModule,
+    MatSelectModule
   ],
   templateUrl: './usuario-email-form.component.html',
   styleUrls: ['./usuario-email-form.component.scss']

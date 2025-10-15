@@ -21,6 +21,8 @@ import { ConfirmDialogComponent } from '../../../../shared/components/confirm-di
 import { UsuarioTelefoneFormComponent } from './dialogs/usuario-telefone-form/usuario-telefone-form.component';
 import { UsuarioEmailFormComponent } from './dialogs/usuario-email-form/usuario-email-form.component';
 import { MatIconModule } from '@angular/material/icon';
+import { DominioTipoService } from '../../../cadastros/dominio-tipo/dominio-tipo.service';
+import { DominioTipo } from '../../../cadastros/dominio-tipo/dominio-tipo.model';
 
 @Component({
   selector: 'app-usuarios-form',
@@ -44,6 +46,9 @@ export class UsuariosFormComponent implements OnInit {
   colDefsTelefones: ColDef[];
   colDefsEmails: ColDef[];
 
+  dominioTiposTelefone: DominioTipo[] = [];
+  dominioTiposEmail: DominioTipo[] = [];
+
   constructor(
     private fb: FormBuilder,
     private usuarioService: UsuarioService,
@@ -51,7 +56,8 @@ export class UsuariosFormComponent implements OnInit {
     private route: ActivatedRoute,
     private snackBar: MatSnackBar,
     private dialog: MatDialog,
-    private agGridLocaleService: AgGridLocaleService
+    private agGridLocaleService: AgGridLocaleService,
+    private dominioTipoService: DominioTipoService
   ) {
     this.colDefsTelefones = [
       { headerName: 'Tipo', field: 'tipo', sortable: true, filter: true },
@@ -72,6 +78,7 @@ export class UsuariosFormComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.loadDominioTipos();
     this.initForm();
     this.id = this.route.snapshot.params['id'];
     if (this.id) {
@@ -129,9 +136,11 @@ export class UsuariosFormComponent implements OnInit {
   openDialog(type: string, index?: number, data?: any): void {
     let dialogRef;
     if (type === 'telefones') {
-      dialogRef = this.dialog.open(UsuarioTelefoneFormComponent, { data, width: '500px', panelClass: 'sancode-usuario-theme' });
+      const dialogData = { ...data, dominioTipos: this.dominioTiposTelefone };
+      dialogRef = this.dialog.open(UsuarioTelefoneFormComponent, { data: dialogData, width: '500px', panelClass: 'sancode-usuario-theme' });
     } else {
-      dialogRef = this.dialog.open(UsuarioEmailFormComponent, { data, width: '500px', panelClass: 'sancode-usuario-theme' });
+      const dialogData = { ...data, dominioTipos: this.dominioTiposEmail };
+      dialogRef = this.dialog.open(UsuarioEmailFormComponent, { data: dialogData, width: '500px', panelClass: 'sancode-usuario-theme' });
     }
 
     dialogRef.afterClosed().subscribe(result => {
@@ -168,6 +177,19 @@ export class UsuariosFormComponent implements OnInit {
         console.error(err);
         this.snackBar.open('Erro ao salvar usuário.', 'Fechar', { duration: 3000 });
       }
+    });
+  }
+
+  loadDominioTipos(): void {
+    this.dominioTipoService.findAll().subscribe({
+      next: (data: DominioTipo[]) => {
+        this.dominioTiposTelefone = data.filter((dt: DominioTipo) => dt.tipoDoTipo === 'TELEFONE' && dt.status);
+        this.dominioTiposEmail = data.filter((dt: DominioTipo) => dt.tipoDoTipo === 'EMAIL' && dt.status);
+      },
+      error: (error: any) => {
+        console.error('Erro ao carregar tipos de domínio:', error);
+        this.snackBar.open('Erro ao carregar tipos de domínio.', 'Fechar', { duration: 3000 });
+      },
     });
   }
 

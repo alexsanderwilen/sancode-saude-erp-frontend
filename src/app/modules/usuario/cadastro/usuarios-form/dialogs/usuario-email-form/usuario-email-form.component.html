@@ -2,7 +2,11 @@
 <mat-dialog-content [formGroup]="form">
   <mat-form-field class="w-100">
     <mat-label>Tipo</mat-label>
-    <input matInput formControlName="tipo" required>
+    <mat-select formControlName="tipo" required>
+      <mat-option *ngFor="let tipo of data?.dominioTipos" [value]="tipo.descricao">
+        {{tipo.descricao}}
+      </mat-option>
+    </mat-select>
   </mat-form-field>
   <mat-form-field class="w-100">
     <mat-label>E-mail</mat-label>
