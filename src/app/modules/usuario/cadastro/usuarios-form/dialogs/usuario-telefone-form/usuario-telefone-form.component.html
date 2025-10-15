@@ -1,28 +1,29 @@
-<h2 mat-dialog-title>{{ data?.id ? 'Editar Telefone' : 'Novo Telefone' }}</h2>
-<mat-dialog-content [formGroup]="form">
-  <mat-form-field class="w-100">
-    <mat-label>Tipo</mat-label>
-    <mat-select formControlName="tipo" required>
-      <mat-option *ngFor="let tipo of dominioTipos" [value]="tipo.descricao">
-        {{tipo.descricao}}
-      </mat-option>
-    </mat-select>
-  </mat-form-field>
-  <mat-form-field class="w-100">
-    <mat-label>DDD</mat-label>
-    <input matInput formControlName="ddd" required mask="(00)">
-  </mat-form-field>
-  <mat-form-field class="w-100">
-    <mat-label>Número</mat-label>
-    <input matInput formControlName="numero" required mask="00000-0000">
-  </mat-form-field>
-  <mat-form-field class="w-100">
-    <mat-label>Ramal</mat-label>
-    <input matInput formControlName="ramal">
-  </mat-form-field>
-  <mat-checkbox formControlName="whatsapp">WhatsApp</mat-checkbox>
-</mat-dialog-content>
-<mat-dialog-actions align="end">
-  <button mat-button (click)="onCancel()">Cancelar</button>
-  <button mat-raised-button color="primary" (click)="onSave()" [disabled]="form.invalid">Salvar</button>
-</mat-dialog-actions>
+<app-base-modal-form
+  [title]="data?.id ? 'Editar Telefone' : 'Novo Telefone'"
+  [moduleTheme]="'cadastros'"
+  (save)="onSave()"
+  (cancel)="onCancel()">
+  <mat-dialog-content [formGroup]="form">
+    <mat-form-field class="w-100">
+      <mat-label>Tipo</mat-label>
+      <mat-select formControlName="tipo" required>
+        <mat-option *ngFor="let tipo of dominioTipos" [value]="tipo.descricao">
+          {{tipo.descricao}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+    <mat-form-field class="w-100">
+      <mat-label>DDD</mat-label>
+      <input matInput formControlName="ddd" required mask="(00)">
+    </mat-form-field>
+    <mat-form-field class="w-100">
+      <mat-label>Número</mat-label>
+      <input matInput formControlName="numero" required mask="00000-0000">
+    </mat-form-field>
+    <mat-form-field class="w-100">
+      <mat-label>Ramal</mat-label>
+      <input matInput formControlName="ramal">
+    </mat-form-field>
+    <mat-checkbox formControlName="whatsapp">WhatsApp</mat-checkbox>
+  </mat-dialog-content>
+</app-base-modal-form>

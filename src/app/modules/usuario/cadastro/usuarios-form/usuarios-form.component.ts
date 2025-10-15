@@ -23,6 +23,7 @@ import { UsuarioEmailFormComponent } from './dialogs/usuario-email-form/usuario-
 import { MatIconModule } from '@angular/material/icon';
 import { DominioTipoService } from '../../../cadastros/dominio-tipo/dominio-tipo.service';
 import { DominioTipo } from '../../../cadastros/dominio-tipo/dominio-tipo.model';
+import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
 
 @Component({
   selector: 'app-usuarios-form',
@@ -30,8 +31,9 @@ import { DominioTipo } from '../../../cadastros/dominio-tipo/dominio-tipo.model'
   imports: [
     CommonModule, ReactiveFormsModule, MatCardModule, MatTabsModule, MatFormFieldModule,
     MatInputModule, MatButtonModule, MatSnackBarModule, MatDatepickerModule, MatNativeDateModule,
-    MatSelectModule, MatDialogModule, AgGridModule, MatIconModule
+    MatSelectModule, MatDialogModule, AgGridModule, MatIconModule, NgxMaskDirective
   ],
+  providers: [provideNgxMask()],
   templateUrl: './usuarios-form.component.html',
   styleUrls: ['./usuarios-form.component.scss']
 })
@@ -85,8 +87,8 @@ export class UsuariosFormComponent implements OnInit {
       this.isEditMode = true;
       this.usuarioService.getUsuario(this.id).subscribe(usuario => {
         this.form.patchValue(usuario);
-        usuario.telefones.forEach(item => this.telefones.push(this.createTelefoneFormGroup(item)));
-        usuario.emails.forEach(item => this.emails.push(this.createEmailFormGroup(item)));
+        (usuario.telefones || []).forEach(item => this.telefones.push(this.createTelefoneFormGroup(item)));
+        (usuario.emails || []).forEach(item => this.emails.push(this.createEmailFormGroup(item)));
         if (this.isEditMode) {
           this.form.get('password')?.clearValidators();
           this.form.get('password')?.updateValueAndValidity();
@@ -109,6 +111,13 @@ export class UsuariosFormComponent implements OnInit {
       rg: [''],
       dataNascimento: [null],
       sexo: [null],
+      endereco: [''],
+      numero: [''],
+      complemento: [''],
+      bairro: [''],
+      cidade: [''],
+      uf: [''],
+      cep: [''],
       telefones: this.fb.array([]),
       emails: this.fb.array([])
     });
@@ -118,11 +127,11 @@ export class UsuariosFormComponent implements OnInit {
   get emails(): FormArray { return this.form.get('emails') as FormArray; }
 
   createTelefoneFormGroup(item?: UsuarioTelefone): FormGroup {
-    return this.fb.group({ tipo: [item?.tipo || ''], ddd: [item?.ddd || ''], numero: [item?.numero || ''], ramal: [item?.ramal || ''], whatsapp: [item?.whatsapp || false] });
+    return this.fb.group({ id: [item?.id || null], tipo: [item?.tipo || ''], ddd: [item?.ddd || ''], numero: [item?.numero || ''], ramal: [item?.ramal || ''], whatsapp: [item?.whatsapp || false] });
   }
 
   createEmailFormGroup(item?: UsuarioEmail): FormGroup {
-    return this.fb.group({ tipo: [item?.tipo || ''], email: [item?.email || '', Validators.email] });
+    return this.fb.group({ id: [item?.id || null], tipo: [item?.tipo || ''], email: [item?.email || '', Validators.email] });
   }
 
   actionsRenderer(params: any) {

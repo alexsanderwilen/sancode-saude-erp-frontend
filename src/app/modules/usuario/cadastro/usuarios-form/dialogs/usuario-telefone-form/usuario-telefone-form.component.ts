@@ -9,6 +9,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatSelectModule } from '@angular/material/select';
 import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
 import { DominioTipo } from '../../../../../cadastros/dominio-tipo/dominio-tipo.model';
+import { BaseModalFormComponent } from '../../../../../../shared/components/base-modal-form/base-modal-form.component';
 
 @Component({
   selector: 'app-usuario-telefone-form',
@@ -22,7 +23,8 @@ import { DominioTipo } from '../../../../../cadastros/dominio-tipo/dominio-tipo.
     MatButtonModule,
     MatCheckboxModule,
     MatSelectModule,
-    NgxMaskDirective
+    NgxMaskDirective,
+    BaseModalFormComponent
   ],
   providers: [provideNgxMask()],
   templateUrl: './usuario-telefone-form.component.html',
