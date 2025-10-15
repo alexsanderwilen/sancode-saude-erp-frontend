@@ -17,13 +17,8 @@ export class AuthService {
   login(credentials: any): Observable<any> {
     return this.http.post(`${this.apiUrl}/login`, credentials).pipe(
       tap((response: any) => {
-        console.log('AuthService: Login response received');
-        console.log('AuthService: AccessToken in response:', response.accessToken ? 'present' : 'null');
         if (response.accessToken) {
           localStorage.setItem('token', response.accessToken);
-          console.log('AuthService: Token saved successfully');
-        } else {
-          console.log('AuthService: No accessToken in response');
         }
       })
     );
