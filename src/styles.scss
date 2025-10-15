@@ -44,6 +44,26 @@ $sancode-health-cadastro-theme: mat.m2-define-light-theme((
   @include mat.all-component-themes($sancode-health-cadastro-theme);
 }
 
+// 3. Definição do Tema Específico para o Módulo de Usuário
+//    ---------------------------------------------------
+$sancode-health-usuario-primary: mat.m2-define-palette(mat.$m2-deep-purple-palette, 500);
+$sancode-health-usuario-accent: mat.m2-define-palette(mat.$m2-deep-purple-palette, 200);
+$sancode-health-usuario-warn: mat.m2-define-palette(mat.$m2-red-palette, 300);
+
+$sancode-health-usuario-theme: mat.m2-define-light-theme((
+  color: (
+    primary: $sancode-health-usuario-primary,
+    accent: $sancode-health-usuario-accent,
+    warn: $sancode-health-usuario-warn,
+  ),
+  typography: mat.m2-define-typography-config(),
+  density: 0,
+));
+
+.sancode-usuario-theme {
+  @include mat.all-component-themes($sancode-health-usuario-theme);
+}
+
 /*
 html, body {
   height: 100%;
