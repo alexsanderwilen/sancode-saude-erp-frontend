@@ -1,0 +1,20 @@
+<mat-toolbar color="accent">
+  <a mat-button routerLink="/usuarios" [routerLinkActiveOptions]="{exact: true}" routerLinkActive="active-link">
+    <mat-icon>home</mat-icon>
+    <span class="ms-2">Início</span>
+  </a>
+  <a mat-button routerLink="/usuarios/cadastro" routerLinkActive="active-link">
+    Cadastro de Usuários
+  </a>
+
+  <span class="spacer"></span>
+
+  <a mat-icon-button routerLink="/home" matTooltip="Voltar para o menu principal">
+    <mat-icon>exit_to_app</mat-icon>
+  </a>
+</mat-toolbar>
+
+<div class="container-fluid p-4">
+  <router-outlet></router-outlet>
+</div>
+

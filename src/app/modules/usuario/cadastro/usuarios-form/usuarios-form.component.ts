@@ -12,6 +12,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
+import { MatSelectModule } from '@angular/material/select';
 
 @Component({
   selector: 'app-usuarios-form',
@@ -26,7 +27,8 @@ import { MatNativeDateModule } from '@angular/material/core';
     MatButtonModule,
     MatSnackBarModule,
     MatDatepickerModule,
-    MatNativeDateModule
+    MatNativeDateModule,
+    MatSelectModule
   ],
   templateUrl: './usuarios-form.component.html',
   styleUrls: ['./usuarios-form.component.scss']
@@ -52,23 +54,25 @@ export class UsuariosFormComponent implements OnInit {
       this.isEditMode = true;
       this.usuarioService.getUsuario(this.id).subscribe(usuario => {
         this.form.patchValue(usuario);
+        if (this.isEditMode) {
+          this.form.get('password')?.clearValidators();
+          this.form.get('password')?.updateValueAndValidity();
+        }
       });
     }
   }
 
   private initForm(): void {
     this.form = this.fb.group({
-      // Acesso e Identificação
+      id: [null],
       nomeCompleto: ['', Validators.required],
       username: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
-      password: ['', this.isEditMode ? [] : Validators.required], // Senha obrigatória apenas na criação
+      password: ['', Validators.required],
       status: ['ATIVO', Validators.required],
       nomeSocial: [''],
       apelido: [''],
       celular: [''],
-
-      // Dados Pessoais
       cpf: [''],
       rg: [''],
       dataNascimento: [null],
@@ -90,15 +94,16 @@ export class UsuariosFormComponent implements OnInit {
     operation.subscribe({
       next: () => {
         this.snackBar.open('Usuário salvo com sucesso!', 'Fechar', { duration: 3000 });
-        this.router.navigate(['/cadastros/usuarios']);
+        this.router.navigate(['/usuarios/cadastro']);
       },
-      error: () => {
+      error: (err) => {
+        console.error(err);
         this.snackBar.open('Erro ao salvar usuário.', 'Fechar', { duration: 3000 });
       }
     });
   }
 
   onCancel(): void {
-    this.router.navigate(['/cadastros/usuarios']);
+    this.router.navigate(['/usuarios/cadastro']);
   }
 }

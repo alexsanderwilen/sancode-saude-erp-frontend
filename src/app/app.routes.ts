@@ -22,5 +22,10 @@ export const routes: Routes = [
     canActivate: [AuthGuard],
     loadChildren: () => import('./modules/cadastros/cadastros.routes').then(m => m.CADASTROS_ROUTES)
   },
+  {
+    path: 'usuarios',
+    canActivate: [AuthGuard],
+    loadChildren: () => import('./modules/usuario/usuario.routes').then(m => m.USUARIO_ROUTES)
+  },
   { path: '**', redirectTo: '' }
 ];
