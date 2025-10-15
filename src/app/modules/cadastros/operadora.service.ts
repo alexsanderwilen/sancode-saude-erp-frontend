@@ -2,6 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Operadora, Page } from './operadora.model';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -9,7 +10,7 @@ import { Operadora, Page } from './operadora.model';
 export class OperadoraService {
 
   private readonly http = inject(HttpClient);
-  private readonly apiUrl = '/api/operadoras'; // Assumes a proxy is set up
+  private readonly apiUrl = environment.apiUrl + '/operadoras';
 
   getOperadoras(page: number, size: number, sort: string, order: string): Observable<Page<Operadora>> {
     const params = new HttpParams()
