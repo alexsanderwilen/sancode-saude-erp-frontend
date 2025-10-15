@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, FormArray } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { UsuarioService } from '../usuario.service';
-import { Usuario } from '../usuario.model';
+import { Usuario, UsuarioTelefone, UsuarioEmail } from '../usuario.model';
 import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { MatTabsModule } from '@angular/material/tabs';
@@ -13,22 +13,22 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatSelectModule } from '@angular/material/select';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { AgGridModule } from 'ag-grid-angular';
+import { ColDef, GridOptions } from 'ag-grid-community';
+import { AgGridLocaleService } from '../../../../shared/services/ag-grid-locale.service';
+import { ConfirmDialogComponent } from '../../../../shared/components/confirm-dialog/confirm-dialog';
+import { UsuarioTelefoneFormComponent } from './dialogs/usuario-telefone-form/usuario-telefone-form.component';
+import { UsuarioEmailFormComponent } from './dialogs/usuario-email-form/usuario-email-form.component';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-usuarios-form',
   standalone: true,
   imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    MatCardModule,
-    MatTabsModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatButtonModule,
-    MatSnackBarModule,
-    MatDatepickerModule,
-    MatNativeDateModule,
-    MatSelectModule
+    CommonModule, ReactiveFormsModule, MatCardModule, MatTabsModule, MatFormFieldModule,
+    MatInputModule, MatButtonModule, MatSnackBarModule, MatDatepickerModule, MatNativeDateModule,
+    MatSelectModule, MatDialogModule, AgGridModule, MatIconModule
   ],
   templateUrl: './usuarios-form.component.html',
   styleUrls: ['./usuarios-form.component.scss']
@@ -39,13 +39,37 @@ export class UsuariosFormComponent implements OnInit {
   isEditMode = false;
   private id!: number;
 
+  gridOptionsTelefones: GridOptions;
+  gridOptionsEmails: GridOptions;
+  colDefsTelefones: ColDef[];
+  colDefsEmails: ColDef[];
+
   constructor(
     private fb: FormBuilder,
     private usuarioService: UsuarioService,
     private router: Router,
     private route: ActivatedRoute,
-    private snackBar: MatSnackBar
-  ) { }
+    private snackBar: MatSnackBar,
+    private dialog: MatDialog,
+    private agGridLocaleService: AgGridLocaleService
+  ) {
+    this.colDefsTelefones = [
+      { headerName: 'Tipo', field: 'tipo', sortable: true, filter: true },
+      { headerName: 'DDD', field: 'ddd', width: 100 },
+      { headerName: 'Número', field: 'numero' },
+      { headerName: 'WhatsApp', field: 'whatsapp', cellRenderer: (p: any) => p.value ? 'Sim' : 'Não', width: 120 },
+      { headerName: 'Ações', cellRenderer: this.actionsRenderer.bind(this), width: 100 }
+    ];
+
+    this.colDefsEmails = [
+      { headerName: 'Tipo', field: 'tipo', sortable: true, filter: true },
+      { headerName: 'E-mail', field: 'email', flex: 1 },
+      { headerName: 'Ações', cellRenderer: this.actionsRenderer.bind(this), width: 100 }
+    ];
+
+    this.gridOptionsTelefones = { ...this.agGridLocaleService.getDefaultGridOptions(), context: { componentParent: this, type: 'telefones' } };
+    this.gridOptionsEmails = { ...this.agGridLocaleService.getDefaultGridOptions(), context: { componentParent: this, type: 'emails' } };
+  }
 
   ngOnInit(): void {
     this.initForm();
@@ -54,6 +78,8 @@ export class UsuariosFormComponent implements OnInit {
       this.isEditMode = true;
       this.usuarioService.getUsuario(this.id).subscribe(usuario => {
         this.form.patchValue(usuario);
+        usuario.telefones.forEach(item => this.telefones.push(this.createTelefoneFormGroup(item)));
+        usuario.emails.forEach(item => this.emails.push(this.createEmailFormGroup(item)));
         if (this.isEditMode) {
           this.form.get('password')?.clearValidators();
           this.form.get('password')?.updateValueAndValidity();
@@ -72,25 +98,67 @@ export class UsuariosFormComponent implements OnInit {
       status: ['ATIVO', Validators.required],
       nomeSocial: [''],
       apelido: [''],
-      celular: [''],
       cpf: [''],
       rg: [''],
       dataNascimento: [null],
       sexo: [null],
+      telefones: this.fb.array([]),
+      emails: this.fb.array([])
     });
   }
 
-  onSubmit(): void {
-    if (this.form.invalid) {
-      return;
+  get telefones(): FormArray { return this.form.get('telefones') as FormArray; }
+  get emails(): FormArray { return this.form.get('emails') as FormArray; }
+
+  createTelefoneFormGroup(item?: UsuarioTelefone): FormGroup {
+    return this.fb.group({ tipo: [item?.tipo || ''], ddd: [item?.ddd || ''], numero: [item?.numero || ''], ramal: [item?.ramal || ''], whatsapp: [item?.whatsapp || false] });
+  }
+
+  createEmailFormGroup(item?: UsuarioEmail): FormGroup {
+    return this.fb.group({ tipo: [item?.tipo || ''], email: [item?.email || '', Validators.email] });
+  }
+
+  actionsRenderer(params: any) {
+    const div = document.createElement('div');
+    div.innerHTML = `<button title="Editar" class="btn btn-sm btn-outline-primary"><i class="fa fa-pencil"></i></button> <button title="Excluir" class="btn btn-sm btn-outline-danger"><i class="fa fa-trash"></i></button>`;
+    div.querySelector('button:first-child')!.addEventListener('click', () => params.context.componentParent.openDialog(params.context.type, params.node.rowIndex, params.data));
+    div.querySelector('button:last-child')!.addEventListener('click', () => params.context.componentParent.removerItem(params.context.type, params.node.rowIndex));
+    return div;
+  }
+
+  openDialog(type: string, index?: number, data?: any): void {
+    let dialogRef;
+    if (type === 'telefones') {
+      dialogRef = this.dialog.open(UsuarioTelefoneFormComponent, { data, width: '500px', panelClass: 'sancode-usuario-theme' });
+    } else {
+      dialogRef = this.dialog.open(UsuarioEmailFormComponent, { data, width: '500px', panelClass: 'sancode-usuario-theme' });
     }
 
+    dialogRef.afterClosed().subscribe(result => {
+      if (!result) return;
+      const formArray = this.form.get(type) as FormArray;
+      if (index !== undefined) {
+        formArray.at(index).patchValue(result);
+      } else {
+        const formGroup = type === 'telefones' ? this.createTelefoneFormGroup(result) : this.createEmailFormGroup(result);
+        formArray.push(formGroup);
+      }
+    });
+  }
+
+  removerItem(type: string, index: number): void {
+    this.dialog.open(ConfirmDialogComponent, { data: { title: 'Confirmar Exclusão', message: `Tem certeza que deseja excluir este item?` } })
+      .afterClosed().subscribe(result => {
+        if (result) {
+          (this.form.get(type) as FormArray).removeAt(index);
+        }
+      });
+  }
+
+  onSubmit(): void {
+    if (this.form.invalid) { return; }
     const usuario: Usuario = this.form.value;
-
-    const operation = this.isEditMode
-      ? this.usuarioService.updateUsuario(this.id, usuario)
-      : this.usuarioService.createUsuario(usuario);
-
+    const operation = this.isEditMode ? this.usuarioService.updateUsuario(this.id, usuario) : this.usuarioService.createUsuario(usuario);
     operation.subscribe({
       next: () => {
         this.snackBar.open('Usuário salvo com sucesso!', 'Fechar', { duration: 3000 });

@@ -1,0 +1,24 @@
+<h2 mat-dialog-title>{{ data?.id ? 'Editar Telefone' : 'Novo Telefone' }}</h2>
+<mat-dialog-content [formGroup]="form">
+  <mat-form-field class="w-100">
+    <mat-label>Tipo</mat-label>
+    <input matInput formControlName="tipo" required>
+  </mat-form-field>
+  <mat-form-field class="w-100">
+    <mat-label>DDD</mat-label>
+    <input matInput formControlName="ddd" required>
+  </mat-form-field>
+  <mat-form-field class="w-100">
+    <mat-label>Número</mat-label>
+    <input matInput formControlName="numero" required>
+  </mat-form-field>
+  <mat-form-field class="w-100">
+    <mat-label>Ramal</mat-label>
+    <input matInput formControlName="ramal">
+  </mat-form-field>
+  <mat-checkbox formControlName="whatsapp">WhatsApp</mat-checkbox>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button (click)="onCancel()">Cancelar</button>
+  <button mat-raised-button color="primary" (click)="onSave()" [disabled]="form.invalid">Salvar</button>
+</mat-dialog-actions>

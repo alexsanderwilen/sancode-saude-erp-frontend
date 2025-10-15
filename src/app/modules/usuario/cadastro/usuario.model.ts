@@ -1,3 +1,18 @@
+export interface UsuarioTelefone {
+  id?: number;
+  tipo: string;
+  ddd: string;
+  numero: string;
+  ramal?: string;
+  whatsapp?: boolean;
+}
+
+export interface UsuarioEmail {
+  id?: number;
+  tipo: string;
+  email: string;
+}
+
 export interface Usuario {
   id: number;
   codigo?: string;
@@ -5,9 +20,7 @@ export interface Usuario {
   nomeSocial?: string;
   apelido?: string;
   username: string;
-  email: string;
-  telefone?: string;
-  celular?: string;
+  email: string; // Primary Email
   ultimoLogin?: Date;
   status: 'ATIVO' | 'INATIVO' | 'BLOQUEADO' | 'PENDENTE';
   precisaTrocarSenha?: boolean;
@@ -29,5 +42,7 @@ export interface Usuario {
   cep?: string;
   criadoEm?: Date;
   atualizadoEm?: Date;
-  roles: any[]; // Ajustar para uma interface Role se necessário
+  roles: any[];
+  telefones: UsuarioTelefone[];
+  emails: UsuarioEmail[];
 }
