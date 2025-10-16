@@ -6,6 +6,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
+import { UserProfileMenuComponent } from '../../../shared/components/user-profile-menu/user-profile-menu.component';
+
 @Component({
   selector: 'app-cadastros-layout',
   standalone: true,
@@ -17,7 +19,8 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     MatToolbarModule,
     MatButtonModule,
     MatIconModule,
-    MatTooltipModule
+    MatTooltipModule,
+    UserProfileMenuComponent
   ],
   templateUrl: './cadastros-layout.html',
   styleUrls: ['./cadastros-layout.scss']

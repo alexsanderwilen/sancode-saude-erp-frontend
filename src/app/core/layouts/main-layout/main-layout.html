@@ -4,25 +4,8 @@
   <a routerLink="/cadastros" mat-button>Cadastros</a>
   <a routerLink="/usuarios" mat-button>Usuários</a>
 
-  <!-- Botão do Menu de Perfil -->
-  <button mat-icon-button [matMenuTriggerFor]="profileMenu">
-    <mat-icon>account_circle</mat-icon>
-  </button>
-
-  <!-- Menu de Perfil -->
-  <mat-menu #profileMenu="matMenu">
-    <div class="profile-info">
-      <mat-icon class="profile-icon-large">account_circle</mat-icon>
-      <p *ngIf="user" class="username">{{ user.sub }}</p>
-      <p *ngIf="user" class="email">{{ user.email }}</p>
-      <p *ngIf="!user" class="username">Convidado</p>
-    </div>
-    <mat-divider></mat-divider>
-    <button mat-menu-item (click)="logout()">
-      <mat-icon>logout</mat-icon>
-      <span>Sair</span>
-    </button>
-  </mat-menu>
+  <!-- Usar o componente de menu de perfil reutilizável -->
+  <app-user-profile-menu></app-user-profile-menu>
 </mat-toolbar>
 <main class="container mt-4">
   <router-outlet></router-outlet>
