@@ -1,0 +1,40 @@
+<div class="chat-container p-4">
+  <!-- Seção Principal do Chat -->
+  <div *ngIf="isConnected; else loading" class="chat-wrapper">
+    <!-- Área de Mensagens -->
+    <mat-card class="message-area">
+      <mat-card-content>
+        <div *ngFor="let msg of messages" class="message-line">
+          <!-- Mensagem de Sistema (JOIN/LEAVE) -->
+          <div *ngIf="msg.type !== 'CHAT'" class="system-message">
+            {{ msg.sender }} {{ msg.type === 'JOIN' ? 'entrou na sala' : 'saiu da sala' }}.
+          </div>
+          <!-- Mensagem de Chat -->
+          <div *ngIf="msg.type === 'CHAT'" class="chat-message">
+            <strong class="sender-name">{{ msg.sender }}:</strong>
+            <span class="message-content">{{ msg.content }}</span>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Formulário de Envio -->
+    <div class="message-input-section">
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>Digite sua mensagem...</mat-label>
+        <input matInput placeholder="Escreva algo..." [(ngModel)]="messageInput" (keyup.enter)="sendMessage()">
+      </mat-form-field>
+      <button mat-fab color="primary" (click)="sendMessage()" [disabled]="!messageInput.trim()">
+        <mat-icon>send</mat-icon>
+      </button>
+    </div>
+  </div>
+
+  <!-- Template de Carregamento -->
+  <ng-template #loading>
+    <div class="loading-section">
+      <h2>Conectando ao chat...</h2>
+      <!-- Você pode adicionar um mat-spinner aqui se quiser -->
+    </div>
+  </ng-template>
+</div>

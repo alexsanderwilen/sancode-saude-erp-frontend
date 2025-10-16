@@ -1,3 +1,5 @@
+(window as any).global = window;
+
 import { ModuleRegistry, AllCommunityModule } from 'ag-grid-community';
 import { bootstrapApplication } from '@angular/platform-browser';
 import { appConfig } from './app/app.config';

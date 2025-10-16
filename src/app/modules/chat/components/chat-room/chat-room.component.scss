@@ -1,0 +1,84 @@
+/* Estilos para o container principal do chat */
+.chat-container {
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 150px); // Ajustar altura conforme o layout principal
+  max-width: 800px;
+  margin: auto;
+}
+
+/* Seção de carregamento centralizada */
+.loading-section {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  font-size: 1.2rem;
+  color: #888;
+}
+
+/* Wrapper principal do chat */
+.chat-wrapper {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+/* Área de exibição de mensagens */
+.message-area {
+  flex-grow: 1;
+  overflow-y: auto;
+  padding: 16px;
+
+  mat-card-content {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+}
+
+/* Linha de cada mensagem */
+.message-line {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Mensagens do sistema (entrada/saída) */
+.system-message {
+  text-align: center;
+  font-size: 0.8rem;
+  color: #888;
+  font-style: italic;
+}
+
+/* Mensagens de chat dos usuários */
+.chat-message {
+  padding: 8px 12px;
+  border-radius: 18px;
+  background-color: #f0f0f0;
+  max-width: 70%;
+  word-wrap: break-word;
+
+  .sender-name {
+    font-weight: bold;
+    margin-right: 8px;
+    color: #3f51b5; // Cor primária do tema
+  }
+}
+
+/* Seção de input para nova mensagem */
+.message-input-section {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-top: 16px;
+
+  mat-form-field {
+    flex-grow: 1;
+  }
+}
+
+/* Ajustes de largura */
+.w-100 {
+  width: 100%;
+}

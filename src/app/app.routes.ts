@@ -27,5 +27,10 @@ export const routes: Routes = [
     canActivate: [AuthGuard],
     loadChildren: () => import('./modules/usuario/usuario.routes').then(m => m.USUARIO_ROUTES)
   },
+  {
+    path: 'chat',
+    canActivate: [AuthGuard],
+    loadChildren: () => import('./modules/chat/chat.routes').then(m => m.CHAT_ROUTES)
+  },
   { path: '**', redirectTo: '' }
 ];
