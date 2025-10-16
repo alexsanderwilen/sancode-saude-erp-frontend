@@ -1,3 +1,27 @@
 .spacer {
   flex: 1 1 auto;
 }
+
+.profile-info {
+  padding: 16px;
+  text-align: center;
+
+  .profile-icon-large {
+    font-size: 64px;
+    width: 64px;
+    height: 64px;
+    margin-bottom: 8px;
+    color: #666;
+  }
+
+  .username {
+    font-weight: bold;
+    margin: 0;
+  }
+
+  .email {
+    font-size: 0.8em;
+    color: #666;
+    margin: 0;
+  }
+}
