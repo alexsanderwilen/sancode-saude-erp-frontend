@@ -8,6 +8,6 @@
   <!-- Usar o componente de menu de perfil reutilizável -->
   <app-user-profile-menu></app-user-profile-menu>
 </mat-toolbar>
-<main class="container mt-4">
+<main [ngClass]="{ 'container mt-4': !isChatRoute, 'full-page-content': isChatRoute }">
   <router-outlet></router-outlet>
 </main>

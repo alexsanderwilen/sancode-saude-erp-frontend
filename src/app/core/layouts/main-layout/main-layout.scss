@@ -1,3 +1,18 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+main {
+  flex-grow: 1; // Faz com que a área de conteúdo principal ocupe o espaço restante
+  overflow-y: auto; // Adiciona scroll se o conteúdo for maior que a tela
+}
+
+main.full-page-content {
+  overflow-y: hidden; // O próprio componente de chat controlará seu scroll interno
+}
+
 .spacer {
   flex: 1 1 auto;
 }

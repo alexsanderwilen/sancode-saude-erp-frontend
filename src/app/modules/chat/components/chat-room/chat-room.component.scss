@@ -20,8 +20,9 @@
 
 .chat-container {
   display: flex;
-  flex-direction: row; // Alterado para linha
-  height: calc(100vh - 120px);
+  flex-direction: row;
+  height: calc(100vh - 64px) !important; // Altura calculada menos a toolbar do módulo
+  width: 100%;
   background-color: var(--sidebar-bg);
   overflow: hidden;
 }
@@ -50,14 +51,13 @@
 .chat-content-wrapper {
   display: flex;
   flex-grow: 1;
-  width: calc(100% - 70px);
 }
 
 
 // --- Barra Lateral --- //
 .chat-sidebar {
-  width: 100%;
-  max-width: 420px;
+  width: 340px;
+  flex-shrink: 0; // Impede que a sidebar encolha
   background-color: var(--sidebar-bg);
   border-right: 1px solid var(--border-color);
   display: flex;

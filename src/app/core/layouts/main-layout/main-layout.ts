@@ -1,9 +1,10 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterOutlet, RouterLink } from '@angular/router';
+import { RouterOutlet, RouterLink, Router, NavigationEnd } from '@angular/router';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { filter } from 'rxjs/operators';
 
 import { UserProfileMenuComponent } from '../../../shared/components/user-profile-menu/user-profile-menu.component';
 
@@ -24,7 +25,15 @@ import { UserProfileMenuComponent } from '../../../shared/components/user-profil
 })
 export class MainLayoutComponent {
 
-  constructor(
-  ) { }
+  isChatRoute = false;
 
+  constructor(
+    private router: Router
+  ) {
+    this.router.events.pipe(
+      filter((event): event is NavigationEnd => event instanceof NavigationEnd)
+    ).subscribe((event: NavigationEnd) => {
+      this.isChatRoute = event.urlAfterRedirects.startsWith('/chat');
+    });
+  }
 }

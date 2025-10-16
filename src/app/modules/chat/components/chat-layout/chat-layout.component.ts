@@ -1,9 +1,10 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MatToolbarModule } from '@angular/material/toolbar';
 import { RouterModule } from '@angular/router';
-import { MatIconModule } from '@angular/material/icon';
+import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { UserProfileMenuComponent } from '../../../../shared/components/user-profile-menu/user-profile-menu.component';
 
 @Component({
@@ -13,8 +14,9 @@ import { UserProfileMenuComponent } from '../../../../shared/components/user-pro
     CommonModule,
     RouterModule,
     MatToolbarModule,
-    MatIconModule,
     MatButtonModule,
+    MatIconModule,
+    MatTooltipModule,
     UserProfileMenuComponent
   ],
   templateUrl: './chat-layout.component.html',
