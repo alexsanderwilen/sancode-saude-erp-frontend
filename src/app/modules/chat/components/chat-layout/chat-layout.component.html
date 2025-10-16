@@ -1,0 +1,11 @@
+<mat-toolbar color="primary">
+  <span>Módulo de Chat</span>
+  <span class="spacer"></span>
+  <app-user-profile-menu></app-user-profile-menu>
+  <a mat-icon-button routerLink="/home" matTooltip="Voltar para o menu principal">
+    <mat-icon>exit_to_app</mat-icon>
+  </a>
+</mat-toolbar>
+<div class="container p-4">
+  <router-outlet></router-outlet>
+</div>
