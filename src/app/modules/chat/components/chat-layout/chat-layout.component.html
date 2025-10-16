@@ -1,5 +1,11 @@
 <mat-toolbar color="primary">
-  <span>Módulo de Chat</span>
+  <a mat-button routerLink="home" [routerLinkActiveOptions]="{exact: true}" routerLinkActive="active-link">
+    <mat-icon>home</mat-icon>
+    <span class="ms-2">Início</span>
+  </a>
+  <a mat-button routerLink="sala" routerLinkActive="active-link">
+    Sala de Chat
+  </a>
   <span class="spacer"></span>
   <app-user-profile-menu></app-user-profile-menu>
   <a mat-icon-button routerLink="/home" matTooltip="Voltar para o menu principal">
