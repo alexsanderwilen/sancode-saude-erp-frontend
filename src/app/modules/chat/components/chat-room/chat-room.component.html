@@ -1,80 +1,96 @@
 <div class="chat-container">
-  <!-- Barra Lateral de Contatos/Conversas -->
-  <aside class="chat-sidebar">
-    <div class="chat-sidebar__header">
-      <h3>Conversas</h3>
-    </div>
-    <ul class="chat-sidebar__conversation-list">
-      <li *ngFor="let conv of conversations" class="conversation-item" [class.conversation-item--active]="conv.id === activeConversationId">
-        <div class="conversation-item__avatar">{{ conv.name.charAt(0) }}</div>
-        <div class="conversation-item__details">
-          <div class="conversation-item__name">{{ conv.name }}</div>
-          <div class="conversation-item__last-message">{{ conv.lastMessage }}</div>
-        </div>
-        <div class="conversation-item__meta">
-          <div class="conversation-item__timestamp">{{ conv.timestamp }}</div>
-          <div *ngIf="conv.unreadCount > 0" class="conversation-item__unread-badge">{{ conv.unreadCount }}</div>
-        </div>
-      </li>
-    </ul>
-  </aside>
+  <!-- Nova Barra Lateral de Ícones -->
+  <nav class="app-sidebar">
+    <button mat-icon-button matTooltip="Mensagens">
+      <mat-icon>chat</mat-icon>
+    </button>
+    <button mat-icon-button matTooltip="Usuários">
+      <mat-icon>person</mat-icon>
+    </button>
+    <button mat-icon-button matTooltip="Grupos">
+      <mat-icon>group</mat-icon>
+    </button>
+  </nav>
 
-  <!-- Painel Principal do Chat -->
-  <main class="chat-main">
-    <div *ngIf="isConnected; else loading" class="chat-main__content-wrapper">
-      <!-- Cabeçalho da Conversa Ativa -->
-      <header class="chat-main__header">
-        <h4>Sala de Chat Principal</h4>
-        <span class="chat-main__header-status">3 membros, 2 online</span>
-      </header>
-
-      <!-- Área de Mensagens -->
-      <div class="chat-main__messages" #scrollMe>
-        <div *ngFor="let msg of messages" class="message"
-             [ngClass]="{'message--own': msg.sender === username, 'message--system': msg.type !== 'CHAT'}">
-
-          <!-- Mensagem de Sistema (JOIN/LEAVE) -->
-          <div *ngIf="msg.type !== 'CHAT'" class="message__system-content">
-            {{ msg.sender }} {{ msg.type === 'JOIN' ? 'entrou na sala' : 'saiu da sala' }}.
-          </div>
-
-          <!-- Mensagem de Chat Normal (Estilo WhatsApp) -->
-          <ng-container *ngIf="msg.type === 'CHAT'">
-            <div class="message__bubble">
-              <div class="message__content">
-                {{ msg.content }}
-              </div>
-              <div class="message__meta">
-                <span class="message__timestamp">11:45</span>
-                <mat-icon *ngIf="msg.sender === username">done_all</mat-icon>
-              </div>
-            </div>
-          </ng-container>
-        </div>
+  <!-- Wrapper para o conteúdo principal do chat -->
+  <div class="chat-content-wrapper">
+    <!-- Barra Lateral de Contatos/Conversas -->
+    <aside class="chat-sidebar">
+      <div class="chat-sidebar__header">
+        <h3>Conversas</h3>
       </div>
+      <ul class="chat-sidebar__conversation-list">
+        <li *ngFor="let conv of conversations" class="conversation-item" [class.conversation-item--active]="conv.id === activeConversationId">
+          <div class="conversation-item__avatar">{{ conv.name.charAt(0) }}</div>
+          <div class="conversation-item__details">
+            <div class="conversation-item__name">{{ conv.name }}</div>
+            <div class="conversation-item__last-message">{{ conv.lastMessage }}</div>
+          </div>
+          <div class="conversation-item__meta">
+            <div class="conversation-item__timestamp">{{ conv.timestamp }}</div>
+            <div *ngIf="conv.unreadCount > 0" class="conversation-item__unread-badge">{{ conv.unreadCount }}</div>
+          </div>
+        </li>
+      </ul>
+    </aside>
 
-      <!-- Formulário de Entrada de Texto -->
-      <footer class="chat-main__input-form">
-        <button mat-icon-button matTooltip="Emojis">
-          <mat-icon>sentiment_satisfied_alt</mat-icon>
-        </button>
-        <button mat-icon-button matTooltip="Anexar arquivo">
-          <mat-icon>attach_file</mat-icon>
-        </button>
-        <textarea matInput
-                  cdkTextareaAutosize
-                  #autosize="cdkTextareaAutosize"
-                  cdkAutosizeMinRows="2"
-                  cdkAutosizeMaxRows="5"
-                  placeholder="Digite sua mensagem..."
-                  [(ngModel)]="messageInput"
-                  (keydown.enter)="onEnterPressed($event)"></textarea>
-        <button mat-fab color="primary" (click)="sendMessage()" [disabled]="!messageInput.trim()">
-          <mat-icon>send</mat-icon>
-        </button>
-      </footer>
-    </div>
-  </main>
+    <!-- Painel Principal do Chat -->
+    <main class="chat-main">
+      <div *ngIf="isConnected; else loading" class="chat-main__content-wrapper">
+        <!-- Cabeçalho da Conversa Ativa -->
+        <header class="chat-main__header">
+          <h4>Sala de Chat Principal</h4>
+          <span class="chat-main__header-status">3 membros, 2 online</span>
+        </header>
+
+        <!-- Área de Mensagens -->
+        <div class="chat-main__messages" #scrollMe>
+          <div *ngFor="let msg of messages" class="message"
+               [ngClass]="{'message--own': msg.sender === username, 'message--system': msg.type !== 'CHAT'}">
+
+            <!-- Mensagem de Sistema (JOIN/LEAVE) -->
+            <div *ngIf="msg.type !== 'CHAT'" class="message__system-content">
+              {{ msg.sender }} {{ msg.type === 'JOIN' ? 'entrou na sala' : 'saiu da sala' }}.
+            </div>
+
+            <!-- Mensagem de Chat Normal (Estilo WhatsApp) -->
+            <ng-container *ngIf="msg.type === 'CHAT'">
+              <div class="message__bubble">
+                <div class="message__content">
+                  {{ msg.content }}
+                </div>
+                <div class="message__meta">
+                  <span class="message__timestamp">11:45</span>
+                  <mat-icon *ngIf="msg.sender === username">done_all</mat-icon>
+                </div>
+              </div>
+            </ng-container>
+          </div>
+        </div>
+
+        <!-- Formulário de Entrada de Texto -->
+        <footer class="chat-main__input-form">
+          <button mat-icon-button matTooltip="Emojis">
+            <mat-icon>sentiment_satisfied_alt</mat-icon>
+          </button>
+          <button mat-icon-button matTooltip="Anexar arquivo">
+            <mat-icon>attach_file</mat-icon>
+          </button>
+          <textarea matInput
+                    cdkTextareaAutosize
+                    #autosize="cdkTextareaAutosize"
+                    cdkAutosizeMinRows="2"
+                    cdkAutosizeMaxRows="5"
+                    placeholder="Digite sua mensagem..."
+                    [(ngModel)]="messageInput"
+                    (keydown.enter)="onEnterPressed($event)"></textarea>
+          <button mat-fab color="primary" (click)="sendMessage()" [disabled]="!messageInput.trim()">
+            <mat-icon>send</mat-icon>
+          </button>
+        </footer>
+      </div>
+    </main>
+  </div>
 
   <!-- Template de Carregamento -->
   <ng-template #loading>

@@ -20,10 +20,39 @@
 
 .chat-container {
   display: flex;
+  flex-direction: row; // Alterado para linha
   height: calc(100vh - 120px);
   background-color: var(--sidebar-bg);
   overflow: hidden;
 }
+
+// --- Nova Barra Lateral de App --- //
+.app-sidebar {
+  width: 70px;
+  background-color: #004a7c; // Azul escuro corporativo
+  padding: 16px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+
+  button {
+    color: rgba(255, 255, 255, 0.7);
+    transition: background-color 0.2s, color 0.2s;
+
+    &:hover {
+      color: #ffffff;
+      background-color: rgba(255, 255, 255, 0.1);
+    }
+  }
+}
+
+.chat-content-wrapper {
+  display: flex;
+  flex-grow: 1;
+  width: calc(100% - 70px);
+}
+
 
 // --- Barra Lateral --- //
 .chat-sidebar {
