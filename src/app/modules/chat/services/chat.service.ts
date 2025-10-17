@@ -1,10 +1,12 @@
 import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 import { Client, IMessage } from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { ChatMessage } from '../components/chat-room/chat-room.component';
 
-const WEBSOCKET_URL = 'http://localhost:8080/ws-chat'; // Endpoint do backend com SockJS
+const WEBSOCKET_URL = '/ws-chat'; // Endpoint do backend com SockJS
+const CHAT_API_URL = '/api/chat'; // Endpoint REST para o chat
 const TOPIC_PUBLIC = '/topic/public'; // Tópico para mensagens públicas
 
 @Injectable({
@@ -14,7 +16,7 @@ export class ChatService {
   private stompClient: Client;
   private messageSubject = new BehaviorSubject<ChatMessage | null>(null);
 
-  constructor() {
+  constructor(private http: HttpClient) {
     this.stompClient = new Client({
       webSocketFactory: () => new SockJS(WEBSOCKET_URL),
       reconnectDelay: 5000,
@@ -73,8 +75,13 @@ export class ChatService {
     }
   }
 
-  // Retorna o Observable de mensagens
+  // Retorna o Observable de mensagens em tempo real
   getMessages(): Observable<ChatMessage | null> {
     return this.messageSubject.asObservable();
+  }
+
+  // Busca o histórico de mensagens de uma conversa
+  getChatHistory(conversationId: string): Observable<ChatMessage[]> {
+    return this.http.get<ChatMessage[]>(`${CHAT_API_URL}/history/${conversationId}`);
   }
 }

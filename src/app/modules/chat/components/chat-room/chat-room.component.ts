@@ -86,8 +86,24 @@ export class ChatRoomComponent implements OnInit, OnDestroy, AfterViewChecked {
 
   private connectToChat(): void {
     if (this.username && !this.isConnected) {
-      this.chatService.connect(this.username);
-      this.isConnected = true;
+      // Primeiro, busca o histórico de mensagens
+      this.subscriptions.add(
+        this.chatService.getChatHistory("public-chat").subscribe({
+          next: (historyMessages) => {
+            this.messages = historyMessages; // Limpa e carrega o histórico
+            this.needsScroll = true;
+            // Após carregar o histórico, ativa a conexão WebSocket
+            this.chatService.connect(this.username);
+            this.isConnected = true;
+          },
+          error: (err) => {
+            console.error('Erro ao carregar histórico de chat:', err);
+            // Tenta conectar mesmo sem histórico, ou mostra erro
+            this.chatService.connect(this.username);
+            this.isConnected = true;
+          }
+        })
+      );
     }
   }
 
