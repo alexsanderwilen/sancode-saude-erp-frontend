@@ -31,7 +31,7 @@ export class GroupService {
    * @param name O nome do grupo.
    * @param description A descrição do grupo.
    */
-  createGroup(name: string, description: string): Observable<ChatGroup> {
-    return this.http.post<ChatGroup>(this.apiUrl, { name, description });
+  createGroup(name: string, description: string, members: string[]): Observable<ChatGroup> {
+    return this.http.post<ChatGroup>(this.apiUrl, { name, description, members });
   }
 }

@@ -6,6 +6,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { Observable } from 'rxjs';
 import { GroupService, ChatGroup } from '../../services/group.service';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { GroupFormDialogComponent } from '../group-form-dialog/group-form-dialog.component';
 
 @Component({
   selector: 'app-group-list',
@@ -15,13 +17,15 @@ import { GroupService, ChatGroup } from '../../services/group.service';
     MatListModule,
     MatIconModule,
     MatButtonModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    MatDialogModule
   ],
   templateUrl: './group-list.component.html',
   styleUrls: ['./group-list.component.scss']
 })
 export class GroupListComponent implements OnInit {
   private groupService = inject(GroupService);
+  private dialog = inject(MatDialog);
 
   groups$!: Observable<ChatGroup[]>;
   isLoading = true;
@@ -36,11 +40,15 @@ export class GroupListComponent implements OnInit {
     this.groups$.subscribe(() => this.isLoading = false);
   }
 
-  createTestGroup(): void {
-    const groupName = `Novo Grupo ${Date.now()}`;
-    const description = 'Grupo de teste criado automaticamente.';
-    this.groupService.createGroup(groupName, description).subscribe(() => {
-      this.loadGroups(); // Recarrega a lista após criar
+  openCreateGroupDialog(): void {
+    const dialogRef = this.dialog.open(GroupFormDialogComponent, {
+      width: '400px'
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.loadGroups(); // Recarrega a lista se o grupo foi criado com sucesso
+      }
     });
   }
 }

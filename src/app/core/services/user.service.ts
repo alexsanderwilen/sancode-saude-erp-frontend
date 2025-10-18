@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { map, Observable } from 'rxjs';
 import { Page } from '@shared/models/page.model';
 import { Usuario } from '@shared/models/usuario.model';
 
@@ -23,6 +23,18 @@ export class UserService {
       .set('size', size.toString());
 
     return this.http.get<Page<Usuario>>(this.apiUrl, { params });
+  }
+
+  /**
+   * Busca uma lista não paginada de todos os usuários.
+   * @returns Um Observable contendo um array de todos os usuários.
+   */
+  getAllUsersUnpaged(): Observable<Usuario[]> {
+    // Pede uma página grande para buscar todos os usuários de uma vez.
+    // Em uma aplicação real com muitos usuários, a paginação com scroll infinito seria melhor.
+    return this.getAllUsers(0, 1000).pipe(
+      map(page => page.content)
+    );
   }
 
   /**
