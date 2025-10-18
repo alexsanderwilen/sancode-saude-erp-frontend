@@ -5,7 +5,7 @@
 
   <div *ngIf="!isLoading && (users$ | async)?.content as users">
     <mat-list *ngIf="users.length > 0; else noUsers">
-      <mat-list-item *ngFor="let user of users" class="user-item">
+      <mat-list-item *ngFor="let user of users" class="user-item" (click)="onUserClick(user)">
         <mat-icon matListItemIcon>person</mat-icon>
         <div matListItemTitle>{{ user.nomeCompleto }}</div>
         <div matListItemLine>{{ user.username }}</div>

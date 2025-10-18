@@ -1,0 +1,22 @@
+<div class="conversation-list-container">
+  <div *ngIf="isLoading" class="loading-spinner">
+    <mat-spinner diameter="50"></mat-spinner>
+  </div>
+
+  <div *ngIf="!isLoading && (conversations$ | async) as conversations">
+    <mat-list *ngIf="conversations.length > 0; else noConversations">
+      <mat-list-item *ngFor="let username of conversations" class="conversation-item" (click)="onConversationClick(username)">
+        <mat-icon matListItemIcon>person</mat-icon>
+        <div matListItemTitle>{{ username }}</div>
+        <div matListItemLine>Clique para ver as mensagens</div>
+      </mat-list-item>
+    </mat-list>
+
+    <ng-template #noConversations>
+      <div class="no-items-message">
+        <p>Nenhuma conversa encontrada.</p>
+        <p><small>Clique na aba 'Usuários' para iniciar uma nova conversa.</small></p>
+      </div>
+    </ng-template>
+  </div>
+</div>

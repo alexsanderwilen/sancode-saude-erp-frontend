@@ -24,4 +24,13 @@ export class UserService {
 
     return this.http.get<Page<Usuario>>(this.apiUrl, { params });
   }
+
+  /**
+   * Busca um usuário específico pelo seu nome de usuário.
+   * @param username O nome de usuário a ser buscado.
+   * @returns Um Observable contendo o usuário encontrado.
+   */
+  getUserByUsername(username: string): Observable<Usuario> {
+    return this.http.get<Usuario>(`${this.apiUrl}/username/${username}`);
+  }
 }

@@ -1,0 +1,15 @@
+/* Estilos para a lista de conversas */
+.conversation-item {
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
+
+  &:hover {
+    background-color: #f5f5f5;
+  }
+}
+
+.no-items-message {
+  text-align: center;
+  padding: 20px;
+  color: #888;
+}

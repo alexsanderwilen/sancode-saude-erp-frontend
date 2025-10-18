@@ -7,7 +7,6 @@ import { ChatMessage } from '../components/chat-room/chat-room.component';
 
 const WEBSOCKET_URL = '/ws-chat';
 const CHAT_API_URL = '/api/chat';
-const TOPIC_PUBLIC = '/topic/public';
 
 @Injectable({
   providedIn: 'root'
@@ -44,13 +43,9 @@ export class ChatService {
       this.stompClient.onConnect = (frame) => {
         console.log('Conectado ao WebSocket: ' + frame);
         if (this.stompClient) {
-          this.stompClient.subscribe(TOPIC_PUBLIC, (message: IMessage) => {
+          // Inscrição na fila privada para receber mensagens diretas
+          this.stompClient.subscribe(`/user/${username}/queue/private`, (message: IMessage) => {
             this.messageSubject.next(JSON.parse(message.body));
-          });
-
-          this.stompClient.publish({
-            destination: '/app/chat.addUser',
-            body: JSON.stringify({ sender: username, type: 'JOIN' })
           });
         }
       };
@@ -84,7 +79,11 @@ export class ChatService {
     return this.messageSubject.asObservable();
   }
 
-  getChatHistory(conversationId: string): Observable<ChatMessage[]> {
-    return this.http.get<ChatMessage[]>(`${CHAT_API_URL}/history/${conversationId}`);
+  getChatHistory(recipientUsername: string): Observable<ChatMessage[]> {
+    return this.http.get<ChatMessage[]>(`${CHAT_API_URL}/history/${recipientUsername}`);
+  }
+
+  getConversations(): Observable<string[]> {
+    return this.http.get<string[]>(`${CHAT_API_URL}/conversations`);
   }
 }

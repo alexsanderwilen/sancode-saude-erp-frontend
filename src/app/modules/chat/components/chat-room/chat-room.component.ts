@@ -8,17 +8,22 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { TextFieldModule } from '@angular/cdk/text-field';
-import { Subscription } from 'rxjs';
+import { Subscription, Observable } from 'rxjs';
 import { ChatService } from '../../services/chat.service';
-import { AuthService } from '../../../../core/services/auth.service';
+import { AuthService } from '@core/services/auth.service';
+import { Usuario } from '@shared/models/usuario.model';
+import { UserService } from '@core/services/user.service';
 
+// Componentes das abas
 import { UserListComponent } from '../user-list/user-list.component';
+import { ConversationListComponent } from '../conversation-list/conversation-list.component';
 
-// Interface para a mensagem de chat
+// A interface da mensagem agora precisa de um destinatário opcional
 export interface ChatMessage {
   type: 'CHAT' | 'JOIN' | 'LEAVE';
   content?: string;
   sender: string;
+  recipient?: string; // Adicionado para mensagens privadas
 }
 
 @Component({
@@ -34,35 +39,38 @@ export interface ChatMessage {
     MatIconModule,
     MatProgressSpinnerModule,
     TextFieldModule,
-    UserListComponent // Adicionado o novo componente
+    UserListComponent,
+    ConversationListComponent // Adicionado o novo componente
   ],
   templateUrl: './chat-room.component.html',
   styleUrls: ['./chat-room.component.scss'],
-  providers: [ChatService]
+  providers: [ChatService] // ChatService é provido aqui
 })
 export class ChatRoomComponent implements OnInit, OnDestroy, AfterViewChecked {
   @ViewChild('scrollMe') private myScrollContainer!: ElementRef;
 
+  // Estado da Conexão e Usuário
   isConnected = false;
   username = '';
+
+  // Estado do Painel de Mensagens
   messageInput = '';
   messages: ChatMessage[] = [];
-  conversations: any[] = []; // Placeholder for conversation list
-  activeConversationId = '1'; // Placeholder
+  activeRecipient: Usuario | null = null;
 
-  activeView: 'chats' | 'users' | 'groups' = 'chats'; // Gerencia a visualização ativa
+  // Estado do Painel Lateral
+  activeView: 'chats' | 'users' | 'groups' = 'chats';
 
   private subscriptions = new Subscription();
   private needsScroll = false;
 
   constructor(
     private chatService: ChatService,
-    private authService: AuthService
+    private authService: AuthService,
+    private userService: UserService // Injetado o UserService
   ) {}
 
   ngOnInit(): void {
-    this.loadConversations(); // Carrega conversas de exemplo
-
     this.subscriptions.add(
       this.authService.currentUser.subscribe(user => {
         if (user && user.sub) {
@@ -72,11 +80,12 @@ export class ChatRoomComponent implements OnInit, OnDestroy, AfterViewChecked {
       })
     );
 
+    // Escuta por novas mensagens privadas
     this.subscriptions.add(
       this.chatService.getMessages().subscribe(message => {
-        if (message) {
+        if (message && this.activeRecipient && (message.sender === this.activeRecipient.username || message.sender === this.username)) {
           this.messages.push(message);
-          this.needsScroll = true; // Marca que a rolagem é necessária
+          this.needsScroll = true;
         }
       })
     );
@@ -89,7 +98,15 @@ export class ChatRoomComponent implements OnInit, OnDestroy, AfterViewChecked {
     }
   }
 
-  // Métodos para alterar a visualização
+  // Conecta ao WebSocket e se inscreve na fila privada
+  private connectToChat(): void {
+    if (this.username && !this.isConnected) {
+      this.chatService.connect(this.username);
+      this.isConnected = true;
+    }
+  }
+
+  // --- Controle de Visualização do Painel Lateral ---
   showChats(): void {
     this.activeView = 'chats';
   }
@@ -102,44 +119,57 @@ export class ChatRoomComponent implements OnInit, OnDestroy, AfterViewChecked {
     this.activeView = 'groups';
   }
 
-  private connectToChat(): void {
-    if (this.username && !this.isConnected) {
-      // Primeiro, busca o histórico de mensagens
-      this.subscriptions.add(
-        this.chatService.getChatHistory("public-chat").subscribe({
-          next: (historyMessages) => {
-            this.messages = historyMessages; // Limpa e carrega o histórico
-            this.needsScroll = true;
-            // Após carregar o histórico, ativa a conexão WebSocket
-            this.chatService.connect(this.username);
-            this.isConnected = true;
-          },
-          error: (err) => {
-            console.error('Erro ao carregar histórico de chat:', err);
-            // Tenta conectar mesmo sem histórico, ou mostra erro
-            this.chatService.connect(this.username);
-            this.isConnected = true;
-          }
-        })
-      );
-    }
+  // --- Lógica de Conversa Ativa ---
+  selectUser(user: Usuario): void {
+    if (!user || user.username === this.username) return; // Não pode conversar consigo mesmo
+
+    this.activeRecipient = user;
+    this.messages = []; // Limpa as mensagens atuais
+    this.activeView = 'chats'; // Muda para a aba de chat
+
+    // Carrega o histórico da conversa com o usuário selecionado
+    this.subscriptions.add(
+      this.chatService.getChatHistory(user.username).subscribe(history => {
+        this.messages = history;
+        this.needsScroll = true;
+      })
+    );
+  }
+
+  selectUserByUsername(username: string): void {
+    this.subscriptions.add(
+      this.userService.getUserByUsername(username).subscribe(user => {
+        if (user) {
+          this.selectUser(user);
+        }
+      })
+    );
   }
 
   sendMessage(): void {
-    if (this.messageInput.trim() && this.username) {
-      const message: ChatMessage = {
-        type: 'CHAT',
-        sender: this.username,
-        content: this.messageInput.trim()
-      };
-      this.chatService.sendMessage(message);
-      this.messageInput = '';
+    if (!this.messageInput.trim() || !this.activeRecipient) {
+      return; // Não envia se não houver texto ou destinatário ativo
     }
+
+    const message: ChatMessage = {
+      type: 'CHAT',
+      sender: this.username,
+      recipient: this.activeRecipient.username,
+      content: this.messageInput.trim()
+    };
+
+    // Envia a mensagem pelo serviço
+    this.chatService.sendMessage(message);
+
+    // Adiciona a mensagem à UI localmente para feedback instantâneo
+    this.messages.push(message);
+    this.needsScroll = true;
+    this.messageInput = '';
   }
 
   onEnterPressed(event: any): void {
     if (event.key === 'Enter' && !event.shiftKey) {
-      event.preventDefault(); // Previne a quebra de linha
+      event.preventDefault();
       this.sendMessage();
     }
   }
@@ -148,33 +178,6 @@ export class ChatRoomComponent implements OnInit, OnDestroy, AfterViewChecked {
     try {
       this.myScrollContainer.nativeElement.scrollTop = this.myScrollContainer.nativeElement.scrollHeight;
     } catch(err) { }
-  }
-
-  private loadConversations(): void {
-    // Dados de exemplo para a lista de conversas
-    this.conversations = [
-      {
-        id: '1',
-        name: 'Sala Principal',
-        lastMessage: 'Bem-vindo à sala principal!',
-        timestamp: '10:30',
-        unreadCount: 2
-      },
-      {
-        id: '2',
-        name: 'Equipe de Vendas',
-        lastMessage: 'Relatório mensal enviado.',
-        timestamp: 'Ontem',
-        unreadCount: 0
-      },
-      {
-        id: '3',
-        name: 'João da Silva',
-        lastMessage: 'Ok, obrigado!',
-        timestamp: '2d atrás',
-        unreadCount: 0
-      }
-    ];
   }
 
   ngOnDestroy(): void {

@@ -22,19 +22,7 @@
           <div class="chat-sidebar__header">
             <h3>Conversas</h3>
           </div>
-          <ul class="chat-sidebar__conversation-list">
-            <li *ngFor="let conv of conversations" class="conversation-item" [class.conversation-item--active]="conv.id === activeConversationId">
-              <div class="conversation-item__avatar">{{ conv.name.charAt(0) }}</div>
-              <div class="conversation-item__details">
-                <div class="conversation-item__name">{{ conv.name }}</div>
-                <div class="conversation-item__last-message">{{ conv.lastMessage }}</div>
-              </div>
-              <div class="conversation-item__meta">
-                <div class="conversation-item__timestamp">{{ conv.timestamp }}</div>
-                <div *ngIf="conv.unreadCount > 0" class="conversation-item__unread-badge">{{ conv.unreadCount }}</div>
-              </div>
-            </li>
-          </ul>
+          <app-conversation-list (conversationSelected)="selectUserByUsername($event)"></app-conversation-list>
         </div>
 
         <!-- Visualização de USUÁRIOS -->
@@ -42,7 +30,7 @@
           <div class="chat-sidebar__header">
             <h3>Todos os Usuários</h3>
           </div>
-          <app-user-list></app-user-list>
+          <app-user-list (userSelected)="selectUser($event)"></app-user-list>
         </div>
 
         <!-- Visualização de GRUPOS -->
@@ -62,8 +50,7 @@
       <div *ngIf="isConnected; else loading" class="chat-main__content-wrapper">
         <!-- Cabeçalho da Conversa Ativa -->
         <header class="chat-main__header">
-          <h4>Sala de Chat Principal</h4>
-          <span class="chat-main__header-status">3 membros, 2 online</span>
+          <h4>{{ activeRecipient ? activeRecipient.nomeCompleto : 'Selecione uma conversa' }}</h4>
         </header>
 
         <!-- Área de Mensagens -->
