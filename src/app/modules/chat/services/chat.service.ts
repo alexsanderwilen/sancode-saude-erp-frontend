@@ -5,69 +5,74 @@ import SockJS from 'sockjs-client';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { ChatMessage } from '../components/chat-room/chat-room.component';
 
-const WEBSOCKET_URL = '/ws-chat'; // Endpoint do backend com SockJS
-const CHAT_API_URL = '/api/chat'; // Endpoint REST para o chat
-const TOPIC_PUBLIC = '/topic/public'; // Tópico para mensagens públicas
+const WEBSOCKET_URL = '/ws-chat';
+const CHAT_API_URL = '/api/chat';
+const TOPIC_PUBLIC = '/topic/public';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ChatService {
-  private stompClient: Client;
+  private stompClient: Client | null = null;
   private messageSubject = new BehaviorSubject<ChatMessage | null>(null);
 
-  constructor(private http: HttpClient) {
-    this.stompClient = new Client({
-      webSocketFactory: () => new SockJS(WEBSOCKET_URL),
-      reconnectDelay: 5000,
-      heartbeatIncoming: 4000,
-      heartbeatOutgoing: 4000,
-    });
+  constructor(private http: HttpClient) {}
 
-    this.stompClient.onConnect = (frame) => {
-      console.log('Conectado ao WebSocket: ' + frame);
-      // Se inscreve no tópico público para receber mensagens
-      this.stompClient.subscribe(TOPIC_PUBLIC, (message: IMessage) => {
-        this.messageSubject.next(JSON.parse(message.body));
-      });
-    };
-
-    this.stompClient.onStompError = (frame) => {
-      console.error('Erro no broker: ' + frame.headers['message']);
-      console.error('Detalhes: ' + frame.body);
-    };
-  }
-
-  // Ativa a conexão e envia a mensagem de JOIN
   connect(username: string): void {
-    if (!this.stompClient.active) {
-      this.stompClient.activate();
-      // Adiciona um listener para quando a conexão for estabelecida
-      this.stompClient.onConnect = (frame) => {
-        console.log('Conectado: ' + frame);
-        this.stompClient.subscribe(TOPIC_PUBLIC, (message: IMessage) => {
-          this.messageSubject.next(JSON.parse(message.body));
-        });
+    const token = localStorage.getItem('token');
+    if (!token) {
+      console.error('Token de autenticação não encontrado.');
+      return;
+    }
 
-        // Envia a mensagem de JOIN para o backend
-        this.stompClient.publish({
-          destination: '/app/chat.addUser',
-          body: JSON.stringify({ sender: username, type: 'JOIN' })
-        });
+    if (!this.stompClient || !this.stompClient.active) {
+      this.stompClient = new Client();
+
+      this.stompClient.webSocketFactory = () => {
+        return new SockJS(`${WEBSOCKET_URL}?token=${token}`);
       };
+
+      this.stompClient.configure({
+        connectHeaders: {
+          Authorization: `Bearer ${token}`
+        },
+        reconnectDelay: 5000,
+        heartbeatIncoming: 4000,
+        heartbeatOutgoing: 4000,
+      });
+
+      this.stompClient.onConnect = (frame) => {
+        console.log('Conectado ao WebSocket: ' + frame);
+        if (this.stompClient) {
+          this.stompClient.subscribe(TOPIC_PUBLIC, (message: IMessage) => {
+            this.messageSubject.next(JSON.parse(message.body));
+          });
+
+          this.stompClient.publish({
+            destination: '/app/chat.addUser',
+            body: JSON.stringify({ sender: username, type: 'JOIN' })
+          });
+        }
+      };
+
+      this.stompClient.onStompError = (frame) => {
+        console.error('Erro no broker: ' + frame.headers['message']);
+        console.error('Detalhes: ' + frame.body);
+      };
+
+      this.stompClient.activate();
     }
   }
 
-  // Desconecta o cliente
   disconnect(): void {
-    if (this.stompClient.active) {
+    if (this.stompClient && this.stompClient.active) {
       this.stompClient.deactivate();
+      this.stompClient = null;
     }
   }
 
-  // Envia uma mensagem de CHAT
   sendMessage(chatMessage: ChatMessage): void {
-    if (this.stompClient.active) {
+    if (this.stompClient && this.stompClient.active) {
       this.stompClient.publish({
         destination: '/app/chat.sendMessage',
         body: JSON.stringify(chatMessage)
@@ -75,12 +80,10 @@ export class ChatService {
     }
   }
 
-  // Retorna o Observable de mensagens em tempo real
   getMessages(): Observable<ChatMessage | null> {
     return this.messageSubject.asObservable();
   }
 
-  // Busca o histórico de mensagens de uma conversa
   getChatHistory(conversationId: string): Observable<ChatMessage[]> {
     return this.http.get<ChatMessage[]>(`${CHAT_API_URL}/history/${conversationId}`);
   }
