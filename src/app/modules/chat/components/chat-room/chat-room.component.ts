@@ -80,15 +80,23 @@ export class ChatRoomComponent implements OnInit, OnDestroy, AfterViewChecked {
       })
     );
 
-    // Escuta por novas mensagens privadas
     this.subscriptions.add(
       this.chatService.getMessages().subscribe(message => {
-        if (message && this.activeRecipient && (message.sender === this.activeRecipient.username || message.sender === this.username)) {
+        // Logs de depuração para o problema em tempo real
+        if (message && this.activeRecipient) {
+          console.log('Mensagem recebida:', message);
+          console.log('Remetente:', message.sender);
+          console.log('Destinatário Ativo:', this.activeRecipient.username);
+        }
+
+        // A mensagem só é adicionada se for da conversa atualmente ativa
+        if (message && this.activeRecipient && message.sender === this.activeRecipient.username) {
           this.messages.push(message);
           this.needsScroll = true;
         }
       })
     );
+
   }
 
   ngAfterViewChecked(): void {

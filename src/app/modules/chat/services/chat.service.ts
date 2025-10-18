@@ -43,8 +43,10 @@ export class ChatService {
       this.stompClient.onConnect = (frame) => {
         console.log('Conectado ao WebSocket: ' + frame);
         if (this.stompClient) {
-          // Inscrição na fila privada para receber mensagens diretas
-          this.stompClient.subscribe(`/user/${username}/queue/private`, (message: IMessage) => {
+          // Inscrição no tópico privado dinâmico para receber mensagens diretas
+          const privateTopic = `/topic/private.${username}`;
+          console.log(`Inscrevendo-se em: ${privateTopic}`);
+          this.stompClient.subscribe(privateTopic, (message: IMessage) => {
             this.messageSubject.next(JSON.parse(message.body));
           });
         }
