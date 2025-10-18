@@ -28,6 +28,7 @@ export interface ChatMessage {
   sender: string;
   recipient?: string; // Pode ser username ou groupId
   createdAt?: string; // Adicionado para exibir o timestamp
+  tempId?: string; // ID temporário para evitar duplicação na UI
 }
 
 @Component({
@@ -90,18 +91,17 @@ export class ChatRoomComponent implements OnInit, OnDestroy, AfterViewChecked {
     );
 
     this.subscriptions.add(
-      this.chatService.getMessages().subscribe(message => {
-        if (message) {
-          console.log('Mensagem recebida pelo frontend:', message);
+      this.chatService.getMessages().subscribe(receivedMessage => {
+        if (receivedMessage) {
+          console.log('Mensagem recebida pelo frontend:', receivedMessage);
+
           // Lógica para adicionar mensagens recebidas à conversa ativa
-          // Se a mensagem for para o usuário logado e o remetente for o destinatário ativo (chat privado)
-          // OU se a mensagem for de grupo e o recipient for o ID do grupo ativo
-          const isPrivateMessageForActiveRecipient = message.type === 'CHAT' && message.sender === this.activeRecipientId;
-          const isGroupMessageForActiveGroup = message.type === 'GROUP' && message.recipient === this.activeRecipientId;
+          const isPrivateMessageForActiveRecipient = receivedMessage.type === 'CHAT' && receivedMessage.sender === this.activeRecipientId;
+          const isGroupMessageForActiveGroup = receivedMessage.type === 'GROUP' && receivedMessage.recipient === this.activeRecipientId;
 
           if (isPrivateMessageForActiveRecipient || isGroupMessageForActiveGroup) {
-            this.messages.push(message);
-            console.log('Mensagem adicionada ao array:', message);
+            this.messages.push(receivedMessage);
+            console.log('Mensagem adicionada ao array:', receivedMessage);
             this.needsScroll = true;
           }
         }
@@ -205,23 +205,54 @@ export class ChatRoomComponent implements OnInit, OnDestroy, AfterViewChecked {
       return; // Não envia se não houver texto, destinatário ativo ou tipo de chat
     }
 
-    const message: ChatMessage = {
+    const messageToSend: ChatMessage = {
       type: this.chatType === 'private' ? 'CHAT' : 'GROUP',
       sender: this.username,
       recipient: this.activeRecipientId,
       content: this.messageInput.trim()
     };
 
+    // Adiciona a mensagem à UI localmente para feedback instantâneo
+    const localMessage: ChatMessage = {
+      ...messageToSend,
+      tempId: Date.now().toString() + Math.random().toString(36).substring(2, 9), // Gera um ID temporário único
+      createdAt: new Date().toISOString() // Adiciona timestamp local para exibição imediata
+    };
+    this.messages.push(localMessage);
+    this.needsScroll = true;
+    const messageInputBeforeClear = this.messageInput; // Salva o input antes de limpar
+    this.messageInput = '';
+
+    let sendObservable: Observable<ChatMessage>;
     if (this.chatType === 'private') {
-      this.chatService.sendMessage(message);
+      sendObservable = this.chatService.sendMessage(messageToSend);
     } else if (this.chatType === 'group') {
-      this.chatService.sendGroupMessage(message);
+      sendObservable = this.chatService.sendGroupMessage(messageToSend);
+    } else {
+      return; // Tipo de chat inválido
     }
 
-    // Adiciona a mensagem à UI localmente para feedback instantâneo
-    this.messages.push(message);
-    this.needsScroll = true;
-    this.messageInput = '';
+    this.subscriptions.add(
+      sendObservable.subscribe({
+        next: (savedMessage) => {
+          // Encontra a mensagem local pelo tempId e a substitui pela mensagem salva do backend
+          const index = this.messages.findIndex(m => m.tempId === localMessage.tempId);
+          if (index !== -1) {
+            this.messages[index] = savedMessage;
+            this.needsScroll = true;
+          }
+        },
+        error: (err) => {
+          console.error('Erro ao enviar mensagem:', err);
+          // Opcional: remover a mensagem local ou marcar como falha
+          const index = this.messages.findIndex(m => m.tempId === localMessage.tempId);
+          if (index !== -1) {
+            this.messages.splice(index, 1); // Remove a mensagem local em caso de erro
+          }
+          this.messageInput = messageInputBeforeClear; // Restaura o input para o usuário tentar novamente
+        }
+      })
+    );
   }
 
   onEnterPressed(event: any): void {

@@ -69,22 +69,12 @@ export class ChatService {
     }
   }
 
-  sendMessage(chatMessage: ChatMessage): void {
-    if (this.stompClient && this.stompClient.active) {
-      this.stompClient.publish({
-        destination: '/app/chat.sendMessage',
-        body: JSON.stringify(chatMessage)
-      });
-    }
+  sendMessage(chatMessage: ChatMessage): Observable<ChatMessage> {
+    return this.http.post<ChatMessage>(`${CHAT_API_URL}/send-private`, chatMessage);
   }
 
-  sendGroupMessage(chatMessage: ChatMessage): void {
-    if (this.stompClient && this.stompClient.active) {
-      this.stompClient.publish({
-        destination: '/app/chat.sendGroupMessage',
-        body: JSON.stringify(chatMessage)
-      });
-    }
+  sendGroupMessage(chatMessage: ChatMessage): Observable<ChatMessage> {
+    return this.http.post<ChatMessage>(`${CHAT_API_URL}/send-group`, chatMessage);
   }
 
   getMessages(): Observable<ChatMessage | null> {
