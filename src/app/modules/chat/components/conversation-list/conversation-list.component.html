@@ -5,9 +5,9 @@
 
   <div *ngIf="!isLoading && (conversations$ | async) as conversations">
     <mat-list *ngIf="conversations.length > 0; else noConversations">
-      <mat-list-item *ngFor="let username of conversations" class="conversation-item" (click)="onConversationClick(username)">
-        <mat-icon matListItemIcon>person</mat-icon>
-        <div matListItemTitle>{{ username }}</div>
+      <mat-list-item *ngFor="let conversation of conversations" class="conversation-item" (click)="onConversationClick(conversation)">
+        <mat-icon matListItemIcon>{{ conversation.type === 'private' ? 'person' : 'group' }}</mat-icon>
+        <div matListItemTitle>{{ conversation.name }}</div>
         <div matListItemLine>Clique para ver as mensagens</div>
       </mat-list-item>
     </mat-list>

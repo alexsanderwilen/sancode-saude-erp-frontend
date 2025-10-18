@@ -12,7 +12,7 @@
 
   <div *ngIf="!isLoading && (groups$ | async) as groups">
     <mat-list *ngIf="groups.length > 0; else noGroups">
-      <mat-list-item *ngFor="let group of groups" class="group-item">
+      <mat-list-item *ngFor="let group of groups" class="group-item" (click)="onGroupClick(group)">
         <mat-icon matListItemIcon>group_work</mat-icon>
         <div matListItemTitle>{{ group.name }}</div>
         <div matListItemLine>{{ group.description }}</div>

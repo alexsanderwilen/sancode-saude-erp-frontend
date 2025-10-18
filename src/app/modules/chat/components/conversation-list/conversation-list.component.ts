@@ -1,10 +1,12 @@
-import { Component, OnInit, inject, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatListModule } from '@angular/material/list';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { Observable } from 'rxjs';
 import { ChatService } from '../../services/chat.service';
+import { Router } from '@angular/router';
+import { ConversationDto } from '../../models/conversation.model';
 
 @Component({
   selector: 'app-conversation-list',
@@ -20,10 +22,9 @@ import { ChatService } from '../../services/chat.service';
 })
 export class ConversationListComponent implements OnInit {
   private chatService = inject(ChatService);
+  private router = inject(Router);
 
-  @Output() conversationSelected = new EventEmitter<string>();
-
-  conversations$!: Observable<string[]>;
+  conversations$!: Observable<ConversationDto[]>;
   isLoading = true;
 
   ngOnInit(): void {
@@ -36,7 +37,7 @@ export class ConversationListComponent implements OnInit {
     this.conversations$.subscribe(() => this.isLoading = false);
   }
 
-  onConversationClick(username: string): void {
-    this.conversationSelected.emit(username);
+  onConversationClick(conversation: ConversationDto): void {
+    this.router.navigate(['/chat/sala', conversation.type, conversation.id]);
   }
 }

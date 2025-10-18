@@ -15,6 +15,10 @@ export class AuthService {
   private userSubject: BehaviorSubject<any | null>;
   public currentUser: Observable<any | null>;
 
+  public get currentUserValue(): any | null {
+    return this.userSubject.getValue();
+  }
+
   constructor(private http: HttpClient) {
     this.userSubject = new BehaviorSubject<any | null>(null);
     this.currentUser = this.userSubject.asObservable();

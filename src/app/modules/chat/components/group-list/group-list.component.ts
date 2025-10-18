@@ -8,6 +8,7 @@ import { Observable } from 'rxjs';
 import { GroupService, ChatGroup } from '../../services/group.service';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { GroupFormDialogComponent } from '../group-form-dialog/group-form-dialog.component';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-group-list',
@@ -26,6 +27,7 @@ import { GroupFormDialogComponent } from '../group-form-dialog/group-form-dialog
 export class GroupListComponent implements OnInit {
   private groupService = inject(GroupService);
   private dialog = inject(MatDialog);
+  private router = inject(Router);
 
   groups$!: Observable<ChatGroup[]>;
   isLoading = true;
@@ -50,5 +52,9 @@ export class GroupListComponent implements OnInit {
         this.loadGroups(); // Recarrega a lista se o grupo foi criado com sucesso
       }
     });
+  }
+
+  onGroupClick(group: ChatGroup): void {
+    this.router.navigate(['/chat/sala', 'group', group.id]);
   }
 }

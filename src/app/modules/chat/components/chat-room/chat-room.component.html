@@ -22,7 +22,7 @@
           <div class="chat-sidebar__header">
             <h3>Conversas</h3>
           </div>
-          <app-conversation-list (conversationSelected)="selectUserByUsername($event)"></app-conversation-list>
+          <app-conversation-list></app-conversation-list>
         </div>
 
         <!-- Visualização de USUÁRIOS -->
@@ -30,7 +30,7 @@
           <div class="chat-sidebar__header">
             <h3>Todos os Usuários</h3>
           </div>
-          <app-user-list (userSelected)="selectUser($event)"></app-user-list>
+          <app-user-list></app-user-list>
         </div>
 
         <!-- Visualização de GRUPOS -->
@@ -48,27 +48,28 @@
       <div *ngIf="isConnected; else loading" class="chat-main__content-wrapper">
         <!-- Cabeçalho da Conversa Ativa -->
         <header class="chat-main__header">
-          <h4>{{ activeRecipient ? activeRecipient.nomeCompleto : 'Selecione uma conversa' }}</h4>
+          <h4>{{ activeRecipientName ? activeRecipientName : 'Selecione uma conversa' }}</h4>
         </header>
 
         <!-- Área de Mensagens -->
         <div class="chat-main__messages" #scrollMe>
           <div *ngFor="let msg of messages" class="message"
-               [ngClass]="{'message--own': msg.sender === username, 'message--system': msg.type !== 'CHAT'}">
+               [ngClass]="{'message--own': msg.sender === username, 'message--system': msg.type === 'JOIN' || msg.type === 'LEAVE'}">
 
             <!-- Mensagem de Sistema (JOIN/LEAVE) -->
-            <div *ngIf="msg.type !== 'CHAT'" class="message__system-content">
+            <div *ngIf="msg.type === 'JOIN' || msg.type === 'LEAVE'" class="message__system-content">
               {{ msg.sender }} {{ msg.type === 'JOIN' ? 'entrou na sala' : 'saiu da sala' }}.
             </div>
 
-            <!-- Mensagem de Chat Normal (Estilo WhatsApp) -->
-            <ng-container *ngIf="msg.type === 'CHAT'">
+            <!-- Mensagem de Chat Normal (Estilo WhatsApp) ou Mensagem de Grupo -->
+            <ng-container *ngIf="msg.type === 'CHAT' || msg.type === 'GROUP'">
               <div class="message__bubble">
                 <div class="message__content">
+                  <span *ngIf="msg.type === 'GROUP'" class="message__sender-group">{{ msg.sender }}: </span>
                   {{ msg.content }}
                 </div>
                 <div class="message__meta">
-                  <span class="message__timestamp">11:45</span>
+                  <span class="message__timestamp">{{ msg.createdAt | date:'shortTime' }}</span>
                   <mat-icon *ngIf="msg.sender === username">done_all</mat-icon>
                 </div>
               </div>

@@ -4,6 +4,7 @@ import { Client, IMessage } from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { ChatMessage } from '../components/chat-room/chat-room.component';
+import { ConversationDto } from '../models/conversation.model';
 
 const WEBSOCKET_URL = '/ws-chat';
 const CHAT_API_URL = '/api/chat';
@@ -77,6 +78,15 @@ export class ChatService {
     }
   }
 
+  sendGroupMessage(chatMessage: ChatMessage): void {
+    if (this.stompClient && this.stompClient.active) {
+      this.stompClient.publish({
+        destination: '/app/chat.sendGroupMessage',
+        body: JSON.stringify(chatMessage)
+      });
+    }
+  }
+
   getMessages(): Observable<ChatMessage | null> {
     return this.messageSubject.asObservable();
   }
@@ -85,7 +95,11 @@ export class ChatService {
     return this.http.get<ChatMessage[]>(`${CHAT_API_URL}/history/${recipientUsername}`);
   }
 
-  getConversations(): Observable<string[]> {
-    return this.http.get<string[]>(`${CHAT_API_URL}/conversations`);
+  getGroupChatHistory(groupId: string): Observable<ChatMessage[]> {
+    return this.http.get<ChatMessage[]>(`${CHAT_API_URL}/group-history/${groupId}`);
+  }
+
+  getConversations(): Observable<ConversationDto[]> {
+    return this.http.get<ConversationDto[]>(`${CHAT_API_URL}/conversations`);
   }
 }

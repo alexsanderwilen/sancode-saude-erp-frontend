@@ -34,4 +34,13 @@ export class GroupService {
   createGroup(name: string, description: string, members: string[]): Observable<ChatGroup> {
     return this.http.post<ChatGroup>(this.apiUrl, { name, description, members });
   }
+
+  /**
+   * Busca um grupo pelo seu ID.
+   * @param id O ID do grupo.
+   * @returns Um Observable contendo o grupo encontrado.
+   */
+  getGroupById(id: string): Observable<ChatGroup> {
+    return this.http.get<ChatGroup>(`${this.apiUrl}/${id}`);
+  }
 }

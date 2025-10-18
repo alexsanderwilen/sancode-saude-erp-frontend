@@ -14,7 +14,7 @@ export const CHAT_ROUTES: Routes = [
         title: 'Sancode Health - Chat'
       },
       {
-        path: 'sala',
+        path: 'sala/:type/:id',
         component: ChatRoomComponent,
         title: 'Sancode Health - Sala de Chat'
       },
