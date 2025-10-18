@@ -12,6 +12,8 @@ import { Subscription } from 'rxjs';
 import { ChatService } from '../../services/chat.service';
 import { AuthService } from '../../../../core/services/auth.service';
 
+import { UserListComponent } from '../user-list/user-list.component';
+
 // Interface para a mensagem de chat
 export interface ChatMessage {
   type: 'CHAT' | 'JOIN' | 'LEAVE';
@@ -31,7 +33,8 @@ export interface ChatMessage {
     MatButtonModule,
     MatIconModule,
     MatProgressSpinnerModule,
-    TextFieldModule
+    TextFieldModule,
+    UserListComponent // Adicionado o novo componente
   ],
   templateUrl: './chat-room.component.html',
   styleUrls: ['./chat-room.component.scss'],
@@ -46,6 +49,8 @@ export class ChatRoomComponent implements OnInit, OnDestroy, AfterViewChecked {
   messages: ChatMessage[] = [];
   conversations: any[] = []; // Placeholder for conversation list
   activeConversationId = '1'; // Placeholder
+
+  activeView: 'chats' | 'users' | 'groups' = 'chats'; // Gerencia a visualização ativa
 
   private subscriptions = new Subscription();
   private needsScroll = false;
@@ -82,6 +87,19 @@ export class ChatRoomComponent implements OnInit, OnDestroy, AfterViewChecked {
       this.scrollToBottom();
       this.needsScroll = false;
     }
+  }
+
+  // Métodos para alterar a visualização
+  showChats(): void {
+    this.activeView = 'chats';
+  }
+
+  showUsers(): void {
+    this.activeView = 'users';
+  }
+
+  showGroups(): void {
+    this.activeView = 'groups';
   }
 
   private connectToChat(): void {

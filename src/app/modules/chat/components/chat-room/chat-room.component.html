@@ -1,13 +1,13 @@
 <div class="chat-container">
   <!-- Nova Barra Lateral de Ícones -->
   <nav class="app-sidebar">
-    <button mat-icon-button matTooltip="Mensagens">
+    <button mat-icon-button matTooltip="Mensagens" (click)="showChats()">
       <mat-icon>chat</mat-icon>
     </button>
-    <button mat-icon-button matTooltip="Usuários">
+    <button mat-icon-button matTooltip="Usuários" (click)="showUsers()">
       <mat-icon>person</mat-icon>
     </button>
-    <button mat-icon-button matTooltip="Grupos">
+    <button mat-icon-button matTooltip="Grupos" (click)="showGroups()">
       <mat-icon>group</mat-icon>
     </button>
   </nav>
@@ -16,22 +16,45 @@
   <div class="chat-content-wrapper">
     <!-- Barra Lateral de Contatos/Conversas -->
     <aside class="chat-sidebar">
-      <div class="chat-sidebar__header">
-        <h3>Conversas</h3>
+      <div [ngSwitch]="activeView">
+        <!-- Visualização de CHATS -->
+        <div *ngSwitchCase="'chats'">
+          <div class="chat-sidebar__header">
+            <h3>Conversas</h3>
+          </div>
+          <ul class="chat-sidebar__conversation-list">
+            <li *ngFor="let conv of conversations" class="conversation-item" [class.conversation-item--active]="conv.id === activeConversationId">
+              <div class="conversation-item__avatar">{{ conv.name.charAt(0) }}</div>
+              <div class="conversation-item__details">
+                <div class="conversation-item__name">{{ conv.name }}</div>
+                <div class="conversation-item__last-message">{{ conv.lastMessage }}</div>
+              </div>
+              <div class="conversation-item__meta">
+                <div class="conversation-item__timestamp">{{ conv.timestamp }}</div>
+                <div *ngIf="conv.unreadCount > 0" class="conversation-item__unread-badge">{{ conv.unreadCount }}</div>
+              </div>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Visualização de USUÁRIOS -->
+        <div *ngSwitchCase="'users'">
+          <div class="chat-sidebar__header">
+            <h3>Todos os Usuários</h3>
+          </div>
+          <app-user-list></app-user-list>
+        </div>
+
+        <!-- Visualização de GRUPOS -->
+        <div *ngSwitchCase="'groups'">
+          <div class="chat-sidebar__header">
+            <h3>Grupos</h3>
+          </div>
+          <div style="padding: 20px; text-align: center; color: #888;">
+            <p>A funcionalidade de grupos será implementada em breve.</p>
+          </div>
+        </div>
       </div>
-      <ul class="chat-sidebar__conversation-list">
-        <li *ngFor="let conv of conversations" class="conversation-item" [class.conversation-item--active]="conv.id === activeConversationId">
-          <div class="conversation-item__avatar">{{ conv.name.charAt(0) }}</div>
-          <div class="conversation-item__details">
-            <div class="conversation-item__name">{{ conv.name }}</div>
-            <div class="conversation-item__last-message">{{ conv.lastMessage }}</div>
-          </div>
-          <div class="conversation-item__meta">
-            <div class="conversation-item__timestamp">{{ conv.timestamp }}</div>
-            <div *ngIf="conv.unreadCount > 0" class="conversation-item__unread-badge">{{ conv.unreadCount }}</div>
-          </div>
-        </li>
-      </ul>
     </aside>
 
     <!-- Painel Principal do Chat -->

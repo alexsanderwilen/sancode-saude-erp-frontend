@@ -1,0 +1,21 @@
+<div class="user-list-container">
+  <div *ngIf="isLoading" class="loading-spinner">
+    <mat-spinner diameter="50"></mat-spinner>
+  </div>
+
+  <div *ngIf="!isLoading && (users$ | async)?.content as users">
+    <mat-list *ngIf="users.length > 0; else noUsers">
+      <mat-list-item *ngFor="let user of users" class="user-item">
+        <mat-icon matListItemIcon>person</mat-icon>
+        <div matListItemTitle>{{ user.nomeCompleto }}</div>
+        <div matListItemLine>{{ user.username }}</div>
+      </mat-list-item>
+    </mat-list>
+
+    <ng-template #noUsers>
+      <div class="no-users-message">
+        <p>Nenhum usuário encontrado.</p>
+      </div>
+    </ng-template>
+  </div>
+</div>
