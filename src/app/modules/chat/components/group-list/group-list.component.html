@@ -1,0 +1,28 @@
+<div class="group-list-container">
+  <div class="header">
+    <button mat-flat-button color="primary" (click)="createTestGroup()">
+      <mat-icon>add</mat-icon>
+      Criar Grupo de Teste
+    </button>
+  </div>
+
+  <div *ngIf="isLoading" class="loading-spinner">
+    <mat-spinner diameter="50"></mat-spinner>
+  </div>
+
+  <div *ngIf="!isLoading && (groups$ | async) as groups">
+    <mat-list *ngIf="groups.length > 0; else noGroups">
+      <mat-list-item *ngFor="let group of groups" class="group-item">
+        <mat-icon matListItemIcon>group_work</mat-icon>
+        <div matListItemTitle>{{ group.name }}</div>
+        <div matListItemLine>{{ group.description }}</div>
+      </mat-list-item>
+    </mat-list>
+
+    <ng-template #noGroups>
+      <div class="no-items-message">
+        <p>Você ainda não faz parte de nenhum grupo.</p>
+      </div>
+    </ng-template>
+  </div>
+</div>

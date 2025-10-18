@@ -17,6 +17,7 @@ import { UserService } from '@core/services/user.service';
 // Componentes das abas
 import { UserListComponent } from '../user-list/user-list.component';
 import { ConversationListComponent } from '../conversation-list/conversation-list.component';
+import { GroupListComponent } from '../group-list/group-list.component';
 
 // A interface da mensagem agora precisa de um destinatário opcional
 export interface ChatMessage {
@@ -40,7 +41,8 @@ export interface ChatMessage {
     MatProgressSpinnerModule,
     TextFieldModule,
     UserListComponent,
-    ConversationListComponent // Adicionado o novo componente
+    ConversationListComponent, // Adicionado o novo componente
+    GroupListComponent
   ],
   templateUrl: './chat-room.component.html',
   styleUrls: ['./chat-room.component.scss'],
