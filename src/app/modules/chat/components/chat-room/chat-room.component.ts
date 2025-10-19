@@ -95,14 +95,21 @@ export class ChatRoomComponent implements OnInit, OnDestroy, AfterViewChecked {
         if (receivedMessage) {
           console.log('Mensagem recebida pelo frontend:', receivedMessage);
 
-          // Lógica para adicionar mensagens recebidas à conversa ativa
-          const isPrivateMessageForActiveRecipient = receivedMessage.type === 'CHAT' && receivedMessage.sender === this.activeRecipientId;
-          const isGroupMessageForActiveGroup = receivedMessage.type === 'GROUP' && receivedMessage.recipient === this.activeRecipientId;
+          const isPrivateMessageForActiveConversation = 
+            receivedMessage.type === 'CHAT' &&
+            ((receivedMessage.sender === this.username && receivedMessage.recipient === this.activeRecipientId) ||
+            (receivedMessage.sender === this.activeRecipientId && receivedMessage.recipient === this.username));
 
-          if (isPrivateMessageForActiveRecipient || isGroupMessageForActiveGroup) {
-            this.messages.push(receivedMessage);
-            console.log('Mensagem adicionada ao array:', receivedMessage);
-            this.needsScroll = true;
+          const isGroupMessageForActiveGroup = 
+            receivedMessage.type === 'GROUP' && 
+            receivedMessage.recipient === this.activeRecipientId;
+
+          if (isPrivateMessageForActiveConversation || isGroupMessageForActiveGroup) {
+            const existingMessage = this.messages.find(m => m.tempId && m.content === receivedMessage.content);
+            if (!existingMessage) {
+              this.messages.push(receivedMessage);
+              this.needsScroll = true;
+            }
           }
         }
       })
