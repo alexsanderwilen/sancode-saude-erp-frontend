@@ -1,12 +1,12 @@
 <h2 mat-dialog-title>Remover usuários do grupo</h2>
 <mat-dialog-content>
   <mat-selection-list #userList>
-    <mat-list-option *ngFor="let member of members" [value]="member.id">
-      <mat-checkbox (change)="onUserSelectionChange($event, member.id)">{{ member.username }}</mat-checkbox>
+    <mat-list-option *ngFor="let member of members" [value]="member.username">
+      <mat-checkbox (change)="onUserSelectionChange($event, member.username)">{{ member.username }}</mat-checkbox>
     </mat-list-option>
   </mat-selection-list>
 </mat-dialog-content>
 <mat-dialog-actions>
   <button mat-button (click)="onCancel()">Cancelar</button>
-  <button mat-button (click)="onRemove()" [disabled]="selectedUsers.length === 0">Remover</button>
+  <button mat-button (click)="onRemove()" [disabled]="selectedUsernames.length === 0">Remover</button>
 </mat-dialog-actions>

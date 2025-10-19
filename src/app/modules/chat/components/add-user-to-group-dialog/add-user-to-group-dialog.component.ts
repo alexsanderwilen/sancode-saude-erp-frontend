@@ -17,7 +17,7 @@ import { forkJoin, map } from 'rxjs';
 })
 export class AddUserToGroupDialogComponent implements OnInit {
   users: Usuario[] = [];
-  selectedUsers: number[] = [];
+  selectedUsernames: string[] = [];
 
   constructor(
     public dialogRef: MatDialogRef<AddUserToGroupDialogComponent>,
@@ -36,21 +36,21 @@ export class AddUserToGroupDialogComponent implements OnInit {
       group: this.groupService.getGroupById(this.data.groupId)
     }).pipe(
       map(({ allUsers, group }) => {
-        const memberIds = new Set(group.members.map(m => m.id));
-        return allUsers.content.filter((u: Usuario) => !memberIds.has(u.id));
+        const memberUsernames = new Set(group.members.map((m: any) => m.username));
+        return allUsers.content.filter((u: Usuario) => !memberUsernames.has(u.username));
       })
     ).subscribe(filteredUsers => {
       this.users = filteredUsers;
     });
   }
 
-  onUserSelectionChange(event: any, userId: number): void {
+  onUserSelectionChange(event: any, username: string): void {
     if (event.checked) {
-      this.selectedUsers.push(userId);
+      this.selectedUsernames.push(username);
     } else {
-      const index = this.selectedUsers.indexOf(userId);
+      const index = this.selectedUsernames.indexOf(username);
       if (index > -1) {
-        this.selectedUsers.splice(index, 1);
+        this.selectedUsernames.splice(index, 1);
       }
     }
   }
@@ -60,6 +60,6 @@ export class AddUserToGroupDialogComponent implements OnInit {
   }
 
   onAdd(): void {
-    this.dialogRef.close(this.selectedUsers);
+    this.dialogRef.close(this.selectedUsernames);
   }
 }

@@ -54,11 +54,25 @@ export class GroupService {
   }
 
   /**
+   * Adiciona um usuário ao grupo por username.
+   */
+  addUserToGroupByUsername(groupId: string, username: string): Observable<any> {
+    return this.http.post(`${this.apiUrl}/${groupId}/members/by-username/${encodeURIComponent(username)}`, {});
+  }
+
+  /**
    * Remove um usuário de um grupo.
    * @param groupId O ID do grupo.
    * @param userId O ID do usuário a ser removido.
    */
   removeUserFromGroup(groupId: string, userId: string): Observable<any> {
     return this.http.delete(`${this.apiUrl}/${groupId}/members/${userId}`);
+  }
+
+  /**
+   * Remove um usuário do grupo por username.
+   */
+  removeUserFromGroupByUsername(groupId: string, username: string): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/${groupId}/members/by-username/${encodeURIComponent(username)}`);
   }
 }

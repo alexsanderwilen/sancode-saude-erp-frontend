@@ -16,7 +16,7 @@ import { AuthService } from '@core/services/auth.service';
 })
 export class RemoveUserFromGroupDialogComponent implements OnInit {
   members: Usuario[] = [];
-  selectedUsers: number[] = [];
+  selectedUsernames: string[] = [];
   currentUsername: string | null = null;
 
   constructor(
@@ -37,13 +37,13 @@ export class RemoveUserFromGroupDialogComponent implements OnInit {
     });
   }
 
-  onUserSelectionChange(event: any, userId: number): void {
+  onUserSelectionChange(event: any, username: string): void {
     if (event.checked) {
-      this.selectedUsers.push(userId);
+      this.selectedUsernames.push(username);
     } else {
-      const index = this.selectedUsers.indexOf(userId);
+      const index = this.selectedUsernames.indexOf(username);
       if (index > -1) {
-        this.selectedUsers.splice(index, 1);
+        this.selectedUsernames.splice(index, 1);
       }
     }
   }
@@ -53,6 +53,6 @@ export class RemoveUserFromGroupDialogComponent implements OnInit {
   }
 
   onRemove(): void {
-    this.dialogRef.close(this.selectedUsers);
+    this.dialogRef.close(this.selectedUsernames);
   }
 }

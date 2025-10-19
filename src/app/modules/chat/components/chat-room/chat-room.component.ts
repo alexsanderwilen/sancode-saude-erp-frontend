@@ -282,11 +282,11 @@ export class ChatRoomComponent implements OnInit, OnDestroy, AfterViewChecked {
       data: { groupId: this.activeRecipientId },
     });
 
-    dialogRef.afterClosed().subscribe((result: number[]) => {
+    dialogRef.afterClosed().subscribe((result: string[]) => {
       if (result && result.length > 0) {
-        result.forEach((userId: number) => {
-          this.groupService.addUserToGroup(this.activeRecipientId!, userId.toString()).subscribe(() => {
-            console.log(`Usuário ${userId} adicionado ao grupo.`);
+        result.forEach((username: string) => {
+          this.groupService.addUserToGroupByUsername(this.activeRecipientId!, username).subscribe(() => {
+            console.log(`Usuário ${username} adicionado ao grupo.`);
           });
         });
       }
@@ -299,11 +299,11 @@ export class ChatRoomComponent implements OnInit, OnDestroy, AfterViewChecked {
       data: { groupId: this.activeRecipientId },
     });
 
-    dialogRef.afterClosed().subscribe((result: number[]) => {
+    dialogRef.afterClosed().subscribe((result: string[]) => {
       if (result && result.length > 0) {
-        result.forEach((userId: number) => {
-          this.groupService.removeUserFromGroup(this.activeRecipientId!, userId.toString()).subscribe(() => {
-            console.log(`Usuário ${userId} removido do grupo.`);
+        result.forEach((username: string) => {
+          this.groupService.removeUserFromGroupByUsername(this.activeRecipientId!, username).subscribe(() => {
+            console.log(`Usuário ${username} removido do grupo.`);
           });
         });
       }
