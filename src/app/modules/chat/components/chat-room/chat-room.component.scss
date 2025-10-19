@@ -86,7 +86,7 @@
   bottom: 48px; /* directly above emoji button */
   left: 0;      /* aligned to emoji button left edge */
   z-index: 1000;
-  width: 320px;
+  width: 340px; /* widened to avoid clipping */
   height: 360px;
   background: #fff;
   border-radius: 8px;
