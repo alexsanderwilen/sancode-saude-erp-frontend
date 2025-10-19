@@ -9,6 +9,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { TextFieldModule } from '@angular/cdk/text-field';
 import { Subscription, Observable } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
 import { ChatService } from '../../services/chat.service';
 import { AuthService } from '@core/services/auth.service';
 import { Usuario } from '@shared/models/usuario.model';
@@ -18,6 +19,7 @@ import { GroupService, ChatGroup } from '../../services/group.service';
 
 import { MatMenuModule } from '@angular/material/menu';
 import { MatDialog } from '@angular/material/dialog';
+import { AttachmentService } from '../../services/attachment.service';
 
 // Componentes das abas
 import { UserListComponent } from '../user-list/user-list.component';
@@ -26,14 +28,15 @@ import { GroupListComponent } from '../group-list/group-list.component';
 import { AddUserToGroupDialogComponent } from '../add-user-to-group-dialog/add-user-to-group-dialog.component';
 import { RemoveUserFromGroupDialogComponent } from '../remove-user-from-group-dialog/remove-user-from-group-dialog.component';
 
-// A interface da mensagem agora precisa de um destinatário opcional
+// Mensagem do chat (texto ou com anexo)
 export interface ChatMessage {
-  type: 'CHAT' | 'JOIN' | 'LEAVE' | 'GROUP'; // Adicionado tipo GROUP
+  type: 'CHAT' | 'JOIN' | 'LEAVE' | 'GROUP';
   content?: string;
   sender: string;
-  recipient?: string; // Pode ser username ou groupId
-  createdAt?: string; // Adicionado para exibir o timestamp
-  tempId?: string; // ID temporário para evitar duplicação na UI
+  recipient?: string; // username ou groupId
+  createdAt?: string;
+  tempId?: string;
+  attachment?: { id: number; filename?: string; contentType?: string; size?: number };
 }
 
 @Component({
@@ -56,7 +59,7 @@ export interface ChatMessage {
   ],
   templateUrl: './chat-room.component.html',
   styleUrls: ['./chat-room.component.scss'],
-  providers: [ChatService], // ChatService provido aqui
+  providers: [ChatService],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class ChatRoomComponent implements OnInit, OnDestroy, AfterViewChecked {
@@ -67,24 +70,20 @@ export class ChatRoomComponent implements OnInit, OnDestroy, AfterViewChecked {
   private authService = inject(AuthService);
   private userService = inject(UserService);
   private route = inject(ActivatedRoute);
-  private router = inject(Router); // Injetando o Router
+  private router = inject(Router);
   private groupService = inject(GroupService);
   private dialog = inject(MatDialog);
+  private attachmentService = inject(AttachmentService);
 
-  // Estado da Conexão e Usuário
+  // Estado
   isConnected = false;
   username = '';
-
-  // Estado do Painel de Mensagens
   messageInput = '';
   messages: ChatMessage[] = [];
-  activeRecipientId: string | null = null; // Pode ser username ou groupId
+  activeRecipientId: string | null = null; // username ou groupId
   chatType: 'private' | 'group' | null = null;
-  activeRecipientName: string | null = null; // Nome para exibir na UI
-
-  // Estado do Painel Lateral
+  activeRecipientName: string | null = null;
   activeView: 'chats' | 'users' | 'groups' = 'chats';
-
   private subscriptions = new Subscription();
   private needsScroll = false;
   showEmojiPicker = false;
@@ -102,20 +101,15 @@ export class ChatRoomComponent implements OnInit, OnDestroy, AfterViewChecked {
     this.subscriptions.add(
       this.chatService.getMessages().subscribe(receivedMessage => {
         if (receivedMessage) {
-          console.log('Mensagem recebida pelo frontend:', receivedMessage);
-
-          const isPrivateMessageForActiveConversation = 
-            receivedMessage.type === 'CHAT' &&
+          const isPrivate = receivedMessage.type === 'CHAT' &&
             ((receivedMessage.sender === this.username && receivedMessage.recipient === this.activeRecipientId) ||
-            (receivedMessage.sender === this.activeRecipientId && receivedMessage.recipient === this.username));
+             (receivedMessage.sender === this.activeRecipientId && receivedMessage.recipient === this.username));
 
-          const isGroupMessageForActiveGroup = 
-            receivedMessage.type === 'GROUP' && 
-            receivedMessage.recipient === this.activeRecipientId;
+          const isGroup = receivedMessage.type === 'GROUP' && receivedMessage.recipient === this.activeRecipientId;
 
-          if (isPrivateMessageForActiveConversation || isGroupMessageForActiveGroup) {
-            const existingMessage = this.messages.find(m => m.tempId && m.content === receivedMessage.content);
-            if (!existingMessage) {
+          if (isPrivate || isGroup) {
+            const exists = this.messages.find(m => m.tempId && m.content === receivedMessage.content);
+            if (!exists) {
               this.messages.push(receivedMessage);
               this.needsScroll = true;
             }
@@ -124,14 +118,11 @@ export class ChatRoomComponent implements OnInit, OnDestroy, AfterViewChecked {
       })
     );
 
-    // Observa mudanças nos parâmetros da rota
     this.subscriptions.add(
       this.route.paramMap.subscribe(params => {
         this.chatType = params.get('type') as 'private' | 'group';
         this.activeRecipientId = params.get('id');
-        this.messages = []; // Limpa mensagens ao mudar de conversa
-
-        if (this.activeRecipientId && this.chatType) {
+        if (this.chatType && this.activeRecipientId) {
           this.loadChatHistory(this.chatType, this.activeRecipientId);
           this.loadRecipientName(this.chatType, this.activeRecipientId);
         }
@@ -141,13 +132,12 @@ export class ChatRoomComponent implements OnInit, OnDestroy, AfterViewChecked {
 
   ngAfterViewChecked(): void {
     if (this.needsScroll) {
-      console.log('ngAfterViewChecked: needsScroll é true, chamando scrollToBottom.');
       this.scrollToBottom();
       this.needsScroll = false;
     }
   }
 
-  // Conecta ao WebSocket e se inscreve na fila privada
+  // Conecta ao WebSocket
   private connectToChat(): void {
     if (this.username && !this.isConnected) {
       this.chatService.connect(this.username);
@@ -163,7 +153,7 @@ export class ChatRoomComponent implements OnInit, OnDestroy, AfterViewChecked {
           this.needsScroll = true;
         })
       );
-    } else if (type === 'group') {
+    } else {
       this.subscriptions.add(
         this.chatService.getGroupChatHistory(id).subscribe(history => {
           this.messages = history;
@@ -176,8 +166,7 @@ export class ChatRoomComponent implements OnInit, OnDestroy, AfterViewChecked {
   private loadRecipientName(type: 'private' | 'group', id: string): void {
     if (type === 'private') {
       this.activeRecipientName = id;
-    } else if (type === 'group') {
-      // Buscar o nome do grupo pelo ID
+    } else {
       this.subscriptions.add(
         this.groupService.getGroupById(id).subscribe(group => {
           this.activeRecipientName = group.name;
@@ -186,40 +175,28 @@ export class ChatRoomComponent implements OnInit, OnDestroy, AfterViewChecked {
     }
   }
 
-  // --- Controle de Visualização do Painel Lateral ---
-  showChats(): void {
-    this.activeView = 'chats';
-  }
+  // Sidebar view
+  showChats(): void { this.activeView = 'chats'; }
+  showUsers(): void { this.activeView = 'users'; }
+  showGroups(): void { this.activeView = 'groups'; }
 
-  showUsers(): void {
-    this.activeView = 'users';
-  }
-
-  showGroups(): void {
-    this.activeView = 'groups';
-  }
-
-  // --- Lógica de Conversa Ativa ---
+  // Seleção de usuário
   selectUser(user: Usuario): void {
-    if (!user || user.username === this.username) return; // Não pode conversar consigo mesmo
-
+    if (!user || user.username === this.username) return;
     this.router.navigate(['/chat/sala', 'private', user.username]);
   }
 
   selectUserByUsername(username: string): void {
     this.subscriptions.add(
       this.userService.getUserByUsername(username).subscribe(user => {
-        if (user) {
-          this.selectUser(user);
-        }
+        if (user) this.selectUser(user);
       })
     );
   }
 
+  // Envio de mensagem de texto
   sendMessage(): void {
-    if (!this.messageInput.trim() || !this.activeRecipientId || !this.chatType) {
-      return; // Não envia se não houver texto, destinatário ativo ou tipo de chat
-    }
+    if (!this.messageInput.trim() || !this.activeRecipientId || !this.chatType) return;
 
     const messageToSend: ChatMessage = {
       type: this.chatType === 'private' ? 'CHAT' : 'GROUP',
@@ -228,47 +205,30 @@ export class ChatRoomComponent implements OnInit, OnDestroy, AfterViewChecked {
       content: this.messageInput.trim()
     };
 
-    // Adiciona a mensagem à UI localmente para feedback instantâneo
     const localMessage: ChatMessage = {
       ...messageToSend,
-      tempId: Date.now().toString() + Math.random().toString(36).substring(2, 9), // Gera um ID temporário único
-      createdAt: new Date().toISOString() // Adiciona timestamp local para exibição imediata
+      tempId: Date.now().toString() + Math.random().toString(36).substring(2, 9),
+      createdAt: new Date().toISOString()
     };
     this.messages.push(localMessage);
     this.needsScroll = true;
-    const messageInputBeforeClear = this.messageInput; // Salva o input antes de limpar
+    const beforeClear = this.messageInput;
     this.messageInput = '';
 
-    let sendObservable: Observable<ChatMessage>;
-    if (this.chatType === 'private') {
-      sendObservable = this.chatService.sendMessage(messageToSend);
-    } else if (this.chatType === 'group') {
-      sendObservable = this.chatService.sendGroupMessage(messageToSend);
-    } else {
-      return; // Tipo de chat inválido
-    }
+    let send$: Observable<ChatMessage>;
+    send$ = this.chatType === 'private' ? this.chatService.sendMessage(messageToSend) : this.chatService.sendGroupMessage(messageToSend);
 
-    this.subscriptions.add(
-      sendObservable.subscribe({
-        next: (savedMessage) => {
-          // Encontra a mensagem local pelo tempId e a substitui pela mensagem salva do backend
-          const index = this.messages.findIndex(m => m.tempId === localMessage.tempId);
-          if (index !== -1) {
-            this.messages[index] = savedMessage;
-            this.needsScroll = true;
-          }
-        },
-        error: (err) => {
-          console.error('Erro ao enviar mensagem:', err);
-          // Opcional: remover a mensagem local ou marcar como falha
-          const index = this.messages.findIndex(m => m.tempId === localMessage.tempId);
-          if (index !== -1) {
-            this.messages.splice(index, 1); // Remove a mensagem local em caso de erro
-          }
-          this.messageInput = messageInputBeforeClear; // Restaura o input para o usuário tentar novamente
-        }
-      })
-    );
+    this.subscriptions.add(send$.subscribe({
+      next: saved => {
+        const idx = this.messages.findIndex(m => m.tempId === localMessage.tempId);
+        if (idx !== -1) { this.messages[idx] = saved; this.needsScroll = true; }
+      },
+      error: _err => {
+        const idx = this.messages.findIndex(m => m.tempId === localMessage.tempId);
+        if (idx !== -1) this.messages.splice(idx, 1);
+        this.messageInput = beforeClear;
+      }
+    }));
   }
 
   onEnterPressed(event: any): void {
@@ -278,13 +238,11 @@ export class ChatRoomComponent implements OnInit, OnDestroy, AfterViewChecked {
     }
   }
 
-  // Emoji picker handler (emoji-picker-element)
+  // Emoji picker
   onEmojiClick(ev: any): void {
     try {
       const emoji = ev?.detail?.unicode || ev?.emoji?.native || '';
-      if (emoji) {
-        this.messageInput = (this.messageInput || '') + emoji;
-      }
+      if (emoji) this.messageInput = (this.messageInput || '') + emoji;
     } catch {}
   }
 
@@ -295,9 +253,7 @@ export class ChatRoomComponent implements OnInit, OnDestroy, AfterViewChecked {
 
   @HostListener('document:click', ['$event'])
   handleDocumentClick(_: MouseEvent): void {
-    if (this.showEmojiPicker) {
-      this.showEmojiPicker = false;
-    }
+    if (this.showEmojiPicker) this.showEmojiPicker = false;
   }
 
   openAddUserDialog(): void {
@@ -305,13 +261,10 @@ export class ChatRoomComponent implements OnInit, OnDestroy, AfterViewChecked {
       width: '400px',
       data: { groupId: this.activeRecipientId },
     });
-
     dialogRef.afterClosed().subscribe((result: string[]) => {
       if (result && result.length > 0) {
         result.forEach((username: string) => {
-          this.groupService.addUserToGroupByUsername(this.activeRecipientId!, username).subscribe(() => {
-            console.log(`Usuário ${username} adicionado ao grupo.`);
-          });
+          this.groupService.addUserToGroupByUsername(this.activeRecipientId!, username).subscribe();
         });
       }
     });
@@ -322,22 +275,52 @@ export class ChatRoomComponent implements OnInit, OnDestroy, AfterViewChecked {
       width: '400px',
       data: { groupId: this.activeRecipientId },
     });
-
     dialogRef.afterClosed().subscribe((result: string[]) => {
       if (result && result.length > 0) {
         result.forEach((username: string) => {
-          this.groupService.removeUserFromGroupByUsername(this.activeRecipientId!, username).subscribe(() => {
-            console.log(`Usuário ${username} removido do grupo.`);
-          });
+          this.groupService.removeUserFromGroupByUsername(this.activeRecipientId!, username).subscribe();
         });
       }
     });
   }
 
+  // Anexos de arquivo
+  triggerFile(): void {
+    const el = document.getElementById('fileInput') as HTMLInputElement | null;
+    el?.click();
+  }
+
+  onFileSelected(event: any): void {
+    const file: File | undefined = event?.target?.files?.[0];
+    event.target.value = '';
+    if (!file || !this.activeRecipientId || !this.chatType) return;
+
+    this.attachmentService.requestUpload(file).pipe(
+      switchMap(res => this.attachmentService.putToPresignedUrl(res.uploadUrl, file).pipe(switchMap(() => [res])))
+    ).subscribe({
+      next: (res) => {
+        const msg: any = {
+          type: this.chatType === 'private' ? 'CHAT' : 'GROUP',
+          sender: this.username,
+          recipient: this.activeRecipientId,
+          content: '',
+          attachment: { id: res.id, filename: file.name }
+        };
+        const send$ = this.chatType === 'private' ? this.chatService.sendMessage(msg) : this.chatService.sendGroupMessage(msg);
+        this.subscriptions.add(send$.subscribe());
+      }
+    });
+  }
+
+  downloadAttachment(id?: number): void {
+    if (!id) return;
+    this.attachmentService.getDownloadUrl(id).subscribe(url => window.open(url, '_blank'));
+  }
+
   private scrollToBottom(): void {
     try {
       this.myScrollContainer.nativeElement.scrollTop = this.myScrollContainer.nativeElement.scrollHeight;
-    } catch(err) { }
+    } catch {}
   }
 
   ngOnDestroy(): void {

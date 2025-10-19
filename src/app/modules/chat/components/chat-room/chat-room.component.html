@@ -82,7 +82,14 @@
               <div class="message__bubble">
                 <div class="message__content">
                   <span *ngIf="msg.type === 'GROUP'" class="message__sender-group">{{ msg.sender }}: </span>
-                  {{ msg.content }}
+                  <ng-container *ngIf="!msg.attachment; else attachmentTpl">{{ msg.content }}</ng-container>
+                  <ng-template #attachmentTpl>
+                    <button mat-stroked-button color="primary" (click)="downloadAttachment(msg.attachment?.id)">
+                      <mat-icon>attach_file</mat-icon>
+                      {{ msg.attachment?.filename || 'Arquivo' }}
+                    </button>
+                    <div *ngIf="msg.content">{{ msg.content }}</div>
+                  </ng-template>
                 </div>
                 <div class="message__meta">
                   <span class="message__timestamp">{{ msg.createdAt | date:'shortTime' }}</span>
@@ -103,9 +110,8 @@
               <emoji-picker locale="pt" (emoji-click)="onEmojiClick($event)"></emoji-picker>
             </div>
           </div>
-          <button mat-icon-button matTooltip="Anexar arquivo">
-            <mat-icon>attach_file</mat-icon>
-          </button>
+          <button mat-icon-button matTooltip="Anexar arquivo" (click)="triggerFile()"><mat-icon>attach_file</mat-icon></button>
+<input #fileInput id="fileInput" type="file" hidden (change)="onFileSelected($event)">
           <textarea matInput
                     cdkTextareaAutosize
                     #autosize="cdkTextareaAutosize"
@@ -130,3 +136,6 @@
     </div>
   </ng-template>
 </div>
+
+
+
