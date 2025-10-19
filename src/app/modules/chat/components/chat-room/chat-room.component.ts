@@ -295,17 +295,45 @@ export class ChatRoomComponent implements OnInit, OnDestroy, AfterViewChecked {
     event.target.value = '';
     if (!file || !this.activeRecipientId || !this.chatType) return;
 
-    // Novo fluxo: upload direto para o backend e depois envio da mensagem com attachment
-    this.attachmentService.uploadDirect(file).subscribe(resp => {
-      const msg: any = {
-        type: this.chatType === 'private' ? 'CHAT' : 'GROUP',
-        sender: this.username,
-        recipient: this.activeRecipientId,
-        content: '',
-        attachment: { id: resp.id, filename: resp.filename, contentType: resp.contentType, size: resp.size }
-      };
-      const send$ = this.chatType === 'private' ? this.chatService.sendMessage(msg) : this.chatService.sendGroupMessage(msg);
-      this.subscriptions.add(send$.subscribe());
+    const tempId = Date.now().toString() + Math.random().toString(36).substring(2, 9);
+    const localMessage: ChatMessage = {
+      type: this.chatType === 'private' ? 'CHAT' : 'GROUP',
+      sender: this.username,
+      recipient: this.activeRecipientId,
+      content: '',
+      createdAt: new Date().toISOString(),
+      tempId,
+      attachment: { filename: file.name, contentType: file.type, size: file.size } as any
+    };
+    this.messages.push(localMessage);
+    this.needsScroll = true;
+
+    this.attachmentService.uploadDirect(file).subscribe({
+      next: (resp) => {
+        const msg: any = {
+          type: this.chatType === 'private' ? 'CHAT' : 'GROUP',
+          sender: this.username,
+          recipient: this.activeRecipientId,
+          content: '',
+          
+attachment: { id: resp.id, filename: resp.filename, contentType: resp.contentType, size: resp.size }
+        };
+        const send$ = this.chatType === 'private' ? this.chatService.sendMessage(msg) : this.chatService.sendGroupMessage(msg);
+        this.subscriptions.add(send$.subscribe({
+          next: saved => {
+            const idx = this.messages.findIndex(m => m.tempId === tempId);
+            if (idx !== -1) { this.messages[idx] = saved; this.needsScroll = true; }
+          },
+          error: _err => {
+            const idx = this.messages.findIndex(m => m.tempId === tempId);
+            if (idx !== -1) this.messages.splice(idx, 1);
+          }
+        }));
+      },
+      error: _err => {
+        const idx = this.messages.findIndex(m => m.tempId === tempId);
+        if (idx !== -1) this.messages.splice(idx, 1);
+      }
     });
   }
 
@@ -325,5 +353,8 @@ export class ChatRoomComponent implements OnInit, OnDestroy, AfterViewChecked {
     this.subscriptions.unsubscribe();
   }
 }
+
+
+
 
 
