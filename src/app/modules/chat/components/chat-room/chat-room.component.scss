@@ -72,6 +72,26 @@
   }
 }
 
+/* Emoji menu tweaks */
+:host ::ng-deep .emoji-menu .mat-mdc-menu-content {
+  padding: 0 !important;
+  overflow: visible !important;
+}
+
+/* Custom emoji popover */
+.emoji-popover {
+  position: absolute;
+  bottom: 72px; /* above input */
+  left: 80px;  /* near emoji button */
+  z-index: 1000;
+  width: 320px;
+  height: 360px;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.18);
+  overflow: hidden;
+}
+
 // --- Nova Barra Lateral de App --- //
 .app-sidebar {
   width: 70px;

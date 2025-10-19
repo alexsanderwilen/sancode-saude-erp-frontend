@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, ViewChild, ElementRef, AfterViewChecked, inject } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild, ElementRef, AfterViewChecked, inject, CUSTOM_ELEMENTS_SCHEMA, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
@@ -56,7 +56,8 @@ export interface ChatMessage {
   ],
   templateUrl: './chat-room.component.html',
   styleUrls: ['./chat-room.component.scss'],
-  providers: [ChatService] // ChatService é provido aqui
+  providers: [ChatService], // ChatService provido aqui
+  schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class ChatRoomComponent implements OnInit, OnDestroy, AfterViewChecked {
   @ViewChild('scrollMe') private myScrollContainer!: ElementRef;
@@ -86,6 +87,7 @@ export class ChatRoomComponent implements OnInit, OnDestroy, AfterViewChecked {
 
   private subscriptions = new Subscription();
   private needsScroll = false;
+  showEmojiPicker = false;
 
   ngOnInit(): void {
     this.subscriptions.add(
@@ -276,6 +278,28 @@ export class ChatRoomComponent implements OnInit, OnDestroy, AfterViewChecked {
     }
   }
 
+  // Emoji picker handler (emoji-picker-element)
+  onEmojiClick(ev: any): void {
+    try {
+      const emoji = ev?.detail?.unicode || ev?.emoji?.native || '';
+      if (emoji) {
+        this.messageInput = (this.messageInput || '') + emoji;
+      }
+    } catch {}
+  }
+
+  toggleEmojiPicker(event: Event): void {
+    event.stopPropagation();
+    this.showEmojiPicker = !this.showEmojiPicker;
+  }
+
+  @HostListener('document:click', ['$event'])
+  handleDocumentClick(_: MouseEvent): void {
+    if (this.showEmojiPicker) {
+      this.showEmojiPicker = false;
+    }
+  }
+
   openAddUserDialog(): void {
     const dialogRef = this.dialog.open(AddUserToGroupDialogComponent, {
       width: '400px',
@@ -321,3 +345,5 @@ export class ChatRoomComponent implements OnInit, OnDestroy, AfterViewChecked {
     this.subscriptions.unsubscribe();
   }
 }
+
+

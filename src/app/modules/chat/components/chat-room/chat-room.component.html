@@ -95,9 +95,12 @@
 
         <!-- Formulário de Entrada de Texto -->
         <footer class="chat-main__input-form">
-          <button mat-icon-button matTooltip="Emojis">
+          <button mat-icon-button matTooltip="Emojis" (click)="toggleEmojiPicker($event)">
             <mat-icon>sentiment_satisfied_alt</mat-icon>
           </button>
+          <div *ngIf="showEmojiPicker" class="emoji-popover" (click)="$event.stopPropagation()">
+            <emoji-picker locale="pt" (emoji-click)="onEmojiClick($event)"></emoji-picker>
+          </div>
           <button mat-icon-button matTooltip="Anexar arquivo">
             <mat-icon>attach_file</mat-icon>
           </button>
