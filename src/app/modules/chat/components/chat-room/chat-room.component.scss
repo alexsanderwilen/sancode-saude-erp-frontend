@@ -27,6 +27,51 @@
   overflow: hidden;
 }
 
+.chat-main__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 56px;
+  padding: 0 16px;
+  background-color: var(--header-bg);
+  border-bottom: 1px solid var(--border-color);
+  box-sizing: border-box;
+
+  h4 {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: var(--text-color);
+  }
+
+  .spacer {
+    flex: 1;
+  }
+
+  // Quando o menu (div com *ngIf) não existir, o flex naturalmente "colapsa".
+  // Então, criamos uma área reservada para ele.
+  &::after {
+    content: '';
+    display: block;
+    width: 40px; // mesma largura do botão
+    height: 40px; // mesma altura do botão
+  }
+
+  button[mat-icon-button] {
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    mat-icon {
+      font-size: 24px;
+      color: var(--text-muted-color);
+    }
+  }
+}
+
 // --- Nova Barra Lateral de App --- //
 .app-sidebar {
   width: 70px;

@@ -43,4 +43,22 @@ export class GroupService {
   getGroupById(id: string): Observable<ChatGroup> {
     return this.http.get<ChatGroup>(`${this.apiUrl}/${id}`);
   }
+
+  /**
+   * Adiciona um usuário a um grupo.
+   * @param groupId O ID do grupo.
+   * @param userId O ID do usuário a ser adicionado.
+   */
+  addUserToGroup(groupId: string, userId: string): Observable<any> {
+    return this.http.post(`${this.apiUrl}/${groupId}/members/${userId}`, {});
+  }
+
+  /**
+   * Remove um usuário de um grupo.
+   * @param groupId O ID do grupo.
+   * @param userId O ID do usuário a ser removido.
+   */
+  removeUserFromGroup(groupId: string, userId: string): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/${groupId}/members/${userId}`);
+  }
 }

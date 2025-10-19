@@ -16,10 +16,15 @@ import { UserService } from '@core/services/user.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { GroupService, ChatGroup } from '../../services/group.service';
 
+import { MatMenuModule } from '@angular/material/menu';
+import { MatDialog } from '@angular/material/dialog';
+
 // Componentes das abas
 import { UserListComponent } from '../user-list/user-list.component';
 import { ConversationListComponent } from '../conversation-list/conversation-list.component';
 import { GroupListComponent } from '../group-list/group-list.component';
+import { AddUserToGroupDialogComponent } from '../add-user-to-group-dialog/add-user-to-group-dialog.component';
+import { RemoveUserFromGroupDialogComponent } from '../remove-user-from-group-dialog/remove-user-from-group-dialog.component';
 
 // A interface da mensagem agora precisa de um destinatário opcional
 export interface ChatMessage {
@@ -46,7 +51,8 @@ export interface ChatMessage {
     TextFieldModule,
     UserListComponent,
     ConversationListComponent,
-    GroupListComponent
+    GroupListComponent,
+    MatMenuModule
   ],
   templateUrl: './chat-room.component.html',
   styleUrls: ['./chat-room.component.scss'],
@@ -62,6 +68,7 @@ export class ChatRoomComponent implements OnInit, OnDestroy, AfterViewChecked {
   private route = inject(ActivatedRoute);
   private router = inject(Router); // Injetando o Router
   private groupService = inject(GroupService);
+  private dialog = inject(MatDialog);
 
   // Estado da Conexão e Usuário
   isConnected = false;
@@ -267,6 +274,40 @@ export class ChatRoomComponent implements OnInit, OnDestroy, AfterViewChecked {
       event.preventDefault();
       this.sendMessage();
     }
+  }
+
+  openAddUserDialog(): void {
+    const dialogRef = this.dialog.open(AddUserToGroupDialogComponent, {
+      width: '400px',
+      data: { groupId: this.activeRecipientId },
+    });
+
+    dialogRef.afterClosed().subscribe((result: number[]) => {
+      if (result && result.length > 0) {
+        result.forEach((userId: number) => {
+          this.groupService.addUserToGroup(this.activeRecipientId!, userId.toString()).subscribe(() => {
+            console.log(`Usuário ${userId} adicionado ao grupo.`);
+          });
+        });
+      }
+    });
+  }
+
+  openRemoveUserDialog(): void {
+    const dialogRef = this.dialog.open(RemoveUserFromGroupDialogComponent, {
+      width: '400px',
+      data: { groupId: this.activeRecipientId },
+    });
+
+    dialogRef.afterClosed().subscribe((result: number[]) => {
+      if (result && result.length > 0) {
+        result.forEach((userId: number) => {
+          this.groupService.removeUserFromGroup(this.activeRecipientId!, userId.toString()).subscribe(() => {
+            console.log(`Usuário ${userId} removido do grupo.`);
+          });
+        });
+      }
+    });
   }
 
   private scrollToBottom(): void {

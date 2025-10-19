@@ -49,6 +49,22 @@
         <!-- Cabeçalho da Conversa Ativa -->
         <header class="chat-main__header">
           <h4>{{ activeRecipientName ? activeRecipientName : 'Selecione uma conversa' }}</h4>
+          <div class="spacer"></div>
+          <div *ngIf="chatType === 'group'">
+            <button mat-icon-button [matMenuTriggerFor]="menu">
+              <mat-icon>more_vert</mat-icon>
+            </button>
+            <mat-menu #menu="matMenu">
+              <button mat-menu-item (click)="openAddUserDialog()">
+                <mat-icon>person_add</mat-icon>
+                <span>Adicionar usuário</span>
+              </button>
+              <button mat-menu-item (click)="openRemoveUserDialog()">
+                <mat-icon>person_remove</mat-icon>
+                <span>Remover usuário</span>
+              </button>
+            </mat-menu>
+          </div>
         </header>
 
         <!-- Área de Mensagens -->
