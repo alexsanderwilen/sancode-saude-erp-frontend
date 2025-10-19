@@ -79,10 +79,12 @@
 }
 
 /* Custom emoji popover */
+.emoji-anchor { position: relative; display: inline-block; }
+
 .emoji-popover {
   position: absolute;
-  bottom: 72px; /* above input */
-  left: 80px;  /* near emoji button */
+  bottom: 48px; /* directly above emoji button */
+  left: 0;      /* aligned to emoji button left edge */
   z-index: 1000;
   width: 320px;
   height: 360px;
