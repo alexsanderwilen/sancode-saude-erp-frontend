@@ -1,8 +1,8 @@
-/*
-  Estilização da interface do chat com o tema inspirado no WhatsApp Web.
+﻿/*
+  EstilizaÃ§Ã£o da interface do chat com o tema inspirado no WhatsApp Web.
 */
 
-// Variáveis de Cores (paleta WhatsApp)
+// VariÃ¡veis de Cores (paleta WhatsApp)
 :host {
   --whatsapp-bg: #e5ddd5;
   --sidebar-bg: #ffffff;
@@ -21,7 +21,7 @@
 .chat-container {
   display: flex;
   flex-direction: row;
-  height: calc(100vh - 64px) !important; // Altura calculada menos a toolbar do módulo
+  height: calc(100vh - 64px) !important; // Altura calculada menos a toolbar do mÃ³dulo
   width: 100%;
   background-color: var(--sidebar-bg);
   overflow: hidden;
@@ -48,13 +48,13 @@
     flex: 1;
   }
 
-  // Quando o menu (div com *ngIf) não existir, o flex naturalmente "colapsa".
-  // Então, criamos uma área reservada para ele.
+  // Quando o menu (div com *ngIf) nÃ£o existir, o flex naturalmente "colapsa".
+  // EntÃ£o, criamos uma Ã¡rea reservada para ele.
   &::after {
     content: '';
     display: block;
-    width: 40px; // mesma largura do botão
-    height: 40px; // mesma altura do botão
+    width: 40px; // mesma largura do botÃ£o
+    height: 40px; // mesma altura do botÃ£o
   }
 
   button[mat-icon-button] {
@@ -151,7 +151,7 @@
 }
 
 /* ============================================================
-   🔽 ADICIONADO: SCROLL PARA LISTAS DE CONVERSAS / USUÁRIOS / GRUPOS
+   ðŸ”½ ADICIONADO: SCROLL PARA LISTAS DE CONVERSAS / USUÃRIOS / GRUPOS
    ============================================================ */
 
 /* 0) Impede que a sidebar inteira role */
@@ -170,7 +170,7 @@
   min-height: 0;
 }
 
-/* 2) Cada view (chats, users, groups) também é flex vertical */
+/* 2) Cada view (chats, users, groups) tambÃ©m Ã© flex vertical */
 .chat-sidebar > div > div {
   display: flex;
   flex-direction: column;
@@ -178,7 +178,7 @@
   min-height: 0;
 }
 
-/* 3) Cabeçalho fixo */
+/* 3) CabeÃ§alho fixo */
 .chat-sidebar__header {
   flex: 0 0 auto;
 }
@@ -193,7 +193,7 @@
   overflow-x: hidden;
 }
 
-/* 5) Aparência da barra de rolagem */
+/* 5) AparÃªncia da barra de rolagem */
 .chat-sidebar app-conversation-list::-webkit-scrollbar,
 .chat-sidebar app-user-list::-webkit-scrollbar,
 .chat-sidebar app-group-list::-webkit-scrollbar {
@@ -222,7 +222,7 @@
 }
 
 /* ============================================================
-   🔼 FIM DAS ALTERAÇÕES DE SCROLL
+   ðŸ”¼ FIM DAS ALTERAÃ‡Ã•ES DE SCROLL
    ============================================================ */
 
 .conversation-item {
@@ -437,7 +437,7 @@
   }
 }
 
-// --- Seção de Carregamento --- //
+// --- SeÃ§Ã£o de Carregamento --- //
 .loading-section {
   display: flex;
   flex-direction: column;
@@ -471,3 +471,9 @@
 /* ============================================================
    FIM DO ARQUIVO COMPLETO COM SCROLL NAS LISTAS
    ============================================================ */
+
+
+/* Read receipt colors */
+.message__meta mat-icon.read { color: #1e88e5; } /* blue for read */
+.message__meta mat-icon.unread { color: rgba(0,0,0,0.38); } /* grey for unread */
+

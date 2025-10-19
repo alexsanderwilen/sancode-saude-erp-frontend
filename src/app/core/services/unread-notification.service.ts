@@ -23,6 +23,7 @@ export interface UnreadSummaryDto {
 export class UnreadNotificationService {
   private stomp: Client | null = null;
   private summary$ = new BehaviorSubject<UnreadSummaryDto>({ total: 0, conversations: [] });
+  private readMap = new Map<string, Map<string, string>>(); // convId -> reader -> ISO time
 
   constructor(private http: HttpClient) {}
 
@@ -42,6 +43,12 @@ export class UnreadNotificationService {
       this.stomp!.subscribe('/user/queue/unread', (msg: IMessage) => {
         const data = JSON.parse(msg.body) as UnreadSummaryDto;
         this.summary$.next(data);
+      });
+      this.stomp!.subscribe('/user/queue/read-receipts', (msg: IMessage) => {
+        const data = JSON.parse(msg.body) as { conversationId: string; readerUsername: string; lastReadAt: string };
+        const conv = data.conversationId;
+        if (!this.readMap.has(conv)) this.readMap.set(conv, new Map());
+        this.readMap.get(conv)!.set(data.readerUsername, data.lastReadAt);
       });
       // bootstrap inicial
       this.refresh().subscribe();
@@ -64,5 +71,17 @@ export class UnreadNotificationService {
 
   markRead(type: 'private' | 'group', id: string): Observable<void> {
     return this.http.post<void>(`${CHAT_API_URL}/unread/conversations/${type}/${id}/read`, {});
+  }
+
+  // Bootstrapping da leitura do outro participante (privado)
+  fetchPrivateReadState(otherUsername: string) {
+    return this.http.get<{ conversationId: string; readerUsername: string; lastReadAt: string }>(`${CHAT_API_URL}/unread/read-state/private/${otherUsername}`);
+  }
+
+  getPrivateLastRead(otherUsername: string, selfUsername: string): Date | null {
+    const ids = [otherUsername, selfUsername].sort().join('_');
+    const map = this.readMap.get(ids);
+    const iso = map?.get(otherUsername);
+    return iso ? new Date(iso) : null;
   }
 }

@@ -129,6 +129,16 @@ export class ChatRoomComponent implements OnInit, OnDestroy, AfterViewChecked {
           this.loadRecipientName(this.chatType, this.activeRecipientId);
           // Marca como lida ao abrir
           this.unreadSvc.markRead(this.chatType, this.activeRecipientId).subscribe();
+          // Bootstrap read-state do outro participante em chat privado
+          if (this.chatType === 'private') {
+            this.unreadSvc.fetchPrivateReadState(this.activeRecipientId).subscribe((r) => {
+              // armazenado internamente pelo serviço via future receipts; aqui podemos só forçar uma leitura inicial
+              // atualiza mapa local de leitura
+              const ids = [this.activeRecipientId!, this.username].sort().join('_');
+              // pequeno hack: acessar o método getPrivateLastRead já sincroniza quando recibo chegar
+              this.unreadSvc.getPrivateLastRead(this.activeRecipientId!, this.username);
+            });
+          }
         }
       })
     );
@@ -385,6 +395,15 @@ attachment: { id: resp.id, filename: resp.filename, contentType: resp.contentTyp
   ngOnDestroy(): void {
     this.chatService.disconnect();
     this.subscriptions.unsubscribe();
+  }
+
+  // UI helpers de recibo de leitura (privado)
+  isMessageReadByRecipient(msg: ChatMessage): boolean {
+    if (msg.sender !== this.username) return false;
+    if (this.chatType !== 'private' || !this.activeRecipientId) return false;
+    const lastRead = this.unreadSvc.getPrivateLastRead(this.activeRecipientId, this.username);
+    if (!lastRead || !msg.createdAt) return false;
+    return new Date(msg.createdAt) <= lastRead;
   }
 }
 

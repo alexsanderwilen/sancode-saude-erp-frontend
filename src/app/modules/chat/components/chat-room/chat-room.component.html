@@ -98,7 +98,7 @@
                 </div>
                 <div class="message__meta">
                   <span class="message__timestamp">{{ msg.createdAt | date:'shortTime' }}</span>
-                  <mat-icon *ngIf="msg.sender === username">done_all</mat-icon>
+                  <mat-icon *ngIf="msg.sender === username" [ngClass]="{ 'read': isMessageReadByRecipient(msg), 'unread': !isMessageReadByRecipient(msg) }">done_all</mat-icon>
                 </div>
               </div>
             </ng-container>
