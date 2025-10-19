@@ -53,7 +53,6 @@
   flex-grow: 1;
 }
 
-
 // --- Barra Lateral --- //
 .chat-sidebar {
   width: 340px;
@@ -76,9 +75,88 @@
   }
 
   &__conversation-list {
-    list-style: none; margin: 0; padding: 0; overflow-y: auto; flex-grow: 1;
+    list-style: none; 
+    margin: 0; 
+    padding: 0; 
+    overflow-y: auto; 
+    flex-grow: 1;
   }
 }
+
+/* ============================================================
+   🔽 ADICIONADO: SCROLL PARA LISTAS DE CONVERSAS / USUÁRIOS / GRUPOS
+   ============================================================ */
+
+/* 0) Impede que a sidebar inteira role */
+.chat-sidebar {
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+/* 1) Os hosts internos (ngSwitch etc.) usam flex e permitem overflow interno */
+.chat-sidebar > div {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+/* 2) Cada view (chats, users, groups) também é flex vertical */
+.chat-sidebar > div > div {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+/* 3) Cabeçalho fixo */
+.chat-sidebar__header {
+  flex: 0 0 auto;
+}
+
+/* 4) Scroll apenas nas listas */
+.chat-sidebar app-conversation-list,
+.chat-sidebar app-user-list,
+.chat-sidebar app-group-list {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+/* 5) Aparência da barra de rolagem */
+.chat-sidebar app-conversation-list::-webkit-scrollbar,
+.chat-sidebar app-user-list::-webkit-scrollbar,
+.chat-sidebar app-group-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.chat-sidebar app-conversation-list::-webkit-scrollbar-thumb,
+.chat-sidebar app-user-list::-webkit-scrollbar-thumb,
+.chat-sidebar app-group-list::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 4px;
+}
+
+.chat-sidebar app-conversation-list::-webkit-scrollbar-thumb:hover,
+.chat-sidebar app-user-list::-webkit-scrollbar-thumb:hover,
+.chat-sidebar app-group-list::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
+
+/* Firefox */
+.chat-sidebar app-conversation-list,
+.chat-sidebar app-user-list,
+.chat-sidebar app-group-list {
+  scrollbar-width: thin;
+  scrollbar-color: #c1c1c1 transparent;
+}
+
+/* ============================================================
+   🔼 FIM DAS ALTERAÇÕES DE SCROLL
+   ============================================================ */
 
 .conversation-item {
   display: flex;
@@ -322,3 +400,7 @@
     padding: 8px 12px;
   }
 }
+
+/* ============================================================
+   FIM DO ARQUIVO COMPLETO COM SCROLL NAS LISTAS
+   ============================================================ */
