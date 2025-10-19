@@ -39,6 +39,17 @@ export class AttachmentService {
   getDownloadUrl(id: number): Observable<string> {
     return this.http.get<DownloadResponse>(`${this.apiUrl}/${id}/download`).pipe(map(r => r.url));
   }
+
+  // URL para visualização/baixa via backend (streaming), evitando expor MinIO
+  getContentUrl(id: number, disposition: 'inline' | 'attachment' = 'inline'): string {
+    return `${this.apiUrl}/${id}/content?disposition=${disposition}`;
+  }
+
+  // Busca o conteúdo com cabeçalhos (para extrair filename do Content-Disposition)
+  getContentResponse(id: number, disposition: 'inline' | 'attachment' = 'inline') {
+    const url = this.getContentUrl(id, disposition);
+    return this.http.get(url, { responseType: 'blob', observe: 'response' });
+  }
 }
 
 

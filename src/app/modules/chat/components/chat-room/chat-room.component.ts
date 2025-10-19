@@ -339,7 +339,37 @@ attachment: { id: resp.id, filename: resp.filename, contentType: resp.contentTyp
 
   downloadAttachment(id?: number): void {
     if (!id) return;
-    this.attachmentService.getDownloadUrl(id).subscribe(url => window.open(url, '_blank'));
+    // Baixa inline abrindo em nova aba (usa JWT via HttpClient e Blob)
+    this.attachmentService.getContentResponse(id, 'inline').subscribe({
+      next: (res) => {
+        const blobUrl = URL.createObjectURL(res.body as Blob);
+        window.open(blobUrl, '_blank');
+        // URL.revokeObjectURL pode ser chamado depois de algum tempo/opção
+        setTimeout(() => URL.revokeObjectURL(blobUrl), 30_000);
+      }
+    });
+  }
+
+  saveAttachment(id?: number): void {
+    if (!id) return;
+    // Força download criando um link temporário com Blob
+    this.attachmentService.getContentResponse(id, 'attachment').subscribe({
+      next: (res) => {
+        const blobUrl = URL.createObjectURL(res.body as Blob);
+        // tenta extrair filename dos headers
+        const cd = res.headers.get('Content-Disposition') || '';
+        const match = cd.match(/filename="?([^";]+)"?/i);
+        const filename = match ? match[1] : 'arquivo';
+        const a = document.createElement('a');
+        a.href = blobUrl;
+        a.download = filename;
+        a.style.display = 'none';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        setTimeout(() => URL.revokeObjectURL(blobUrl), 10_000);
+      }
+    });
   }
 
   private scrollToBottom(): void {

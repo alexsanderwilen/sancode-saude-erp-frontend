@@ -84,10 +84,15 @@
                   <span *ngIf="msg.type === 'GROUP'" class="message__sender-group">{{ msg.sender }}: </span>
                   <ng-container *ngIf="!msg.attachment; else attachmentTpl">{{ msg.content }}</ng-container>
                   <ng-template #attachmentTpl>
-                    <button mat-stroked-button color="primary" (click)="downloadAttachment(msg.attachment?.id)">
-                      <mat-icon>attach_file</mat-icon>
-                      {{ msg.attachment?.filename || 'Arquivo' }}
-                    </button>
+                    <div class="attachment-actions">
+                      <button mat-stroked-button color="primary" (click)="downloadAttachment(msg.attachment?.id)">
+                        <mat-icon>open_in_new</mat-icon>
+                        {{ msg.attachment?.filename || 'Arquivo' }}
+                      </button>
+                      <button mat-icon-button matTooltip="Baixar" (click)="saveAttachment(msg.attachment?.id)">
+                        <mat-icon>download</mat-icon>
+                      </button>
+                    </div>
                     <div *ngIf="msg.content">{{ msg.content }}</div>
                   </ng-template>
                 </div>
