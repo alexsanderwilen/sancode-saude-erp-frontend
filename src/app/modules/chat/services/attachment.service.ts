@@ -26,11 +26,12 @@ export class AttachmentService {
   }
 
   putToPresignedUrl(url: string, file: File): Observable<Response> {
-    return from(fetch(url, { method: 'PUT', body: file }));
+    return from(fetch(url, { method: 'PUT', mode: 'cors', body: file }));
   }
 
   getDownloadUrl(id: number): Observable<string> {
     return this.http.get<DownloadResponse>(`${this.apiUrl}/${id}/download`).pipe(map(r => r.url));
   }
 }
+
 
