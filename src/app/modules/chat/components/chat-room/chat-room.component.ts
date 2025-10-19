@@ -20,6 +20,7 @@ import { GroupService, ChatGroup } from '../../services/group.service';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatDialog } from '@angular/material/dialog';
 import { AttachmentService } from '../../services/attachment.service';
+import { UnreadNotificationService } from '@core/services/unread-notification.service';
 
 // Componentes das abas
 import { UserListComponent } from '../user-list/user-list.component';
@@ -74,6 +75,7 @@ export class ChatRoomComponent implements OnInit, OnDestroy, AfterViewChecked {
   private groupService = inject(GroupService);
   private dialog = inject(MatDialog);
   private attachmentService = inject(AttachmentService);
+  private unreadSvc = inject(UnreadNotificationService);
 
   // Estado
   isConnected = false;
@@ -125,6 +127,8 @@ export class ChatRoomComponent implements OnInit, OnDestroy, AfterViewChecked {
         if (this.chatType && this.activeRecipientId) {
           this.loadChatHistory(this.chatType, this.activeRecipientId);
           this.loadRecipientName(this.chatType, this.activeRecipientId);
+          // Marca como lida ao abrir
+          this.unreadSvc.markRead(this.chatType, this.activeRecipientId).subscribe();
         }
       })
     );

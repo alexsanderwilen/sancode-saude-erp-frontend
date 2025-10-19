@@ -5,6 +5,22 @@
   <a routerLink="/usuarios" mat-button>Usuários</a>
   <a routerLink="/chat" mat-button>Chat</a>
 
+  <button mat-icon-button [matMenuTriggerFor]="unreadMenu" matBadge="{{ unread.total }}" matBadgeHidden="{{ unread.total === 0 }}" matBadgeColor="accent" aria-label="Notificações de mensagens">
+    <mat-icon>notifications</mat-icon>
+  </button>
+  <mat-menu #unreadMenu="matMenu" xPosition="before">
+    <ng-container *ngIf="unread.conversations.length > 0; else noUnread">
+      <button mat-menu-item *ngFor="let c of unread.conversations" [routerLink]="['/chat/sala', c.type, c.id]" (click)="$event.stopPropagation()">
+        <mat-icon>{{ c.type === 'group' ? 'group' : 'person' }}</mat-icon>
+        <span style="flex:1 1 auto">{{ c.name }}</span>
+        <span matBadge="{{ c.count }}" matBadgeColor="warn" matBadgeSize="small"></span>
+      </button>
+    </ng-container>
+    <ng-template #noUnread>
+      <div style="padding: 8px 16px; width: 220px;">Sem mensagens não lidas</div>
+    </ng-template>
+  </mat-menu>
+
   <!-- Usar o componente de menu de perfil reutilizável -->
   <app-user-profile-menu></app-user-profile-menu>
 </mat-toolbar>

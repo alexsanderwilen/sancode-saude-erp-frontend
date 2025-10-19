@@ -28,9 +28,7 @@ export class ChatService {
     if (!this.stompClient || !this.stompClient.active) {
       this.stompClient = new Client();
 
-      this.stompClient.webSocketFactory = () => {
-        return new SockJS(`${WEBSOCKET_URL}?token=${token}`);
-      };
+      this.stompClient.webSocketFactory = () => new SockJS(WEBSOCKET_URL);
 
       this.stompClient.configure({
         connectHeaders: {
