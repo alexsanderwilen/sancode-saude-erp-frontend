@@ -25,6 +25,13 @@ export class AttachmentService {
     return this.http.post<UploadResponse>(`${this.apiUrl}/uploads`, body);
   }
 
+  // Upload direto (multipart) para o backend_chat
+  uploadDirect(file: File): Observable<{ id: number; filename: string; contentType: string; size: number }> {
+    const form = new FormData();
+    form.append('file', file, file.name);
+    return this.http.post<{ id: number; filename: string; contentType: string; size: number }>(`${this.apiUrl}`, form);
+  }
+
   putToPresignedUrl(url: string, file: File): Observable<Response> {
     return from(fetch(url, { method: 'PUT', mode: 'cors', body: file }));
   }

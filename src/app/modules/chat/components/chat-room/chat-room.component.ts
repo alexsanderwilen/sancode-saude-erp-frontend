@@ -295,20 +295,17 @@ export class ChatRoomComponent implements OnInit, OnDestroy, AfterViewChecked {
     event.target.value = '';
     if (!file || !this.activeRecipientId || !this.chatType) return;
 
-    this.attachmentService.requestUpload(file).pipe(
-      switchMap(res => this.attachmentService.putToPresignedUrl(res.uploadUrl, file).pipe(switchMap(() => [res])))
-    ).subscribe({
-      next: (res) => {
-        const msg: any = {
-          type: this.chatType === 'private' ? 'CHAT' : 'GROUP',
-          sender: this.username,
-          recipient: this.activeRecipientId,
-          content: '',
-          attachment: { id: res.id, filename: file.name }
-        };
-        const send$ = this.chatType === 'private' ? this.chatService.sendMessage(msg) : this.chatService.sendGroupMessage(msg);
-        this.subscriptions.add(send$.subscribe());
-      }
+    // Novo fluxo: upload direto para o backend e depois envio da mensagem com attachment
+    this.attachmentService.uploadDirect(file).subscribe(resp => {
+      const msg: any = {
+        type: this.chatType === 'private' ? 'CHAT' : 'GROUP',
+        sender: this.username,
+        recipient: this.activeRecipientId,
+        content: '',
+        attachment: { id: resp.id, filename: resp.filename, contentType: resp.contentType, size: resp.size }
+      };
+      const send$ = this.chatType === 'private' ? this.chatService.sendMessage(msg) : this.chatService.sendGroupMessage(msg);
+      this.subscriptions.add(send$.subscribe());
     });
   }
 
