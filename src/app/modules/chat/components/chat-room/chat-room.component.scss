@@ -268,13 +268,13 @@
   }
 
   &:not(.message--own) .message__bubble::after {
-    left: -10px;
+    left: -05px;
     border-right-color: var(--message-bg);
     border-left: 0;
   }
 
   &--own .message__bubble::after {
-    right: -10px;
+    right: -05px;
     border-left-color: var(--message-own-bg);
     border-right: 0;
   }
