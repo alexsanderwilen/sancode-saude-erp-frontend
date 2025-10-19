@@ -1,8 +1,8 @@
 <h2 mat-dialog-title>Adicionar usuários ao grupo</h2>
 <mat-dialog-content>
-  <mat-selection-list #userList>
+  <mat-selection-list #userList (selectionChange)="onListSelectionChange($event)">
     <mat-list-option *ngFor="let user of users" [value]="user.username">
-      <mat-checkbox (change)="onUserSelectionChange($event, user.username)">{{ user.username }}</mat-checkbox>
+      {{ user.username }}
     </mat-list-option>
   </mat-selection-list>
 </mat-dialog-content>

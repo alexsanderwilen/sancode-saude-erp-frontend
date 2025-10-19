@@ -1,8 +1,8 @@
 <h2 mat-dialog-title>Remover usuários do grupo</h2>
 <mat-dialog-content>
-  <mat-selection-list #userList>
+  <mat-selection-list #userList (selectionChange)="onListSelectionChange($event)">
     <mat-list-option *ngFor="let member of members" [value]="member.username">
-      <mat-checkbox (change)="onUserSelectionChange($event, member.username)">{{ member.username }}</mat-checkbox>
+      {{ member.username }}
     </mat-list-option>
   </mat-selection-list>
 </mat-dialog-content>

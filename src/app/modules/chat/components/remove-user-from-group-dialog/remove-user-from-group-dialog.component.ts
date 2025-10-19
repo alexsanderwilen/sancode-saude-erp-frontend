@@ -1,8 +1,7 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { MatListModule } from '@angular/material/list';
-import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatListModule, MatSelectionListChange } from '@angular/material/list';
 import { MatButtonModule } from '@angular/material/button';
 import { GroupService } from '../../services/group.service';
 import { Usuario } from '@shared/models/usuario.model';
@@ -11,7 +10,7 @@ import { AuthService } from '@core/services/auth.service';
 @Component({
   selector: 'app-remove-user-from-group-dialog',
   standalone: true,
-  imports: [CommonModule, MatDialogModule, MatListModule, MatCheckboxModule, MatButtonModule],
+  imports: [CommonModule, MatDialogModule, MatListModule, MatButtonModule],
   templateUrl: './remove-user-from-group-dialog.component.html',
 })
 export class RemoveUserFromGroupDialogComponent implements OnInit {
@@ -37,15 +36,8 @@ export class RemoveUserFromGroupDialogComponent implements OnInit {
     });
   }
 
-  onUserSelectionChange(event: any, username: string): void {
-    if (event.checked) {
-      this.selectedUsernames.push(username);
-    } else {
-      const index = this.selectedUsernames.indexOf(username);
-      if (index > -1) {
-        this.selectedUsernames.splice(index, 1);
-      }
-    }
+  onListSelectionChange(event: MatSelectionListChange): void {
+    this.selectedUsernames = event.source.selectedOptions.selected.map(o => o.value as string);
   }
 
   onCancel(): void {
