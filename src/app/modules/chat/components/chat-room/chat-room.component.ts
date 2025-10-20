@@ -117,8 +117,10 @@ export class ChatRoomComponent implements OnInit, OnDestroy, AfterViewChecked {
               this.needsScroll = true;
               // Se recebemos mensagem do outro participante na conversa ativa, marcamos como lida em tempo real
               const isFromOther = receivedMessage.sender !== this.username;
-              if (isFromOther && this.chatType && this.activeRecipientId) {
-                this.unreadSvc.markRead(this.chatType, this.activeRecipientId).subscribe();
+              if (isFromOther) {
+                const markType: 'private' | 'group' = receivedMessage.type === 'GROUP' ? 'group' : 'private';
+                const markId = markType === 'group' ? (receivedMessage.recipient as string) : receivedMessage.sender;
+                this.unreadSvc.markRead(markType, markId).subscribe();
               }
             }
           }
