@@ -76,6 +76,7 @@ export class ChatRoomComponent implements OnInit, OnDestroy, AfterViewChecked {
   private dialog = inject(MatDialog);
   private attachmentService = inject(AttachmentService);
   private unreadSvc = inject(UnreadNotificationService);
+  readTick = 0;
 
   // Estado
   isConnected = false;
@@ -114,6 +115,11 @@ export class ChatRoomComponent implements OnInit, OnDestroy, AfterViewChecked {
             if (!exists) {
               this.messages.push(receivedMessage);
               this.needsScroll = true;
+              // Se recebemos mensagem do outro participante na conversa ativa, marcamos como lida em tempo real
+              const isFromOther = receivedMessage.sender !== this.username;
+              if (isFromOther && this.chatType && this.activeRecipientId) {
+                this.unreadSvc.markRead(this.chatType, this.activeRecipientId).subscribe();
+              }
             }
           }
         }
@@ -142,6 +148,11 @@ export class ChatRoomComponent implements OnInit, OnDestroy, AfterViewChecked {
         }
       })
     );
+
+    // Assina recibos de leitura para refletir na UI em tempo real
+    this.subscriptions.add(this.unreadSvc.onReadReceipts().subscribe(() => {
+      this.readTick++;
+    }));
   }
 
   ngAfterViewChecked(): void {

@@ -24,6 +24,7 @@ export class UnreadNotificationService {
   private stomp: Client | null = null;
   private summary$ = new BehaviorSubject<UnreadSummaryDto>({ total: 0, conversations: [] });
   private readMap = new Map<string, Map<string, string>>(); // convId -> reader -> ISO time
+  private rrTick$ = new BehaviorSubject<number>(0);
 
   constructor(private http: HttpClient) {}
 
@@ -49,6 +50,7 @@ export class UnreadNotificationService {
         const conv = data.conversationId;
         if (!this.readMap.has(conv)) this.readMap.set(conv, new Map());
         this.readMap.get(conv)!.set(data.readerUsername, data.lastReadAt);
+        this.rrTick$.next(this.rrTick$.value + 1);
       });
       // bootstrap inicial
       this.refresh().subscribe();
@@ -83,5 +85,9 @@ export class UnreadNotificationService {
     const map = this.readMap.get(ids);
     const iso = map?.get(otherUsername);
     return iso ? new Date(iso) : null;
+  }
+
+  onReadReceipts() {
+    return this.rrTick$.asObservable();
   }
 }
