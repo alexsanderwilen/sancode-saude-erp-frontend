@@ -5,8 +5,11 @@
     "ng": "ng",
     "start": "ng serve --proxy-config proxy.conf.json",
     "build": "ng build",
+    "build:prod": "ng build --configuration production",
+    "build:cloud": "ng build --configuration production",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "test": "ng test",
+    "deploy:firebase": "npm run build:prod && firebase deploy --only hosting"
   },
   "prettier": {
     "printWidth": 100,
@@ -30,6 +33,7 @@
     "@angular/material": "^20.2.8",
     "@angular/platform-browser": "^20.3.0",
     "@angular/router": "^20.3.0",
+    "firebase": "^11.0.2",
     "@stomp/rx-stomp": "^2.2.0",
     "@stomp/stompjs": "^7.2.1",
     "ag-grid-angular": "^34.2.0",

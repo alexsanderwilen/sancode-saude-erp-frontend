@@ -2,12 +2,13 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Client, IMessage } from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
+import { environment } from '../../../../environments/environment';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { ChatMessage } from '../components/chat-room/chat-room.component';
 import { ConversationDto } from '../models/conversation.model';
 
-const WEBSOCKET_URL = '/ws-chat';
-const CHAT_API_URL = '/api/chat';
+const WEBSOCKET_URL = environment.chatWsUrl;
+const CHAT_API_URL = environment.chatApiUrl;
 
 @Injectable({
   providedIn: 'root'

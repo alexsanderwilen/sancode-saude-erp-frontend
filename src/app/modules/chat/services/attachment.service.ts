@@ -1,6 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, from } from 'rxjs';
+import { environment } from '../../../../environments/environment';
 import { switchMap, map } from 'rxjs/operators';
 
 export interface UploadResponse {
@@ -14,7 +15,7 @@ export interface DownloadResponse { url: string }
 @Injectable({ providedIn: 'root' })
 export class AttachmentService {
   private http = inject(HttpClient);
-  private apiUrl = '/api/chat/files';
+  private apiUrl = `${environment.chatApiUrl}/files`;
 
   requestUpload(file: File): Observable<UploadResponse> {
     const body = {

@@ -3,9 +3,10 @@ import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { Client, IMessage } from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
+import { environment } from '../../../environments/environment';
 
-const WEBSOCKET_URL = '/ws-chat';
-const CHAT_API_URL = '/api/chat';
+const WEBSOCKET_URL = environment.chatWsUrl;
+const CHAT_API_URL = environment.chatApiUrl;
 
 export interface ConversationUnreadDto {
   type: 'private' | 'group';

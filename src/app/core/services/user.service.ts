@@ -3,13 +3,14 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { map, Observable } from 'rxjs';
 import { Page } from '@shared/models/page.model';
 import { Usuario } from '@shared/models/usuario.model';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class UserService {
   private http = inject(HttpClient);
-  private apiUrl = '/api/usuarios';
+  private apiUrl = `${environment.apiUrl}/usuarios`;
 
   /**
    * Busca uma lista paginada de todos os usuários da aplicação.

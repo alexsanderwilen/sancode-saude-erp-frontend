@@ -1,6 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from '../../../../environments/environment';
 
 // Definindo a interface para o objeto do grupo, para tipagem forte.
 export interface ChatGroup {
@@ -17,7 +18,7 @@ export interface ChatGroup {
 })
 export class GroupService {
   private http = inject(HttpClient);
-  private apiUrl = '/api/chat/groups';
+  private apiUrl = `${environment.chatApiUrl}/groups`;
 
   /**
    * Busca a lista de grupos dos quais o usuário autenticado faz parte.
