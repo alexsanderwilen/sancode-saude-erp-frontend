@@ -14,4 +14,9 @@ export interface Plano {
   dataInicioVigencia: string; // ou Date
   dataFimVigencia?: string; // ou Date
   ativo: boolean;
+
+  // Seleções N:N
+  tiposPagamentoIds?: number[];
+  acomodacoesIds?: number[];
+  coberturasAdicionaisIds?: number[];
 }

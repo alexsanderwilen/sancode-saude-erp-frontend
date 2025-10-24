@@ -97,6 +97,31 @@
           </div>
         </mat-tab>
 
+        <mat-tab label="Opções">
+          <div class="form-grid">
+            <mat-form-field class="full-width">
+              <mat-label>Tipos de Pagamento</mat-label>
+              <mat-select [value]="selectedTiposPagamento" (selectionChange)="selectedTiposPagamento = $event.value" multiple>
+                <mat-option *ngFor="let item of tiposPagamento$ | async" [value]="item.id">{{item.descricao}}</mat-option>
+              </mat-select>
+            </mat-form-field>
+
+            <mat-form-field class="full-width">
+              <mat-label>Acomodações</mat-label>
+              <mat-select [value]="selectedAcomodacoes" (selectionChange)="selectedAcomodacoes = $event.value" multiple>
+                <mat-option *ngFor="let item of acomodacoes$ | async" [value]="item.id">{{item.descricao}}</mat-option>
+              </mat-select>
+            </mat-form-field>
+
+            <mat-form-field class="full-width">
+              <mat-label>Coberturas Adicionais</mat-label>
+              <mat-select [value]="selectedCoberturas" (selectionChange)="selectedCoberturas = $event.value" multiple>
+                <mat-option *ngFor="let item of coberturas$ | async" [value]="item.id">{{item.descricao}}</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+        </mat-tab>
+
       </mat-tab-group>
 
       <div class="form-actions">

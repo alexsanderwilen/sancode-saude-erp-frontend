@@ -12,6 +12,9 @@ import { Page } from '../../../shared/models/page.model';
 export class PlanoService {
 
   private apiUrl = `${environment.apiUrl}/planos`;
+  private apiPlanoTipoPagamentoUrl = `${environment.apiUrl}/planos-tipos-pagamento`;
+  private apiPlanoAcomodacaoUrl = `${environment.apiUrl}/planos-acomodacoes`;
+  private apiPlanoCoberturaUrl = `${environment.apiUrl}/planos-coberturas-adicionais`;
 
   constructor(private http: HttpClient) { }
 
@@ -28,19 +31,90 @@ export class PlanoService {
   }
 
   getPlano(id: number): Observable<Plano> {
-    return this.http.get<Plano>(`${this.apiUrl}/${id}`);
+    return this.http.get<any>(`${this.apiUrl}/${id}`).pipe(
+      map(dto => ({
+        id: dto.id,
+        nomeComercial: dto.nomeComercial,
+        registroAns: dto.registroAns,
+        possuiCoparticipacao: dto.possuiCoparticipacao,
+        percentualCoparticipacao: dto.percentualCoparticipacao,
+        franquiaValor: dto.franquiaValor,
+        valorMensalidade: dto.valorMensalidade,
+        dataInicioVigencia: dto.dataInicioVigencia,
+        dataFimVigencia: dto.dataFimVigencia,
+        ativo: dto.ativo,
+        idPlanoBase: dto.planoBase?.id,
+        idSegmentacao: dto.segmentacao?.id,
+        idAbrangencia: dto.abrangencia?.id,
+        idTipoContratacao: dto.tipoContratacao?.id,
+        idPlanoStatus: dto.status?.id
+      }) as Plano)
+    );
   }
 
   createPlano(plano: Plano): Observable<Plano> {
-    return this.http.post<Plano>(this.apiUrl, plano);
+    const dto = this.mapToBackendDto(plano);
+    return this.http.post<Plano>(this.apiUrl, dto);
   }
 
   updatePlano(id: number, plano: Plano): Observable<Plano> {
-    return this.http.put<Plano>(`${this.apiUrl}/${id}`, plano);
+    const dto = this.mapToBackendDto(plano);
+    return this.http.put<Plano>(`${this.apiUrl}/${id}`, dto);
   }
 
   deletePlano(id: number): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${id}`);
+  }
+
+  // N:N helpers
+  getTiposPagamentoByPlano(planoId: number): Observable<number[]> {
+    return this.http.get<any[]>(`${this.apiPlanoTipoPagamentoUrl}/plano/${planoId}`).pipe(
+      map(items => items.map(i => i.tipoPagamento.id))
+    );
+  }
+
+  replaceTiposPagamento(planoId: number, tipoIds: number[]): Observable<void> {
+    return this.http.put<void>(`${this.apiPlanoTipoPagamentoUrl}/plano/${planoId}`, tipoIds);
+  }
+
+  getAcomodacoesByPlano(planoId: number): Observable<number[]> {
+    return this.http.get<any[]>(`${this.apiPlanoAcomodacaoUrl}/plano/${planoId}`).pipe(
+      map(items => items.map(i => i.acomodacao.id))
+    );
+  }
+
+  replaceAcomodacoes(planoId: number, acomodacaoIds: number[]): Observable<void> {
+    return this.http.put<void>(`${this.apiPlanoAcomodacaoUrl}/plano/${planoId}`, acomodacaoIds);
+  }
+
+  getCoberturasByPlano(planoId: number): Observable<number[]> {
+    return this.http.get<any[]>(`${this.apiPlanoCoberturaUrl}/plano/${planoId}`).pipe(
+      map(items => items.map(i => i.coberturaAdicional.id))
+    );
+  }
+
+  replaceCoberturas(planoId: number, coberturaIds: number[]): Observable<void> {
+    return this.http.put<void>(`${this.apiPlanoCoberturaUrl}/plano/${planoId}`, coberturaIds);
+  }
+
+  private mapToBackendDto(plano: Plano): any {
+    return {
+      id: plano.id,
+      nomeComercial: plano.nomeComercial,
+      registroAns: plano.registroAns,
+      possuiCoparticipacao: plano.possuiCoparticipacao,
+      percentualCoparticipacao: plano.percentualCoparticipacao,
+      franquiaValor: plano.franquiaValor,
+      valorMensalidade: plano.valorMensalidade,
+      dataInicioVigencia: plano.dataInicioVigencia,
+      dataFimVigencia: plano.dataFimVigencia,
+      ativo: plano.ativo,
+      planoBase: plano.idPlanoBase ? { id: plano.idPlanoBase } : null,
+      segmentacao: plano.idSegmentacao ? { id: plano.idSegmentacao } : null,
+      abrangencia: plano.idAbrangencia ? { id: plano.idAbrangencia } : null,
+      tipoContratacao: plano.idTipoContratacao ? { id: plano.idTipoContratacao } : null,
+      status: plano.idPlanoStatus ? { id: plano.idPlanoStatus } : null
+    };
   }
 }
 
