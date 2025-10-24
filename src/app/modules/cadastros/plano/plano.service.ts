@@ -1,6 +1,7 @@
-import { Injectable } from '@angular/core';
+﻿import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { Plano } from './plano.model';
 import { environment } from '../../../../environments/environment';
 import { Page } from '../../../shared/models/page.model';
@@ -15,7 +16,7 @@ export class PlanoService {
   constructor(private http: HttpClient) { }
 
   getPlanos(): Observable<Plano[]> {
-    return this.http.get<Plano[]>(this.apiUrl);
+    return this.getPlanosPaged(0, 1000, 'nomeComercial', 'asc').pipe(map(r => r.content));
   }
 
   getPlanosPaged(page: number, size: number, sort: string, order: string): Observable<Page<Plano>> {
@@ -42,3 +43,4 @@ export class PlanoService {
     return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }
 }
+
