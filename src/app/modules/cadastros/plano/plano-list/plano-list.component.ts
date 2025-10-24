@@ -1,37 +1,119 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { AgGridModule } from 'ag-grid-angular';
-import { ColDef } from 'ag-grid-community';
+import { CellClickedEvent, ColDef, GridApi, GridOptions, GridReadyEvent, IDatasource, IGetRowsParams } from 'ag-grid-community';
 import { PlanoService } from '../plano.service';
 import { Plano } from '../plano.model';
 import { CommonModule } from '@angular/common';
-import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { ConfirmDialogComponent } from '../../../../shared/components/confirm-dialog/confirm-dialog';
+import { AgGridLocaleService } from '../../../../shared/services/ag-grid-locale.service';
 
 @Component({
   selector: 'app-plano-list',
   templateUrl: './plano-list.component.html',
   styleUrls: ['./plano-list.component.scss'],
   standalone: true,
-  imports: [CommonModule, AgGridModule, MatCardModule, MatButtonModule, MatIconModule, RouterModule]
+  imports: [CommonModule, AgGridModule, MatButtonModule, MatIconModule, RouterModule, MatDialogModule, MatSnackBarModule]
 })
-export class PlanoListComponent implements OnInit {
+export class PlanoListComponent {
 
-  planos: Plano[] = [];
+  private gridApi!: GridApi<Plano>;
+  public datasource!: IDatasource;
+  public gridOptions: GridOptions<Plano>;
 
-  colDefs: ColDef[] = [
-    { field: 'id', headerName: 'ID' },
-    { field: 'nomeComercial', headerName: 'Nome Comercial' },
-    { field: 'registroAns', headerName: 'Registro ANS' },
-    { field: 'ativo', headerName: 'Ativo' }
+  public columnDefs: ColDef[] = [
+    { headerName: 'ID', field: 'id', width: 100, sortable: true },
+    { headerName: 'Nome Comercial', field: 'nomeComercial', flex: 1, sortable: true, filter: true },
+    { headerName: 'Registro ANS', field: 'registroAns', width: 160, sortable: true, filter: true },
+    {
+      headerName: 'Ativo', field: 'ativo', width: 120, cellRenderer: (p: { value: boolean }) => (
+        p.value ? '<span class="badge text-bg-success">Ativo</span>' : '<span class="badge text-bg-danger">Inativo</span>'
+      )
+    },
+    {
+      headerName: 'Ações', width: 120, cellRenderer: () => `
+        <button title="Editar" data-action="edit" class="btn btn-sm btn-outline-primary"><i class="fa fa-pencil" data-action="edit"></i></button>
+        <button title="Excluir" data-action="delete" class="btn btn-sm btn-outline-danger"><i class="fa fa-trash" data-action="delete"></i></button>
+      `
+    }
   ];
 
-  constructor(private planoService: PlanoService) { }
+  constructor(
+    private planoService: PlanoService,
+    private router: Router,
+    private dialog: MatDialog,
+    private snackBar: MatSnackBar,
+    private agGridLocaleService: AgGridLocaleService
+  ) {
+    this.datasource = this.createDatasource();
+    this.gridOptions = {
+      ...this.agGridLocaleService.getDefaultGridOptions(),
+      rowModelType: 'infinite',
+      pagination: true,
+      paginationPageSize: 20,
+      cacheBlockSize: 20,
+      onCellClicked: (params: CellClickedEvent) => this.onActionClick(params)
+    };
+  }
 
-  ngOnInit(): void {
-    this.planoService.getPlanos().subscribe(data => {
-      this.planos = data;
-    });
+  onGridReady(params: GridReadyEvent<Plano>): void {
+    this.gridApi = params.api;
+  }
+
+  createDatasource(): IDatasource {
+    return {
+      getRows: (params: IGetRowsParams) => {
+        const pageSize = this.gridOptions.paginationPageSize || 20;
+        const page = params.startRow / pageSize;
+        const sortModel = params.sortModel;
+        const sort = sortModel.length ? sortModel[0].colId : 'nomeComercial';
+        const order = sortModel.length ? (sortModel[0].sort || 'asc') : 'asc';
+
+        this.planoService.getPlanosPaged(page, pageSize, sort, order)
+          .subscribe({
+            next: data => params.successCallback(data.content, data.totalElements),
+            error: err => {
+              console.error('Erro ao buscar planos:', err);
+              params.failCallback();
+            }
+          });
+      }
+    };
+  }
+
+  onActionClick(params: CellClickedEvent): void {
+    const action = (params.event?.target as HTMLElement).dataset['action'];
+    if (!action) return;
+    if (action === 'edit') {
+      this.router.navigate(['/cadastros/planos/editar', (params.data as any).id]);
+    } else if (action === 'delete') {
+      this.dialog.open(ConfirmDialogComponent, {
+        data: {
+          title: 'Confirmar Exclusão',
+          message: `Tem certeza que deseja excluir o plano ${(params.data as any).nomeComercial}?`
+        }
+      }).afterClosed().subscribe(result => {
+        if (result) {
+          this.planoService.deletePlano((params.data as any).id).subscribe({
+            next: () => {
+              this.snackBar.open('Plano excluído com sucesso!', 'Fechar', { duration: 3000 });
+              this.gridApi.refreshInfiniteCache();
+            },
+            error: (err) => {
+              console.error('Erro ao excluir plano:', err);
+              this.snackBar.open('Erro ao excluir plano. Detalhes: ' + (err.error?.message || err.message), 'Fechar', { duration: 5000 });
+            }
+          });
+        }
+      });
+    }
+  }
+
+  navigateToForm(): void {
+    this.router.navigate(['/cadastros/planos/novo']);
   }
 }

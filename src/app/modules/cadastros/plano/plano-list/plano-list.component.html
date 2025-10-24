@@ -1,20 +1,17 @@
-<mat-card>
-  <mat-card-header>
-    <mat-card-title>Planos de Saúde</mat-card-title>
-  </mat-card-header>
-  <mat-card-content>
-    <div style="display: flex; justify-content: flex-end; margin-bottom: 1rem;">
-      <button mat-raised-button color="primary" [routerLink]="['novo']">
-        <mat-icon>add</mat-icon>
-        Novo Plano
-      </button>
-    </div>
-    <ag-grid-angular
-      style="width: 100%; height: 500px;"
-      class="ag-theme-alpine"
-      [rowData]="planos"
-      [columnDefs]="colDefs"
-    >
-    </ag-grid-angular>
-  </mat-card-content>
-</mat-card>
+﻿<div class="d-flex justify-content-between align-items-center mb-3">
+  <h3>Planos de Saúde</h3>
+  <button mat-raised-button color="primary" (click)="navigateToForm()">
+    <mat-icon>add</mat-icon>
+    Novo Plano
+  </button>
+</div>
+
+<div class="ag-theme-quartz" style="width: 100%; height: 600px;">
+  <ag-grid-angular
+    style="width: 100%; height: 100%;"
+    [columnDefs]="columnDefs"
+    [gridOptions]="gridOptions"
+    [datasource]="datasource"
+    (gridReady)="onGridReady($event)">
+  </ag-grid-angular>
+</div>
