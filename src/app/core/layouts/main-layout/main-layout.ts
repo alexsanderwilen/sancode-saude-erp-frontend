@@ -31,6 +31,7 @@ import { UnreadNotificationService, UnreadSummaryDto } from '../../services/unre
 export class MainLayoutComponent {
 
   isChatRoute = false;
+  isModuleRoute = false;
   unread: UnreadSummaryDto = { total: 0, conversations: [] };
 
   constructor(
@@ -40,7 +41,9 @@ export class MainLayoutComponent {
     this.router.events.pipe(
       filter((event): event is NavigationEnd => event instanceof NavigationEnd)
     ).subscribe((event: NavigationEnd) => {
-      this.isChatRoute = event.urlAfterRedirects.startsWith('/chat');
+      const url = event.urlAfterRedirects;
+      this.isChatRoute = url.startsWith('/chat');
+      this.isModuleRoute = url.startsWith('/cadastros') || url.startsWith('/usuarios') || url.startsWith('/chat');
     });
 
     // conectar notificações e assinar contagem

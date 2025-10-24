@@ -1,11 +1,11 @@
-<mat-toolbar color="primary">
+﻿<mat-toolbar color="primary" *ngIf="!isModuleRoute">
   <a routerLink="/home" mat-button>Sancode Health ERP</a>
   <span class="spacer"></span>
   <a routerLink="/cadastros" mat-button>Cadastros</a>
-  <a routerLink="/usuarios" mat-button>Usuários</a>
+  <a routerLink="/usuarios" mat-button>Usu&aacute;rios</a>
   <a routerLink="/chat" mat-button>Chat</a>
 
-  <button mat-icon-button [matMenuTriggerFor]="unreadMenu" matBadge="{{ unread.total }}" matBadgeHidden="{{ unread.total === 0 }}" matBadgeColor="accent" aria-label="Notificações de mensagens">
+  <button mat-icon-button [matMenuTriggerFor]="unreadMenu" matBadge="{{ unread.total }}" matBadgeHidden="{{ unread.total === 0 }}" matBadgeColor="accent" aria-label="Notifica&ccedil;&otilde;es de mensagens">
     <mat-icon>notifications</mat-icon>
   </button>
   <mat-menu #unreadMenu="matMenu" xPosition="before">
@@ -17,13 +17,23 @@
       </button>
     </ng-container>
     <ng-template #noUnread>
-      <div style="padding: 8px 16px; width: 220px;">Sem mensagens não lidas</div>
+      <div style="padding: 8px 16px; width: 220px;">Sem mensagens n&atilde;o lidas</div>
     </ng-template>
   </mat-menu>
 
-  <!-- Usar o componente de menu de perfil reutilizável -->
+  <!-- Usar o componente de menu de perfil reutilizÃ¡vel -->
   <app-user-profile-menu></app-user-profile-menu>
 </mat-toolbar>
-<main [ngClass]="{ 'container mt-4': !isChatRoute, 'full-page-content': isChatRoute }">
+<main [ngClass]="{ 'container mt-4': !isChatRoute && !isModuleRoute, 'full-page-content': isChatRoute || isModuleRoute }">
   <router-outlet></router-outlet>
 </main>
+
+
+
+
+
+
+
+
+
+

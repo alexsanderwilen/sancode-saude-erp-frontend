@@ -1,0 +1,165 @@
+<mat-card>
+  <mat-card-title>{{ isEditMode ? 'Editar Prestador' : 'Novo Prestador' }}</mat-card-title>
+  <mat-card-content>
+    <form [formGroup]="prestadorForm" (ngSubmit)="onSubmit()">
+      <mat-tab-group>
+        <mat-tab label="Dados Gerais">
+          <div class="form-grid">
+            <mat-form-field>
+              <mat-label>Tipo de Pessoa</mat-label>
+              <mat-select formControlName="tipoPessoa">
+                <mat-option value="F">Física</mat-option>
+                <mat-option value="J">Jurídica</mat-option>
+              </mat-select>
+            </mat-form-field>
+
+            <mat-form-field>
+              <mat-label>CPF/CNPJ</mat-label>
+              <input matInput formControlName="cpfCnpj" required>
+            </mat-form-field>
+
+            <mat-form-field class="full-width">
+              <mat-label>Nome / Razão Social</mat-label>
+              <input matInput formControlName="nomeRazaoSocial" required>
+            </mat-form-field>
+
+            <mat-form-field class="full-width">
+              <mat-label>Nome Fantasia</mat-label>
+              <input matInput formControlName="nomeFantasia">
+            </mat-form-field>
+
+            <mat-form-field>
+              <mat-label>CNES</mat-label>
+              <input matInput formControlName="cnes">
+            </mat-form-field>
+
+            <mat-form-field>
+              <mat-label>Situação Cadastral</mat-label>
+              <mat-select formControlName="situacaoCadastral">
+                <mat-option value="Ativo">Ativo</mat-option>
+                <mat-option value="Inativo">Inativo</mat-option>
+                <mat-option value="Suspenso">Suspenso</mat-option>
+              </mat-select>
+            </mat-form-field>
+
+            <mat-form-field>
+              <mat-label>Tipo de Prestador</mat-label>
+              <input matInput formControlName="tipoPrestador" required>
+            </mat-form-field>
+          </div>
+        </mat-tab>
+
+        <mat-tab label="Contato">
+          <div class="form-grid">
+            <mat-form-field>
+              <mat-label>Email</mat-label>
+              <input matInput formControlName="email" type="email">
+            </mat-form-field>
+
+            <mat-form-field>
+              <mat-label>Telefone</mat-label>
+              <input matInput formControlName="telefone">
+            </mat-form-field>
+
+            <mat-form-field>
+              <mat-label>Celular</mat-label>
+              <input matInput formControlName="celular">
+            </mat-form-field>
+
+            <mat-form-field>
+              <mat-label>Site</mat-label>
+              <input matInput formControlName="site">
+            </mat-form-field>
+          </div>
+        </mat-tab>
+
+        <mat-tab label="Endereço">
+          <div class="form-grid">
+            <mat-form-field>
+              <mat-label>CEP</mat-label>
+              <input matInput formControlName="cep">
+            </mat-form-field>
+
+            <mat-form-field class="full-width">
+              <mat-label>Logradouro</mat-label>
+              <input matInput formControlName="logradouro">
+            </mat-form-field>
+
+            <mat-form-field>
+              <mat-label>Número</mat-label>
+              <input matInput formControlName="numero">
+            </mat-form-field>
+
+            <mat-form-field>
+              <mat-label>Complemento</mat-label>
+              <input matInput formControlName="complemento">
+            </mat-form-field>
+
+            <mat-form-field>
+              <mat-label>Bairro</mat-label>
+              <input matInput formControlName="bairro">
+            </mat-form-field>
+
+            <mat-form-field>
+              <mat-label>Cidade</mat-label>
+              <input matInput formControlName="cidade">
+            </mat-form-field>
+
+            <mat-form-field>
+              <mat-label>UF</mat-label>
+              <input matInput formControlName="uf">
+            </mat-form-field>
+          </div>
+        </mat-tab>
+        
+        <mat-tab label="Detalhes Profissionais">
+            <div class="form-grid">
+                <mat-form-field>
+                    <mat-label>Registro do Conselho</mat-label>
+                    <input matInput formControlName="registroConselho">
+                </mat-form-field>
+
+                <mat-form-field>
+                    <mat-label>Tipo do Conselho</mat-label>
+                    <input matInput formControlName="tipoConselho">
+                </mat-form-field>
+
+                <mat-form-field>
+                    <mat-label>UF do Conselho</mat-label>
+                    <input matInput formControlName="ufConselho">
+                </mat-form-field>
+
+                <mat-form-field>
+                    <mat-label>Especialidade Principal</mat-label>
+                    <input matInput formControlName="especialidadePrincipal">
+                </mat-form-field>
+
+                <mat-form-field class="full-width">
+                    <mat-label>Especialidades Secundárias</mat-label>
+                    <textarea matInput formControlName="especialidadesSecundarias"></textarea>
+                </mat-form-field>
+            </div>
+        </mat-tab>
+        
+        <mat-tab label="Outros">
+            <div class="form-grid-other">
+                <mat-checkbox formControlName="atendeUrgencia">Atende Urgência</mat-checkbox>
+                <mat-checkbox formControlName="atendeDomiciliar">Atende Domiciliar</mat-checkbox>
+
+                <mat-form-field class="full-width">
+                    <mat-label>Observações</mat-label>
+                    <textarea matInput formControlName="observacoes"></textarea>
+                </mat-form-field>
+            </div>
+        </mat-tab>
+
+      </mat-tab-group>
+
+      <div class="form-actions">
+        <button type="button" mat-stroked-button [routerLink]="['/cadastros/prestadores']">Cancelar</button>
+        <button type="submit" mat-raised-button color="primary" [disabled]="prestadorForm.invalid">Salvar</button>
+      </div>
+
+    </form>
+  </mat-card-content>
+</mat-card>

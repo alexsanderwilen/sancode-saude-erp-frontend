@@ -360,6 +360,8 @@
   display: flex;
   max-width: 65%;
   position: relative;
+  // Keep top-level declarations before nested rules to satisfy upcoming Sass behavior
+  align-self: flex-start;
 
   &__bubble {
     padding: 8px 12px;
@@ -392,8 +394,6 @@
       color: #4fc3f7;
     }
   }
-
-  align-self: flex-start;
 
   &--own {
     align-self: flex-end;

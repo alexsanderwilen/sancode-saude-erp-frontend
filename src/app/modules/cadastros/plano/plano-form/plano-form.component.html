@@ -1,0 +1,109 @@
+<mat-card>
+  <mat-card-title>{{ isEditMode ? 'Editar Plano' : 'Novo Plano' }}</mat-card-title>
+  <mat-card-content>
+    <form [formGroup]="planoForm" (ngSubmit)="onSubmit()">
+      <mat-tab-group>
+        <mat-tab label="Identificação">
+          <div class="form-grid">
+            <mat-form-field class="full-width">
+              <mat-label>Nome Comercial</mat-label>
+              <input matInput formControlName="nomeComercial" required>
+            </mat-form-field>
+
+            <mat-form-field>
+              <mat-label>Registro ANS</mat-label>
+              <input matInput formControlName="registroAns">
+            </mat-form-field>
+
+            <mat-form-field>
+              <mat-label>Plano Base</mat-label>
+              <mat-select formControlName="idPlanoBase" required>
+                <mat-option *ngFor="let item of planosBase$ | async" [value]="item.id">{{item.descricao}}</mat-option>
+              </mat-select>
+            </mat-form-field>
+
+            <mat-form-field>
+              <mat-label>Status</mat-label>
+              <mat-select formControlName="idPlanoStatus" required>
+                 <mat-option *ngFor="let item of status$ | async" [value]="item.id">{{item.descricao}}</mat-option>
+              </mat-select>
+            </mat-form-field>
+
+            <mat-checkbox formControlName="ativo">Ativo</mat-checkbox>
+          </div>
+        </mat-tab>
+
+        <mat-tab label="Contratação">
+          <div class="form-grid">
+            <mat-form-field>
+              <mat-label>Segmentação Assistencial</mat-label>
+              <mat-select formControlName="idSegmentacao" required>
+                <mat-option *ngFor="let item of segmentacoes$ | async" [value]="item.id">{{item.descricao}}</mat-option>
+              </mat-select>
+            </mat-form-field>
+
+            <mat-form-field>
+              <mat-label>Abrangência Geográfica</mat-label>
+              <mat-select formControlName="idAbrangencia" required>
+                <mat-option *ngFor="let item of abrangencias$ | async" [value]="item.id">{{item.descricao}}</mat-option>
+              </mat-select>
+            </mat-form-field>
+
+            <mat-form-field>
+              <mat-label>Tipo de Contratação</mat-label>
+              <mat-select formControlName="idTipoContratacao" required>
+                <mat-option *ngFor="let item of tiposContratacao$ | async" [value]="item.id">{{item.descricao}}</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+        </mat-tab>
+
+        <mat-tab label="Valores">
+          <div class="form-grid">
+            <mat-form-field>
+              <mat-label>Valor da Mensalidade</mat-label>
+              <input matInput formControlName="valorMensalidade" type="number">
+            </mat-form-field>
+
+            <mat-checkbox formControlName="possuiCoparticipacao">Possui Coparticipação</mat-checkbox>
+
+            <mat-form-field>
+              <mat-label>Percentual Coparticipação (%)</mat-label>
+              <input matInput formControlName="percentualCoparticipacao" type="number">
+            </mat-form-field>
+
+            <mat-form-field>
+              <mat-label>Valor Franquia</mat-label>
+              <input matInput formControlName="franquiaValor" type="number">
+            </mat-form-field>
+          </div>
+        </mat-tab>
+
+        <mat-tab label="Vigência">
+          <div class="form-grid">
+            <mat-form-field>
+              <mat-label>Início da Vigência</mat-label>
+              <input matInput [matDatepicker]="inicioVigenciaPicker" formControlName="dataInicioVigencia" required>
+              <mat-datepicker-toggle matSuffix [for]="inicioVigenciaPicker"></mat-datepicker-toggle>
+              <mat-datepicker #inicioVigenciaPicker></mat-datepicker>
+            </mat-form-field>
+
+            <mat-form-field>
+              <mat-label>Fim da Vigência</mat-label>
+              <input matInput [matDatepicker]="fimVigenciaPicker" formControlName="dataFimVigencia">
+              <mat-datepicker-toggle matSuffix [for]="fimVigenciaPicker"></mat-datepicker-toggle>
+              <mat-datepicker #fimVigenciaPicker></mat-datepicker>
+            </mat-form-field>
+          </div>
+        </mat-tab>
+
+      </mat-tab-group>
+
+      <div class="form-actions">
+        <button type="button" mat-stroked-button [routerLink]="['/cadastros/planos']">Cancelar</button>
+        <button type="submit" mat-raised-button color="primary" [disabled]="planoForm.invalid">Salvar</button>
+      </div>
+
+    </form>
+  </mat-card-content>
+</mat-card>

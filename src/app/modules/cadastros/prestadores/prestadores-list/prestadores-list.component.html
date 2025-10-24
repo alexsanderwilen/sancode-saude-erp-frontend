@@ -1,0 +1,20 @@
+<mat-card>
+  <mat-card-header>
+    <mat-card-title>Prestadores de Serviço</mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+    <div style="display: flex; justify-content: flex-end; margin-bottom: 1rem;">
+      <button mat-raised-button color="primary" [routerLink]="['novo']">
+        <mat-icon>add</mat-icon>
+        Novo Prestador
+      </button>
+    </div>
+    <ag-grid-angular
+      style="width: 100%; height: 500px;"
+      class="ag-theme-alpine"
+      [rowData]="prestadores"
+      [columnDefs]="colDefs"
+    >
+    </ag-grid-angular>
+  </mat-card-content>
+</mat-card>

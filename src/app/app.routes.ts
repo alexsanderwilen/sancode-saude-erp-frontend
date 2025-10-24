@@ -14,23 +14,20 @@ export const routes: Routes = [
     canActivate: [AuthGuard],
     children: [
       { path: 'home', component: HomeComponent, title: 'Home' },
+      {
+        path: 'cadastros',
+        loadChildren: () => import('./modules/cadastros/cadastros.routes').then(m => m.CADASTROS_ROUTES)
+      },
+      {
+        path: 'usuarios',
+        loadChildren: () => import('./modules/usuario/usuario.routes').then(m => m.USUARIO_ROUTES)
+      },
+      {
+        path: 'chat',
+        loadChildren: () => import('./modules/chat/chat.routes').then(m => m.CHAT_ROUTES)
+      },
       { path: '', redirectTo: 'home', pathMatch: 'full' }
     ]
-  },
-  {
-    path: 'cadastros',
-    canActivate: [AuthGuard],
-    loadChildren: () => import('./modules/cadastros/cadastros.routes').then(m => m.CADASTROS_ROUTES)
-  },
-  {
-    path: 'usuarios',
-    canActivate: [AuthGuard],
-    loadChildren: () => import('./modules/usuario/usuario.routes').then(m => m.USUARIO_ROUTES)
-  },
-  {
-    path: 'chat',
-    canActivate: [AuthGuard],
-    loadChildren: () => import('./modules/chat/chat.routes').then(m => m.CHAT_ROUTES)
   },
   { path: '**', redirectTo: '' }
 ];

@@ -1,20 +1,24 @@
-<div class="sancode-cadastro-theme">
+﻿<div class="sancode-cadastro-theme">
   <mat-toolbar color="primary">
     <a mat-button routerLink="/cadastros" [routerLinkActiveOptions]="{exact: true}" routerLinkActive="active-link">
       <mat-icon>home</mat-icon>
-      <span class="ms-2">Início</span>
+      <span class="ms-2">In&iacute;cio</span>
     </a>
     <a mat-button routerLink="/cadastros/operadoras" routerLinkActive="active-link">
       Operadoras
     </a>
-    <a mat-button routerLink="/cadastros/dominio-tipos" routerLinkActive="active-link">
-      Tipos de Domínio
+    <a mat-button routerLink="/cadastros/prestadores" routerLinkActive="active-link">
+      Prestadores
     </a>
-    <!-- Futuros links de cadastro (ex: Prestadores) virão aqui -->
+    <a mat-button routerLink="/cadastros/planos" routerLinkActive="active-link">
+      Planos
+    </a>
+    <a mat-button routerLink="/cadastros/dominio-tipos" routerLinkActive="active-link">
+      Tipos de Dom&iacute;nio</a>
 
     <span class="spacer"></span>
 
-    <!-- Adicionar o componente de menu de perfil reutilizável -->
+    <!-- Adicionar o componente de menu de perfil reutilizÃ¡vel -->
     <app-user-profile-menu></app-user-profile-menu>
 
     <a mat-icon-button routerLink="/home" matTooltip="Voltar para o menu principal">
@@ -26,3 +30,6 @@
     <router-outlet></router-outlet>
   </div>
 </div>
+
+
+
