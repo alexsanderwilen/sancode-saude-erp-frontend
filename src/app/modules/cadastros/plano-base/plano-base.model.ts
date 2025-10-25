@@ -1,4 +1,12 @@
+export interface OperadoraRef {
+  idOperadora: string;
+  razaoSocial?: string;
+  nomeFantasia?: string;
+}
+
 export interface PlanoBase {
   id: number;
-  descricao: string; // Assuming the backend provides a description for the dropdown
+  operadora?: OperadoraRef;
+  ativo: boolean;
+  descricao?: string; // computed label for UI
 }
