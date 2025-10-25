@@ -44,6 +44,11 @@ $sancode-health-cadastro-theme: mat.m2-define-light-theme((
   @include mat.all-component-themes($sancode-health-cadastro-theme);
 }
 
+// Alias para compatibilidade com componentes que usam 'cadastros'
+.sancode-cadastros-theme {
+  @include mat.all-component-themes($sancode-health-cadastro-theme);
+}
+
 // 3. Definição do Tema Específico para o Módulo de Usuário
 //    ---------------------------------------------------
 $sancode-health-usuario-primary: mat.m2-define-palette(mat.$m2-deep-purple-palette, 500);
