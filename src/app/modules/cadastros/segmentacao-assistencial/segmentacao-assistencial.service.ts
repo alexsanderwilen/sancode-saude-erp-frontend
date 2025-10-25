@@ -16,4 +16,16 @@ export class SegmentacaoAssistencialService {
   getSegmentacoes(): Observable<SegmentacaoAssistencial[]> {
     return this.http.get<SegmentacaoAssistencial[]>(this.apiUrl);
   }
+
+  create(payload: Partial<SegmentacaoAssistencial>): Observable<SegmentacaoAssistencial> {
+    return this.http.post<SegmentacaoAssistencial>(this.apiUrl, payload);
+  }
+
+  update(id: number, payload: Partial<SegmentacaoAssistencial>): Observable<SegmentacaoAssistencial> {
+    return this.http.put<SegmentacaoAssistencial>(`${this.apiUrl}/${id}`, payload);
+  }
+
+  delete(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${id}`);
+  }
 }

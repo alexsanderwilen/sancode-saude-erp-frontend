@@ -16,4 +16,16 @@ export class AbrangenciaGeograficaService {
   getAbrangencias(): Observable<AbrangenciaGeografica[]> {
     return this.http.get<AbrangenciaGeografica[]>(this.apiUrl);
   }
+
+  create(payload: Partial<AbrangenciaGeografica>): Observable<AbrangenciaGeografica> {
+    return this.http.post<AbrangenciaGeografica>(this.apiUrl, payload);
+  }
+
+  update(id: number, payload: Partial<AbrangenciaGeografica>): Observable<AbrangenciaGeografica> {
+    return this.http.put<AbrangenciaGeografica>(`${this.apiUrl}/${id}`, payload);
+  }
+
+  delete(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${id}`);
+  }
 }

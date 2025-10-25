@@ -25,6 +25,12 @@ export const CADASTROS_ROUTES: Routes = [
         loadChildren: () => import('./plano/plano.routes').then(m => m.PLANO_ROUTES),
         title: 'Planos'
       }
+      ,
+      {
+        path: 'gestao-planos',
+        loadChildren: () => import('./gestao-planos/gestao-planos.routes').then(m => m.GESTAO_PLANOS_ROUTES),
+        title: 'Gestão de Planos'
+      }
     ]
   }
 ];

@@ -16,4 +16,14 @@ export class TipoContratacaoService {
   getTiposContratacao(): Observable<TipoContratacao[]> {
     return this.http.get<TipoContratacao[]>(this.apiUrl);
   }
+
+  create(payload: Partial<TipoContratacao>): Observable<TipoContratacao> {
+    return this.http.post<TipoContratacao>(this.apiUrl, payload);
+  }
+  update(id: number, payload: Partial<TipoContratacao>): Observable<TipoContratacao> {
+    return this.http.put<TipoContratacao>(`${this.apiUrl}/${id}`, payload);
+  }
+  delete(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${id}`);
+  }
 }

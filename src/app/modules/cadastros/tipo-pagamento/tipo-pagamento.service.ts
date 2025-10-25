@@ -11,5 +11,14 @@ export class TipoPagamentoService {
   getTiposPagamento(): Observable<TipoPagamento[]> {
     return this.http.get<TipoPagamento[]>(this.apiUrl);
   }
-}
 
+  create(payload: Partial<TipoPagamento>): Observable<TipoPagamento> {
+    return this.http.post<TipoPagamento>(this.apiUrl, payload);
+  }
+  update(id: number, payload: Partial<TipoPagamento>): Observable<TipoPagamento> {
+    return this.http.put<TipoPagamento>(`${this.apiUrl}/${id}`, payload);
+  }
+  delete(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${id}`);
+  }
+}

@@ -16,4 +16,14 @@ export class PlanoStatusService {
   getPlanosStatus(): Observable<PlanoStatus[]> {
     return this.http.get<PlanoStatus[]>(this.apiUrl);
   }
+
+  create(payload: Partial<PlanoStatus>): Observable<PlanoStatus> {
+    return this.http.post<PlanoStatus>(this.apiUrl, payload);
+  }
+  update(id: number, payload: Partial<PlanoStatus>): Observable<PlanoStatus> {
+    return this.http.put<PlanoStatus>(`${this.apiUrl}/${id}`, payload);
+  }
+  delete(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${id}`);
+  }
 }

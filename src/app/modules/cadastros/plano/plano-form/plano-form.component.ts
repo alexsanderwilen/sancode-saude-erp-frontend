@@ -33,6 +33,9 @@ import { Acomodacao } from '../../acomodacao/acomodacao.model';
 import { AcomodacaoService } from '../../acomodacao/acomodacao.service';
 import { CoberturaAdicional } from '../../cobertura-adicional/cobertura-adicional.model';
 import { CoberturaAdicionalService } from '../../cobertura-adicional/cobertura-adicional.service';
+import { PlanoTiposPagamentoTabComponent } from '../tabs/plano-tipos-pagamento-tab.component';
+import { PlanoAcomodacoesTabComponent } from '../tabs/plano-acomodacoes-tab.component';
+import { PlanoCoberturasAdicionaisTabComponent } from '../tabs/plano-coberturas-adicionais-tab.component';
 
 @Component({
   selector: 'app-plano-form',
@@ -51,7 +54,10 @@ import { CoberturaAdicionalService } from '../../cobertura-adicional/cobertura-a
     MatCheckboxModule,
     MatTabsModule,
     MatDatepickerModule,
-    MatNativeDateModule
+    MatNativeDateModule,
+    PlanoTiposPagamentoTabComponent,
+    PlanoAcomodacoesTabComponent,
+    PlanoCoberturasAdicionaisTabComponent
   ]
 })
 export class PlanoFormComponent implements OnInit {

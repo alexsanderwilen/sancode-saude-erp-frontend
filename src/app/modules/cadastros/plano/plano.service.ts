@@ -116,5 +116,55 @@ export class PlanoService {
       status: plano.idPlanoStatus ? { id: plano.idPlanoStatus } : null
     };
   }
+
+  // N:N item-wise operations for AgGrid tabs
+  listPlanoTiposPagamento(planoId: number): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiPlanoTipoPagamentoUrl}/plano/${planoId}`);
+  }
+  addPlanoTipoPagamento(planoId: number, tipoPagamentoId: number): Observable<any> {
+    return this.http.post<any>(this.apiPlanoTipoPagamentoUrl, {
+      planoId,
+      tipoPagamento: { id: tipoPagamentoId }
+    });
+  }
+  deletePlanoTipoPagamento(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiPlanoTipoPagamentoUrl}/${id}`);
+  }
+
+  listPlanoAcomodacoes(planoId: number): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiPlanoAcomodacaoUrl}/plano/${planoId}`);
+  }
+  addPlanoAcomodacao(planoId: number, acomodacaoId: number): Observable<any> {
+    return this.http.post<any>(this.apiPlanoAcomodacaoUrl, {
+      planoId,
+      acomodacao: { id: acomodacaoId }
+    });
+    }
+  deletePlanoAcomodacao(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiPlanoAcomodacaoUrl}/${id}`);
+  }
+
+  listPlanoCoberturas(planoId: number): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiPlanoCoberturaUrl}/plano/${planoId}`);
+  }
+  addPlanoCobertura(planoId: number, coberturaId: number, inclusa: boolean, observacao?: string): Observable<any> {
+    return this.http.post<any>(this.apiPlanoCoberturaUrl, {
+      planoId,
+      coberturaAdicional: { id: coberturaId },
+      inclusa,
+      observacao
+    });
+  }
+  updatePlanoCobertura(id: number, payload: { coberturaId: number, inclusa: boolean, observacao?: string }): Observable<any> {
+    return this.http.put<any>(`${this.apiPlanoCoberturaUrl}/${id}`, {
+      id,
+      coberturaAdicional: { id: payload.coberturaId },
+      inclusa: payload.inclusa,
+      observacao: payload.observacao
+    });
+  }
+  deletePlanoCobertura(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiPlanoCoberturaUrl}/${id}`);
+  }
 }
 

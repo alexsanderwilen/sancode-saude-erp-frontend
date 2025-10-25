@@ -97,29 +97,14 @@
           </div>
         </mat-tab>
 
-        <mat-tab label="Opções">
-          <div class="form-grid">
-            <mat-form-field class="full-width">
-              <mat-label>Tipos de Pagamento</mat-label>
-              <mat-select [value]="selectedTiposPagamento" (selectionChange)="selectedTiposPagamento = $event.value" multiple>
-                <mat-option *ngFor="let item of tiposPagamento$ | async" [value]="item.id">{{item.descricao}}</mat-option>
-              </mat-select>
-            </mat-form-field>
-
-            <mat-form-field class="full-width">
-              <mat-label>Acomodações</mat-label>
-              <mat-select [value]="selectedAcomodacoes" (selectionChange)="selectedAcomodacoes = $event.value" multiple>
-                <mat-option *ngFor="let item of acomodacoes$ | async" [value]="item.id">{{item.descricao}}</mat-option>
-              </mat-select>
-            </mat-form-field>
-
-            <mat-form-field class="full-width">
-              <mat-label>Coberturas Adicionais</mat-label>
-              <mat-select [value]="selectedCoberturas" (selectionChange)="selectedCoberturas = $event.value" multiple>
-                <mat-option *ngFor="let item of coberturas$ | async" [value]="item.id">{{item.descricao}}</mat-option>
-              </mat-select>
-            </mat-form-field>
-          </div>
+                <mat-tab label="Tipos de Pagamento" [disabled]="!planoId">
+          <app-plano-tipos-pagamento-tab [planoId]="planoId!"></app-plano-tipos-pagamento-tab>
+        </mat-tab>
+        <mat-tab label="Acomoda��es" [disabled]="!planoId">
+          <app-plano-acomodacoes-tab [planoId]="planoId!"></app-plano-acomodacoes-tab>
+        </mat-tab>
+        <mat-tab label="Coberturas Adicionais" [disabled]="!planoId">
+          <app-plano-coberturas-adicionais-tab [planoId]="planoId!"></app-plano-coberturas-adicionais-tab>
         </mat-tab>
 
       </mat-tab-group>
@@ -132,3 +117,4 @@
     </form>
   </mat-card-content>
 </mat-card>
+
