@@ -36,7 +36,9 @@ export class PlanoBaseListComponent {
   columnDefs: ColDef[] = [
     { headerName: 'ID', field: 'id', width: 120 },
     { headerName: 'Operadora', valueGetter: (p: any) => p.data?.operadora?.razaoSocial || p.data?.operadora?.nomeFantasia || '-', flex: 1 },
-    { headerName: 'Ativo', field: 'ativo', width: 120 },
+    { headerName: 'Ativo', field: 'ativo', width: 120, cellRenderer: (p: { value: boolean }) => (
+      p.value ? '<span class="badge text-bg-success">Ativo</span>' : '<span class="badge text-bg-danger">Inativo</span>'
+    ) },
     { headerName: 'Ações', width: 180, cellRenderer: () => `
       <button data-action=\"edit\" class=\"btn btn-sm btn-outline-primary\">Editar</button>
       <button data-action=\"delete\" class=\"btn btn-sm btn-outline-danger\">Excluir</button>
