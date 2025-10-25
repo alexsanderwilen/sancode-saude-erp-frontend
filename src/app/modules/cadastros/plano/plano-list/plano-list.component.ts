@@ -35,9 +35,9 @@ export class PlanoListComponent {
       )
     },
     {
-      headerName: 'Ações', width: 120, cellRenderer: () => `
-        <button title="Editar" data-action="edit" class="btn btn-sm btn-outline-primary"><i class="fa fa-pencil" data-action="edit"></i></button>
-        <button title="Excluir" data-action="delete" class="btn btn-sm btn-outline-danger"><i class="fa fa-trash" data-action="delete"></i></button>
+      headerName: 'Ações', width: 150, cellRenderer: () => `
+        <button data-action="edit" class="btn btn-sm btn-outline-primary">Editar</button>
+        <button data-action="delete" class="btn btn-sm btn-outline-danger">Excluir</button>
       `
     }
   ];

@@ -136,7 +136,7 @@ export class UsuariosFormComponent implements OnInit {
 
   actionsRenderer(params: any) {
     const div = document.createElement('div');
-    div.innerHTML = `<button title="Editar" class="btn btn-sm btn-outline-primary"><i class="fa fa-pencil"></i></button> <button title="Excluir" class="btn btn-sm btn-outline-danger"><i class="fa fa-trash"></i></button>`;
+    div.innerHTML = `<button class="btn btn-sm btn-outline-primary">Editar</button> <button class="btn btn-sm btn-outline-danger">Excluir</button>`;
     const editButton = div.querySelector('button:first-child')!;
     editButton.addEventListener('click', (event) => {
       event.preventDefault(); // Adicionar esta linha
@@ -217,3 +217,4 @@ export class UsuariosFormComponent implements OnInit {
     this.router.navigate(['/usuarios/cadastro']);
   }
 }
+

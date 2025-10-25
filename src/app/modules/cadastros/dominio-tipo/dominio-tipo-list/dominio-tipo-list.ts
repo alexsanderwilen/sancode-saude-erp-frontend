@@ -57,12 +57,7 @@ export class DominioTipoListComponent implements OnInit {
       cellRenderer: (params: any) => {
         const eDiv = document.createElement('div');
         eDiv.innerHTML = `
-          <button title="Editar" data-action="edit" class="btn btn-sm btn-outline-primary me-1">
-            <i class="fa fa-pencil" data-action="edit"></i>
-          </button>
-          <button title="Excluir" data-action="delete" class="btn btn-sm btn-outline-danger">
-            <i class="fa fa-trash" data-action="delete"></i>
-          </button>
+          <button data-action="edit" class="btn btn-sm btn-outline-primary me-1">Editar</button>          <button data-action="delete" class="btn btn-sm btn-outline-danger">Excluir</button>
         `;
 
         const editButton = eDiv.querySelector('.btn-outline-primary');
@@ -166,3 +161,4 @@ export class DominioTipoListComponent implements OnInit {
     });
   }
 }
+
