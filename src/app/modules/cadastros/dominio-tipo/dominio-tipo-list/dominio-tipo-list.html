@@ -1,17 +1,14 @@
-<div class="d-flex justify-content-between align-items-center mb-3">
-  <h3>Tipos de Domínio</h3>
-  <button mat-raised-button color="primary" (click)="openDialog()">
+<div class="d-flex justify-content-between align-items-center mb-2">
+  <h4>Tipos de Domínio</h4>
+  <button mat-stroked-button color="primary" (click)="openDialog()">
     <mat-icon>add</mat-icon>
     Novo Tipo de Domínio
   </button>
 </div>
 
-<div class="ag-theme-alpine" style="height: 500px; width: 100%;">
-  <ag-grid-angular
-    style="width: 100%; height: 100%;"
-    [gridOptions]="gridOptions"
-    [columnDefs]="columnDefs"
-    (gridReady)="onGridReady($event)"
-  >
-  </ag-grid-angular>
-</div>
+<ag-grid-angular class="ag-theme-quartz" style="width: 100%; height: 500px;"
+                 [gridOptions]="gridOptions"
+                 [columnDefs]="columnDefs"
+                 [datasource]="datasource"
+                 (gridReady)="onGridReady($event)">
+</ag-grid-angular>

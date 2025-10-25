@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Prestador } from './prestador.model';
 import { environment } from '../../../../environments/environment';
+import { Page } from '../../../shared/models/page.model';
 
 @Injectable({
   providedIn: 'root'
@@ -14,7 +15,16 @@ export class PrestadorService {
   constructor(private http: HttpClient) { }
 
   getPrestadores(): Observable<Prestador[]> {
+    // fallback non-paginado
     return this.http.get<Prestador[]>(this.apiUrl);
+  }
+
+  getPrestadoresPaged(page: number, size: number, sort: string, order: string): Observable<Page<Prestador>> {
+    const params = new HttpParams()
+      .set('page', page.toString())
+      .set('size', size.toString())
+      .set('sort', `${sort},${order}`);
+    return this.http.get<Page<Prestador>>(this.apiUrl, { params });
   }
 
   getPrestador(id: number): Observable<Prestador> {

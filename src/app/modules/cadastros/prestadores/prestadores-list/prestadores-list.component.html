@@ -7,6 +7,8 @@
 </div>
 
 <ag-grid-angular class="ag-theme-quartz" style="width: 100%; height: 500px;"
-                 [rowData]="prestadores"
-                 [columnDefs]="colDefs">
+                 [columnDefs]="columnDefs"
+                 [gridOptions]="gridOptions"
+                 [datasource]="datasource"
+                 (gridReady)="onGridReady($event)">
 </ag-grid-angular>

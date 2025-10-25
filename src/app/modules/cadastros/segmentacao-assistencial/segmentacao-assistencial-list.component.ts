@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+﻿import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AgGridModule } from 'ag-grid-angular';
 import { ColDef, GridOptions } from 'ag-grid-community';
@@ -46,7 +46,7 @@ export class SegmentacaoAssistencialListComponent {
     this.load();
   }
 
-  load(): void { this.service.getSegmentacoes().subscribe(d => this.rowData = d); }
+  load(): void { this.service.getSegmentacoes().subscribe((d: any[]) => this.rowData = d); }
 
   openDialog(row?: any): void {
     const form: FormGroup = this.fb.group({ id: [row?.id || null], descricao: [row?.descricao || '', Validators.required] });
@@ -84,3 +84,5 @@ export class SegAssistDialogComponent {
   onCancel(): void { this.ref.close(); }
 }
 import { AgGridLocaleService } from '../../../shared/services/ag-grid-locale.service';
+
+

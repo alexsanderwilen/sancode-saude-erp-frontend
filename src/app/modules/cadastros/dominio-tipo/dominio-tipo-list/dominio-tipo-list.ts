@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+﻿import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { MatInputModule } from '@angular/material/input';
@@ -15,7 +15,7 @@ import { DominioTipoFormComponent } from '../dominio-tipo-form/dominio-tipo-form
 import { AgGridLocaleService } from '../../../../shared/services/ag-grid-locale.service';
 
 import { AgGridModule } from 'ag-grid-angular';
-import { ColDef, GridApi, GridOptions, GridReadyEvent } from 'ag-grid-community';
+import { CellClickedEvent, ColDef, GridApi, GridOptions, GridReadyEvent, IDatasource, IGetRowsParams } from 'ag-grid-community';
 import { StatusChipRenderer } from './status-chip-renderer.component';
 
 @Component({
@@ -39,6 +39,7 @@ export class DominioTipoListComponent implements OnInit {
   private readonly dialog = inject(MatDialog);
 
   gridOptions: GridOptions;
+  datasource!: IDatasource;
   columnDefs: ColDef[] = [
     { field: 'id', headerName: 'ID', sortable: true, filter: true, width: 90 },
     { field: 'tipoDoTipo', headerName: 'Tipo', sortable: true, filter: true, flex: 1 },
@@ -53,37 +54,27 @@ export class DominioTipoListComponent implements OnInit {
     },
     {
       headerName: 'Ações',
-      width: 150,
-      cellRenderer: (params: any) => {
-        const eDiv = document.createElement('div');
-        eDiv.innerHTML = `
-          <button data-action="edit" class="btn btn-sm btn-outline-primary me-1">Editar</button>          <button data-action="delete" class="btn btn-sm btn-outline-danger">Excluir</button>
-        `;
-
-        const editButton = eDiv.querySelector('.btn-outline-primary');
-        if (editButton) {
-          editButton.addEventListener('click', () => this.openDialog(params.data));
-        }
-
-        const deleteButton = eDiv.querySelector('.btn-outline-danger');
-        if (deleteButton) {
-          deleteButton.addEventListener('click', () => this.deleteDominioTipo(params.data.id));
-        }
-
-        return eDiv;
-      },
+      width: 160,
+      sortable: false,
+      filter: false,
+      cellRenderer: () => `
+        <button data-action="edit" class="btn btn-sm btn-outline-primary me-1">Editar</button>
+        <button data-action="delete" class="btn btn-sm btn-outline-danger">Excluir</button>
+      `,
     },
   ];
 
   private gridApi!: GridApi;
 
   constructor(private dominioTipoService: DominioTipoService, private agGridLocaleService: AgGridLocaleService) {
+    this.datasource = this.createDatasource();
     this.gridOptions = {
       ...this.agGridLocaleService.getDefaultGridOptions(),
+      rowModelType: 'infinite',
       pagination: true,
-      paginationPageSize: 10,
-      paginationPageSizeSelector: [10, 20, 50],
-      domLayout: 'normal',
+      paginationPageSize: 20,
+      cacheBlockSize: 20,
+      onCellClicked: (params: CellClickedEvent) => this.onActionClick(params),
     };
   }
 
@@ -91,21 +82,53 @@ export class DominioTipoListComponent implements OnInit {
 
   onGridReady(params: GridReadyEvent) {
     this.gridApi = params.api;
-    this.loadDominioTipos();
+  }
+  createDatasource(): IDatasource {
+    return {
+      getRows: (params: IGetRowsParams) => {
+        const pageSize = this.gridOptions.paginationPageSize || 20;
+        const page = params.startRow / pageSize;
+        const sortModel = params.sortModel;
+        const sort = sortModel.length ? sortModel[0].colId : 'descricao';
+        const order = sortModel.length ? (sortModel[0].sort || 'asc') : 'asc';
+
+        this.dominioTipoService.findPaged(page, pageSize, sort, order).subscribe({
+          next: data => params.successCallback(data.content, data.totalElements),
+          error: err => {
+            console.error('Erro ao buscar tipos de domínio:', err);
+            params.failCallback();
+          }
+        });
+      }
+    };
   }
 
-  loadDominioTipos(): void {
-    this.dominioTipoService.findAll().subscribe({
-      next: (data) => {
-        if (this.gridApi) {
-          this.gridApi.updateGridOptions({ rowData: data });
+  onActionClick(params: CellClickedEvent): void {
+    const action = (params.event?.target as HTMLElement).getAttribute('data-action');
+    if (!action) return;
+    if (action === 'edit') {
+      this.openDialog(params.data as DominioTipo);
+    } else if (action === 'delete') {
+      const id = (params.data as DominioTipo).id;
+      if (!id) return;
+      const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+        data: { message: 'Tem certeza que deseja excluir este tipo de domínio?' },
+      });
+      dialogRef.afterClosed().subscribe((result) => {
+        if (result) {
+          this.dominioTipoService.delete(id).subscribe({
+            next: () => {
+              this.snackBar.open('Tipo de domínio excluído com sucesso!', 'Fechar', { duration: 3000 });
+              this.gridApi.refreshInfiniteCache();
+            },
+            error: (error) => {
+              console.error('Erro ao excluir tipo de domínio:', error);
+              this.snackBar.open('Erro ao excluir tipo de domínio.', 'Fechar', { duration: 3000 });
+            },
+          });
         }
-      },
-      error: (error) => {
-        console.error('Erro ao carregar tipos de domínio:', error);
-        this.snackBar.open('Erro ao carregar tipos de domínio.', 'Fechar', { duration: 3000 });
-      },
-    });
+      });
+    }
   }
 
   openDialog(data?: DominioTipo): void {
@@ -129,7 +152,7 @@ export class DominioTipoListComponent implements OnInit {
         request.subscribe({
           next: () => {
             this.snackBar.open(successMessage, 'Fechar', { duration: 3000 });
-            this.loadDominioTipos();
+            this.gridApi && this.gridApi.refreshInfiniteCache();
           },
           error: (error) => {
             console.error('Erro ao salvar tipo de domínio:', error);
@@ -150,7 +173,7 @@ export class DominioTipoListComponent implements OnInit {
         this.dominioTipoService.delete(id).subscribe({
           next: () => {
             this.snackBar.open('Tipo de domínio excluído com sucesso!', 'Fechar', { duration: 3000 });
-            this.loadDominioTipos();
+            this.gridApi && this.gridApi.refreshInfiniteCache();
           },
           error: (error) => {
             console.error('Erro ao excluir tipo de domínio:', error);
@@ -161,4 +184,6 @@ export class DominioTipoListComponent implements OnInit {
     });
   }
 }
+
+
 
