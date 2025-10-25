@@ -146,22 +146,18 @@ export class PlanoFormComponent implements OnInit {
 
   onSubmit(): void {
     if (!this.planoForm.valid) { return; }
-    const plano: Plano = this.planoForm.value;
+    const plano: Plano = {
+      ...this.planoForm.value,
+      tiposPagamentoIds: this.selectedTiposPagamento ?? [],
+      acomodacoesIds: this.selectedAcomodacoes ?? [],
+      coberturasAdicionaisIds: this.selectedCoberturas ?? []
+    };
+
     const save$ = this.isEditMode && this.planoId
       ? this.planoService.updatePlano(this.planoId, plano)
       : this.planoService.createPlano(plano);
 
-    save$.pipe(
-      switchMap(saved => {
-        const id = this.planoId ?? (saved as any).id;
-        const ops: Observable<any>[] = [
-          this.planoService.replaceTiposPagamento(id, this.selectedTiposPagamento ?? []),
-          this.planoService.replaceAcomodacoes(id, this.selectedAcomodacoes ?? []),
-          this.planoService.replaceCoberturas(id, this.selectedCoberturas ?? [])
-        ];
-        return forkJoin(ops).pipe(switchMap(() => of(saved)));
-      })
-    ).subscribe(() => {
+    save$.subscribe(() => {
       this.router.navigate(['/cadastros/planos']);
     });
   }

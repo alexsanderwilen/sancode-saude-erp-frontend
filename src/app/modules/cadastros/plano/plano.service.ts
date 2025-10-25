@@ -98,7 +98,7 @@ export class PlanoService {
   }
 
   private mapToBackendDto(plano: Plano): any {
-    return {
+    const dto: any = {
       id: plano.id,
       nomeComercial: plano.nomeComercial,
       registroAns: plano.registroAns,
@@ -115,6 +115,19 @@ export class PlanoService {
       tipoContratacao: plano.idTipoContratacao ? { id: plano.idTipoContratacao } : null,
       status: plano.idPlanoStatus ? { id: plano.idPlanoStatus } : null
     };
+
+    // Aninhar relacionamentos como em Operadora
+    if (plano.tiposPagamentoIds && plano.tiposPagamentoIds.length) {
+      dto.tiposPagamento = plano.tiposPagamentoIds.map(id => ({ tipoPagamento: { id } }));
+    }
+    if (plano.acomodacoesIds && plano.acomodacoesIds.length) {
+      dto.acomodacoes = plano.acomodacoesIds.map(id => ({ acomodacao: { id } }));
+    }
+    if (plano.coberturasAdicionaisIds && plano.coberturasAdicionaisIds.length) {
+      dto.coberturasAdicionais = plano.coberturasAdicionaisIds.map(id => ({ coberturaAdicional: { id }, inclusa: true }));
+    }
+
+    return dto;
   }
 
   // N:N item-wise operations for AgGrid tabs
