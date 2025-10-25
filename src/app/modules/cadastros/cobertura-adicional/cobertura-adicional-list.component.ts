@@ -30,10 +30,10 @@ export class CoberturaAdicionalListComponent {
   rowData: any[] = [];
   gridOptions: GridOptions;
   columnDefs: ColDef[] = [
-    { headerName: 'ID', field: 'id', width: 100 },
-    { headerName: 'Descrição', field: 'descricao', flex: 1 },
-    { headerName: 'Tipo', field: 'tipo', width: 160 },
-    { headerName: 'Obrigatória ANS', field: 'obrigatoriaAns', width: 160 },
+    { headerName: 'ID', field: 'id', width: 100, sortable: true, filter: true },
+    { headerName: 'Descrição', field: 'descricao', flex: 1, sortable: true, filter: true },
+    { headerName: 'Tipo', field: 'tipo', width: 160, sortable: true, filter: true },
+    { headerName: 'Obrigatória ANS', field: 'obrigatoriaAns', width: 160, sortable: true, filter: true },
     { headerName: 'Ações', width: 160, cellRenderer: () => `
       <button data-action=\"edit\" class=\"btn btn-sm btn-outline-primary\">Editar</button>
       <button data-action=\"delete\" class=\"btn btn-sm btn-outline-danger\">Excluir</button>

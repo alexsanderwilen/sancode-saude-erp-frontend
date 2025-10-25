@@ -4,7 +4,6 @@ import { ColDef } from 'ag-grid-community';
 import { PrestadorService } from '../prestador.service';
 import { Prestador } from '../prestador.model';
 import { CommonModule } from '@angular/common';
-import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterModule } from '@angular/router';
@@ -14,7 +13,7 @@ import { RouterModule } from '@angular/router';
   templateUrl: './prestadores-list.component.html',
   styleUrls: ['./prestadores-list.component.scss'],
   standalone: true,
-  imports: [CommonModule, AgGridModule, MatCardModule, MatButtonModule, MatIconModule, RouterModule]
+  imports: [CommonModule, AgGridModule, MatButtonModule, MatIconModule, RouterModule]
 })
 export class PrestadoresListComponent implements OnInit {
 

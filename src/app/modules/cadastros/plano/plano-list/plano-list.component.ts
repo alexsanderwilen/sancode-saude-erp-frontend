@@ -26,7 +26,7 @@ export class PlanoListComponent {
   public gridOptions: GridOptions<Plano>;
 
   public columnDefs: ColDef[] = [
-    { headerName: 'ID', field: 'id', width: 100, sortable: true },
+    { headerName: 'ID', field: 'id', width: 100, sortable: true, filter: true },
     { headerName: 'Nome Comercial', field: 'nomeComercial', flex: 1, sortable: true, filter: true },
     { headerName: 'Registro ANS', field: 'registroAns', width: 160, sortable: true, filter: true },
     {

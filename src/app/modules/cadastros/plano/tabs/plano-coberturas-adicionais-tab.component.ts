@@ -43,10 +43,10 @@ import { Observable } from 'rxjs';
 export class PlanoCoberturasAdicionaisTabComponent implements OnInit {
   @Input() planoId!: number;
   columnDefs: ColDef[] = [
-    { headerName: 'ID', field: 'id', width: 90 },
-    { headerName: 'Cobertura', field: 'coberturaAdicional.descricao', flex: 1 },
-    { headerName: 'Inclusa', field: 'inclusa', width: 120 },
-    { headerName: 'Observação', field: 'observacao', flex: 1 },
+    { headerName: 'ID', field: 'id', width: 90, sortable: true, filter: true },
+    { headerName: 'Cobertura', field: 'coberturaAdicional.descricao', flex: 1, sortable: true, filter: true },
+    { headerName: 'Inclusa', field: 'inclusa', width: 120, sortable: true, filter: true },
+    { headerName: 'Observação', field: 'observacao', flex: 1, sortable: true, filter: true },
     { headerName: 'Ações', width: 180, cellRenderer: () => `
         <button data-action="edit" class="btn btn-sm btn-outline-primary">Editar</button>
         <button data-action="delete" class="btn btn-sm btn-outline-danger">Excluir</button>

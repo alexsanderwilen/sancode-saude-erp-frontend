@@ -34,8 +34,8 @@ import { GridOptions } from 'ag-grid-community';
 export class PlanoBaseListComponent {
   rowData: any[] = [];
   columnDefs: ColDef[] = [
-    { headerName: 'ID', field: 'id', width: 120 },
-    { headerName: 'Operadora', valueGetter: (p: any) => p.data?.operadora?.razaoSocial || p.data?.operadora?.nomeFantasia || '-', flex: 1 },
+    { headerName: 'ID', field: 'id', width: 120, sortable: true, filter: true },
+    { headerName: 'Operadora', valueGetter: (p: any) => p.data?.operadora?.razaoSocial || p.data?.operadora?.nomeFantasia || '-', flex: 1, sortable: true, filter: true },
     { headerName: 'Ativo', field: 'ativo', width: 120, cellRenderer: (p: { value: boolean }) => (
       p.value ? '<span class="badge text-bg-success">Ativo</span>' : '<span class="badge text-bg-danger">Inativo</span>'
     ) },

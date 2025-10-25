@@ -29,8 +29,8 @@ export class AbrangenciaGeograficaListComponent {
   rowData: any[] = [];
   gridOptions: GridOptions;
   columnDefs: ColDef[] = [
-    { headerName: 'ID', field: 'id', width: 120 },
-    { headerName: 'Descrição', field: 'descricao', flex: 1 },
+    { headerName: 'ID', field: 'id', width: 120, sortable: true, filter: true },
+    { headerName: 'Descrição', field: 'descricao', flex: 1, sortable: true, filter: true },
     { headerName: 'Ações', width: 160, cellRenderer: () => `
       <button data-action=\"edit\" class=\"btn btn-sm btn-outline-primary\">Editar</button>
       <button data-action=\"delete\" class=\"btn btn-sm btn-outline-danger\">Excluir</button>

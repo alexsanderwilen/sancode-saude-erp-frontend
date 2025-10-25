@@ -29,7 +29,7 @@ export class SegmentacaoAssistencialListComponent {
   rowData: any[] = [];
   gridOptions: GridOptions;
   columnDefs: ColDef[] = [
-    { headerName: 'ID', field: 'id', width: 120 },
+    { headerName: 'ID', field: 'id', width: 120, sortable: true, filter: true },
     { headerName: 'Descrição', field: 'descricao', flex: 1 },
     { headerName: 'Ações', width: 160, cellRenderer: () => `
       <button data-action="edit" class="btn btn-sm btn-outline-primary">Editar</button>
@@ -42,7 +42,7 @@ export class SegmentacaoAssistencialListComponent {
   ];
 
   constructor(private service: SegmentacaoAssistencialService, private dialog: MatDialog, private fb: FormBuilder, private agGridLocaleService: AgGridLocaleService) {
-    this.gridOptions = { ...this.agGridLocaleService.getDefaultGridOptions(), pagination: true, paginationPageSize: 20 };
+    this.gridOptions = { ...this.agGridLocaleService.getDefaultGridOptions(), pagination: true, paginationPageSize: 20, defaultColDef: { sortable: true, filter: true } };
     this.load();
   }
 
