@@ -28,7 +28,7 @@ import { Observable } from 'rxjs';
   ],
   template: `
   <div class="mb-2">
-    <button mat-stroked-button color="primary" (click)="openAddDialog()" [disabled]="!planoId">Adicionar</button>
+    <button type="button" mat-stroked-button color="primary" (click)="openAddDialog()" [disabled]="!planoId">Adicionar</button>
   </div>
   <ag-grid-angular class="ag-theme-quartz" style="width: 100%; height: 320px;"
                    [gridOptions]="gridOptions"
@@ -43,9 +43,10 @@ export class PlanoAcomodacoesTabComponent implements OnInit {
     { headerName: 'ID', field: 'id', width: 100, sortable: true, filter: true },
     { headerName: 'Acomodação', field: 'acomodacao.descricao', flex: 1, sortable: true, filter: true },
     { headerName: 'Ações', width: 120, cellRenderer: () => `
-        <button data-action="delete" class="btn btn-sm btn-outline-danger">Excluir</button>
+        <button type="button" data-action="delete" class="btn btn-sm btn-outline-danger">Excluir</button>
       `,
       onCellClicked: (p: any) => {
+        if (p?.event) { try { p.event.preventDefault(); p.event.stopPropagation(); } catch {} }
         const action = (p.event?.target as HTMLElement)?.getAttribute('data-action');
         if (action === 'delete') this.remove(p.data);
       }

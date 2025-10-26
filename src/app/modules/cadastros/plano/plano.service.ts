@@ -116,15 +116,22 @@ export class PlanoService {
       status: plano.idPlanoStatus ? { id: plano.idPlanoStatus } : null
     };
 
-    // Aninhar relacionamentos como em Operadora
-    if (plano.tiposPagamentoIds && plano.tiposPagamentoIds.length) {
-      dto.tiposPagamento = plano.tiposPagamentoIds.map(id => ({ tipoPagamento: { id } }));
+    // Relacionamentos: só incluir se propriedade estiver presente no objeto (permite omitir no update)
+    const hasTipos = Object.prototype.hasOwnProperty.call(plano, 'tiposPagamentoIds');
+    const hasAcoms = Object.prototype.hasOwnProperty.call(plano, 'acomodacoesIds');
+    const hasCobs  = Object.prototype.hasOwnProperty.call(plano, 'coberturasAdicionaisIds');
+
+    if (hasTipos) {
+      const tiposPagamentoIds = (plano as any).tiposPagamentoIds ?? [];
+      dto.tiposPagamento = (tiposPagamentoIds as number[]).map(id => ({ tipoPagamento: { id } }));
     }
-    if (plano.acomodacoesIds && plano.acomodacoesIds.length) {
-      dto.acomodacoes = plano.acomodacoesIds.map(id => ({ acomodacao: { id } }));
+    if (hasAcoms) {
+      const acomodacoesIds = (plano as any).acomodacoesIds ?? [];
+      dto.acomodacoes = (acomodacoesIds as number[]).map(id => ({ acomodacao: { id } }));
     }
-    if (plano.coberturasAdicionaisIds && plano.coberturasAdicionaisIds.length) {
-      dto.coberturasAdicionais = plano.coberturasAdicionaisIds.map(id => ({ coberturaAdicional: { id }, inclusa: true }));
+    if (hasCobs) {
+      const coberturasIds = (plano as any).coberturasAdicionaisIds ?? [];
+      dto.coberturasAdicionais = (coberturasIds as number[]).map(id => ({ coberturaAdicional: { id }, inclusa: true }));
     }
 
     return dto;

@@ -146,16 +146,21 @@ export class PlanoFormComponent implements OnInit {
 
   onSubmit(): void {
     if (!this.planoForm.valid) { return; }
-    const plano: Plano = {
-      ...this.planoForm.value,
-      tiposPagamentoIds: this.selectedTiposPagamento ?? [],
-      acomodacoesIds: this.selectedAcomodacoes ?? [],
-      coberturasAdicionaisIds: this.selectedCoberturas ?? []
-    };
-
-    const save$ = this.isEditMode && this.planoId
-      ? this.planoService.updatePlano(this.planoId, plano)
-      : this.planoService.createPlano(plano);
+    // Para edição, não enviamos relacionamentos (são geridos nas abas com endpoints próprios)
+    // Para criação, enviamos os relacionamentos selecionados.
+    const base: any = { ...this.planoForm.value };
+    let save$;
+    if (this.isEditMode && this.planoId) {
+      save$ = this.planoService.updatePlano(this.planoId, base as Plano);
+    } else {
+      const createPayload: any = {
+        ...base,
+        tiposPagamentoIds: this.selectedTiposPagamento ?? [],
+        acomodacoesIds: this.selectedAcomodacoes ?? [],
+        coberturasAdicionaisIds: this.selectedCoberturas ?? []
+      } as Plano;
+      save$ = this.planoService.createPlano(createPayload);
+    }
 
     save$.subscribe(() => {
       this.router.navigate(['/cadastros/planos']);
