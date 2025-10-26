@@ -24,6 +24,5 @@ export class EnderecoFormComponent {
   // Lógica de busca de CEP será adicionada aqui no futuro
   buscarCep() {
     // TODO: Implementar a busca na API ViaCEP
-    console.log('Buscando CEP...');
   }
 }

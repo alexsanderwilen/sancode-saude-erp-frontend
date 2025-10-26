@@ -41,7 +41,6 @@ export class ChatService {
       });
 
       this.stompClient.onConnect = (frame) => {
-        console.log('Conectado ao WebSocket: ' + frame);
         if (this.stompClient) {
           // Inscrição para receber mensagens privadas
           this.stompClient.subscribe('/user/queue/messages', (message: IMessage) => {

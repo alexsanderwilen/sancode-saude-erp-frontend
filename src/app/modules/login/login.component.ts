@@ -49,10 +49,10 @@ export class LoginComponent implements OnInit {
       return;
     }
 
-    console.log('LoginComponent: Attempting login with:', this.loginForm.value);
+    
     this.authService.login(this.loginForm.value).subscribe(
       (response) => {
-        console.log('LoginComponent: Login successful, response:', response);
+        
         this.router.navigate(['/home']);
       },
       (error) => {

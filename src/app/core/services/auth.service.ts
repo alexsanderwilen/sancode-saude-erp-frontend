@@ -28,9 +28,7 @@ export class AuthService {
   login(credentials: any): Observable<any> {
     return this.http.post(`${this.apiUrl}/login`, credentials).pipe(
       tap((response: any) => {
-        console.log('AuthService: Backend response:', response);
         if (response.accessToken) {
-          console.log('AuthService: Token found, setting in localStorage.');
           localStorage.setItem('token', response.accessToken);
           this.decodeAndSetUser(response.accessToken);
         }
@@ -48,7 +46,6 @@ export class AuthService {
 
   isLoggedIn(): boolean {
     const token = this.getToken();
-    console.log('AuthService: isLoggedIn check, token found:', !!token);
     if (token) {
       try {
         const decoded: any = jwtDecode(token);
