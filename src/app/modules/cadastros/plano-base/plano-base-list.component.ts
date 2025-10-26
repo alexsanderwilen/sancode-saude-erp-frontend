@@ -9,6 +9,9 @@ import { Inject } from '@angular/core';
 import { BaseModalFormComponent } from '../../../shared/components/base-modal-form/base-modal-form.component';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
+import { MatInputModule } from '@angular/material/input';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { OperadoraService } from '../operadora.service';
 import { HttpClient } from '@angular/common/http';
@@ -35,7 +38,12 @@ export class PlanoBaseListComponent {
   rowData: any[] = [];
   columnDefs: ColDef[] = [
     { headerName: 'ID', field: 'id', width: 120, sortable: true, filter: true },
-    { headerName: 'Operadora', valueGetter: (p: any) => p.data?.operadora?.razaoSocial || p.data?.operadora?.nomeFantasia || '-', flex: 1, sortable: true, filter: true },
+    { headerName: 'Tipo de Plano', valueGetter: (p: any) => p.data?.tipoPlano?.descricao || '-', width: 200, sortable: true, filter: true },
+    { headerName: 'Operadora', valueGetter: (p: any) => p.data?.operadora?.razaoSocial || p.data?.operadora?.nomeFantasia || '-', width: 260, sortable: true, filter: true },
+    { headerName: 'Código ANS', field: 'codigoProdutoAns', width: 160, sortable: true, filter: true },
+    { headerName: 'Nome do Produto', field: 'nomeProduto', flex: 1, sortable: true, filter: true },
+    { headerName: 'Abrangência', valueGetter: (p: any) => p.data?.abrangencia?.descricao || '-', width: 180, sortable: true, filter: true },
+    { headerName: 'Tipo Contratação', valueGetter: (p: any) => p.data?.tipoContratacao?.descricao || '-', width: 200, sortable: true, filter: true },
     { headerName: 'Ativo', field: 'ativo', width: 120, cellRenderer: (p: { value: boolean }) => (
       p.value ? '<span class="badge text-bg-success">Ativo</span>' : '<span class="badge text-bg-danger">Inativo</span>'
     ) },
@@ -65,14 +73,37 @@ export class PlanoBaseListComponent {
   openDialog(row?: any): void {
     const form: FormGroup = this.fb.group({
       id: [row?.id || null],
+      tipoPlanoId: [row?.tipoPlano?.id || null, Validators.required],
       operadoraId: [row?.operadora?.idOperadora || null, Validators.required],
+      codigoProdutoAns: [row?.codigoProdutoAns || "", Validators.required],
+      nomeProduto: [row?.nomeProduto || "", Validators.required],
+      abrangenciaId: [row?.abrangencia?.id || null, Validators.required],
+      tipoContratacaoId: [row?.tipoContratacao?.id || null, Validators.required],
+      descricao: [row?.descricao || ""],
+      dataRegistroAns: [row?.dataRegistroAns ? new Date(row.dataRegistroAns) : null],
+      permiteComercializacao: [row?.permiteComercializacao ?? true],
       ativo: [row?.ativo ?? true]
     });
     const operadoras$ = this.operadoraService.getOperadoras(0, 1000, 'razaoSocial', 'asc').pipe(map(p => p.content));
-    const ref = this.dialog.open(PlanoBaseDialogComponent, { width: '640px', data: { form, title: row ? 'Editar' : 'Novo', operadoras$ } });
+    const tiposPlano$ = this.http.get<any[]>(`${this.apiUrl.replace('planos-base','tipos-plano')}`);
+    const abrangencias$ = this.http.get<any[]>(`${environment.apiUrl}/abrangencias-geograficas`);
+    const tiposContratacao$ = this.http.get<any[]>(`${environment.apiUrl}/tipos-contratacao`);
+    const ref = this.dialog.open(PlanoBaseDialogComponent, { width: '900px', data: { form, title: row ? 'Editar' : 'Novo', operadoras$, tiposPlano$, abrangencias$, tiposContratacao$ } });
     ref.afterClosed().subscribe(res => {
       if (res?.saved) {
-        const payload: any = { id: form.value.id, operadora: form.value.operadoraId ? { idOperadora: form.value.operadoraId } : null, ativo: form.value.ativo };
+                const payload: any = {
+          id: form.value.id,
+          tipoPlano: form.value.tipoPlanoId ? { id: form.value.tipoPlanoId } : null,
+          operadora: form.value.operadoraId ? { idOperadora: form.value.operadoraId } : null,
+          abrangencia: form.value.abrangenciaId ? { id: form.value.abrangenciaId } : null,
+          tipoContratacao: form.value.tipoContratacaoId ? { id: form.value.tipoContratacaoId } : null,
+          codigoProdutoAns: form.value.codigoProdutoAns,
+          nomeProduto: form.value.nomeProduto,
+          descricao: form.value.descricao,
+          dataRegistroAns: form.value.dataRegistroAns ? (new Date(form.value.dataRegistroAns)).toISOString().substring(0,10) : null,
+          permiteComercializacao: form.value.permiteComercializacao,
+          ativo: form.value.ativo
+        };
         const obs = payload.id ? this.http.put(`${this.apiUrl}/${payload.id}`, payload) : this.http.post(this.apiUrl, payload);
         obs.subscribe(() => this.load());
       }
@@ -85,17 +116,78 @@ export class PlanoBaseListComponent {
 @Component({
   selector: 'app-plano-base-dialog',
   standalone: true,
-  imports: [CommonModule, BaseModalFormComponent, ReactiveFormsModule, MatFormFieldModule, MatSelectModule, MatCheckboxModule],
+  imports: [CommonModule, BaseModalFormComponent, ReactiveFormsModule, MatFormFieldModule, MatSelectModule, MatCheckboxModule, MatInputModule, MatDatepickerModule, MatNativeDateModule],
   template: `
-  <app-base-modal-form [title]="data.title" (save)="onSave()" (cancel)="onCancel()">
+    <app-base-modal-form [title]="data.title" (save)="onSave()" (cancel)="onCancel()">
     <form [formGroup]="data.form">
+      <div class="row">
+        <div class="col-md-6">
+          <mat-form-field class="full-width">
+            <mat-label>Tipo de Plano</mat-label>
+            <mat-select formControlName="tipoPlanoId" required>
+              <mat-option *ngFor="let tp of (data.tiposPlano$ | async)" [value]="tp.id">{{ tp.descricao }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div class="col-md-6">
+          <mat-form-field class="full-width">
+            <mat-label>Operadora</mat-label>
+            <mat-select formControlName="operadoraId" required>
+              <mat-option *ngFor="let op of (data.operadoras$ | async)" [value]="op.idOperadora">{{ op.razaoSocial || op.nomeFantasia }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-4">
+          <mat-form-field class="full-width">
+            <mat-label>Código ANS</mat-label>
+            <input matInput formControlName="codigoProdutoAns" required>
+          </mat-form-field>
+        </div>
+        <div class="col-md-8">
+          <mat-form-field class="full-width">
+            <mat-label>Nome do Produto</mat-label>
+            <input matInput formControlName="nomeProduto" required>
+          </mat-form-field>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-6">
+          <mat-form-field class="full-width">
+            <mat-label>Abrangência</mat-label>
+            <mat-select formControlName="abrangenciaId" required>
+              <mat-option *ngFor="let ab of (data.abrangencias$ | async)" [value]="ab.id">{{ ab.descricao }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div class="col-md-6">
+          <mat-form-field class="full-width">
+            <mat-label>Tipo de Contratação</mat-label>
+            <mat-select formControlName="tipoContratacaoId" required>
+              <mat-option *ngFor="let tc of (data.tiposContratacao$ | async)" [value]="tc.id">{{ tc.descricao }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-6">
+          <mat-form-field class="full-width">
+            <mat-label>Data Registro ANS</mat-label>
+            <input matInput [matDatepicker]="picker" formControlName="dataRegistroAns">
+            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+          </mat-form-field>
+        </div>
+        <div class="col-md-6 d-flex align-items-center gap-3">
+          <mat-checkbox formControlName="permiteComercializacao">Permite Comercialização</mat-checkbox>
+          <mat-checkbox formControlName="ativo">Ativo</mat-checkbox>
+        </div>
+      </div>
       <mat-form-field class="full-width">
-        <mat-label>Operadora</mat-label>
-        <mat-select formControlName="operadoraId" required>
-          <mat-option *ngFor="let op of (data.operadoras$ | async)" [value]="op.idOperadora">{{ op.razaoSocial || op.nomeFantasia }}</mat-option>
-        </mat-select>
+        <mat-label>Descrição</mat-label>
+        <textarea matInput formControlName="descricao" rows="3"></textarea>
       </mat-form-field>
-      <mat-checkbox formControlName="ativo">Ativo</mat-checkbox>
     </form>
   </app-base-modal-form>
   `
@@ -105,5 +197,12 @@ export class PlanoBaseDialogComponent {
   onSave(): void { this.ref.close({ saved: true }); }
   onCancel(): void { this.ref.close(); }
 }
+
+
+
+
+
+
+
 
 

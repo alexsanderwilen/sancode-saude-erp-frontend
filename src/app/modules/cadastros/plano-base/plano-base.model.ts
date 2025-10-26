@@ -7,6 +7,7 @@ export interface OperadoraRef {
 export interface PlanoBase {
   id: number;
   operadora?: OperadoraRef;
+  tipoPlano?: { id: number; descricao?: string };
   ativo: boolean;
   descricao?: string; // computed label for UI
 }

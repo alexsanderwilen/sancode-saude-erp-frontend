@@ -28,17 +28,37 @@ export class DominioTipoService {
       .set('size', size.toString())
       .set('sort', `${sort},${order}`);
     return this.http.get<any>(this.apiUrl, { params }).pipe(
-      map((res: any) => ({
-        content: (res.content || []).map((item: any) => this.mapToFrontend(item)),
-        totalPages: res.totalPages,
-        totalElements: res.totalElements,
-        size: res.size,
-        number: res.number,
-        numberOfElements: res.numberOfElements,
-        first: res.first,
-        last: res.last,
-        empty: res.empty
-      }))
+      map((res: any) => {
+        if (Array.isArray(res)) {
+          const total = res.length;
+          const start = page * size;
+          const end = Math.min(start + size, total);
+          const slice = res.slice(start, end).map((item: any) => this.mapToFrontend(item));
+          const totalPages = size > 0 ? Math.ceil(total / size) : 1;
+          return {
+            content: slice,
+            totalPages,
+            totalElements: total,
+            size,
+            number: page,
+            numberOfElements: slice.length,
+            first: page === 0,
+            last: end >= total,
+            empty: total === 0
+          } as Page<DominioTipo>;
+        }
+        return {
+          content: (res.content || []).map((item: any) => this.mapToFrontend(item)),
+          totalPages: res.totalPages ?? 0,
+          totalElements: res.totalElements ?? 0,
+          size: res.size ?? size,
+          number: res.number ?? page,
+          numberOfElements: res.numberOfElements ?? ((res.content || []).length),
+          first: res.first ?? (page === 0),
+          last: res.last ?? false,
+          empty: res.empty ?? ((res.content || []).length === 0)
+        } as Page<DominioTipo>;
+      })
     );
   }
 
