@@ -1,7 +1,8 @@
-export interface CoberturaAdicional {
+﻿export interface CoberturaAdicional {
   id: number;
   descricao: string;
   tipo?: string;
   obrigatoriaAns?: boolean;
 }
+
 

@@ -1,4 +1,4 @@
-<h2 mat-dialog-title>Adicionar usuários ao grupo</h2>
+﻿<h2 mat-dialog-title>Adicionar usuários ao grupo</h2>
 <mat-dialog-content>
   <mat-selection-list #userList (selectionChange)="onListSelectionChange($event)">
     <mat-list-option *ngFor="let user of users" [value]="user.username">
@@ -10,3 +10,4 @@
   <button mat-button (click)="onCancel()">Cancelar</button>
   <button mat-button (click)="onAdd()" [disabled]="selectedUsernames.length === 0">Adicionar</button>
 </mat-dialog-actions>
+

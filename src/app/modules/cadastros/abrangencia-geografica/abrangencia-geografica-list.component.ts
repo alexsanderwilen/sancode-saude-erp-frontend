@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+﻿import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AgGridModule } from 'ag-grid-angular';
 import { ColDef, GridOptions, IDatasource, IGetRowsParams, GridApi, GridReadyEvent } from 'ag-grid-community';
@@ -104,3 +104,4 @@ export class AbrangenciaDialogComponent {
   onCancel(): void { this.ref.close(); }
 }
 import { AgGridLocaleService } from '../../../shared/services/ag-grid-locale.service';
+

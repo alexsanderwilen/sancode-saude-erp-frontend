@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+ï»¿import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AgGridModule } from 'ag-grid-angular';
 import { ColDef, GridOptions, IDatasource, IGetRowsParams, GridApi, GridReadyEvent } from 'ag-grid-community';
@@ -18,7 +18,7 @@ import { AgGridLocaleService } from '../../../shared/services/ag-grid-locale.ser
   imports: [CommonModule, AgGridModule, MatButtonModule, MatDialogModule],
   template: `
   <div class="d-flex justify-content-between align-items-center mb-2">
-    <h4>Segmentações Assistenciais</h4>
+    <h4>SegmentaÃ§Ãµes Assistenciais</h4>
     <button mat-stroked-button color="primary" (click)="openDialog()">Novo</button>
   </div>
   <ag-grid-angular class="ag-theme-quartz" style="width: 100%; height: 500px;"
@@ -33,8 +33,8 @@ export class SegmentacaoAssistencialListComponent {
   private gridApi!: GridApi;
   columnDefs: ColDef[] = [
     { headerName: 'ID', field: 'id', width: 120, sortable: true, filter: true },
-    { headerName: 'Descrição', field: 'descricao', flex: 1 },
-    { headerName: 'Ações', width: 160, cellRenderer: () => `
+    { headerName: 'DescriÃ§Ã£o', field: 'descricao', flex: 1 },
+    { headerName: 'AÃ§Ãµes', width: 160, cellRenderer: () => `
       <button data-action=\"edit\" class=\"btn btn-sm btn-outline-primary\">Editar</button>
       <button data-action=\"delete\" class=\"btn btn-sm btn-outline-danger\">Excluir</button>
     `, onCellClicked: (p: any) => {
@@ -90,7 +90,7 @@ export class SegmentacaoAssistencialListComponent {
   <app-base-modal-form [title]="data.title" (save)="onSave()" (cancel)="onCancel()">
     <form [formGroup]="data.form">
       <mat-form-field class="full-width">
-        <mat-label>Descrição</mat-label>
+        <mat-label>DescriÃ§Ã£o</mat-label>
         <input matInput formControlName="descricao" required>
       </mat-form-field>
     </form>

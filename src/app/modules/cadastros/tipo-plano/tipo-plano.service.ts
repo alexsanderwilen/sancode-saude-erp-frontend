@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+﻿import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../../environments/environment';
@@ -10,4 +10,5 @@ export class TipoPlanoService {
   constructor(private http: HttpClient) {}
   getTiposPlano(): Observable<TipoPlano[]> { return this.http.get<TipoPlano[]>(this.apiUrl); }
 }
+
 

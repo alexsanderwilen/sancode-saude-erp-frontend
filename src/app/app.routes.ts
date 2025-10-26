@@ -1,4 +1,4 @@
-import { Routes } from '@angular/router';
+﻿import { Routes } from '@angular/router';
 import { HomeComponent } from './modules/home/home.component';
 import { MainLayoutComponent } from './core/layouts/main-layout/main-layout';
 import { AuthGuard } from './core/guards/auth.guard';
@@ -31,3 +31,4 @@ export const routes: Routes = [
   },
   { path: '**', redirectTo: '' }
 ];
+

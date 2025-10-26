@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+﻿import { Injectable } from '@angular/core';
 import { GridOptions } from 'ag-grid-community';
 
 @Injectable({
@@ -123,7 +123,7 @@ export class AgGridLocaleService {
         filters: 'Filtros',
 
         // columns tool panel
-        pivotMode: 'Modo Pivô',
+        pivotMode: 'Modo PivÃ´',
         groups: 'Grupos de Linhas',
         rowGroupColumnsEmptyMessage: 'Arraste colunas aqui para agrupar',
         values: 'Valores',
@@ -146,8 +146,8 @@ export class AgGridLocaleService {
 
         // Menu
         pinColumn: 'Fixar Coluna',
-        pinLeft: 'Fixar à Esquerda',
-        pinRight: 'Fixar à Direita',
+        pinLeft: 'Fixar Ã  Esquerda',
+        pinRight: 'Fixar Ã  Direita',
         noPin: 'Não Fixar',
         valueAggregation: 'Agregação de Valor',
         noAggregation: 'Nenhuma',
@@ -210,8 +210,8 @@ export class AgGridLocaleService {
         pivotColumnGroupTotals: 'Total de Grupo de Colunas',
 
         // Enterprise Menu (Charts)
-        pivotChartAndPivotMode: 'Gráfico Pivô e Modo Pivô',
-        pivotChart: 'Gráfico Pivô',
+        pivotChartAndPivotMode: 'Gráfico PivÃ´ e Modo PivÃ´',
+        pivotChart: 'Gráfico PivÃ´',
         chartRange: 'Intervalo do Gráfico',
 
         columnChart: 'Coluna',
@@ -234,16 +234,16 @@ export class AgGridLocaleService {
         scatter: 'Dispersão',
         bubble: 'Bolha',
 
-        areaChart: 'Área',
-        area: 'Área',
-        stackedArea: 'Área Empilhada',
-        normalizedArea: 'Área 100% Empilhada',
+        areaChart: 'Ãrea',
+        area: 'Ãrea',
+        stackedArea: 'Ãrea Empilhada',
+        normalizedArea: 'Ãrea 100% Empilhada',
 
         histogramChart: 'Histograma',
 
         polarChart: 'Polar',
         radarLine: 'Linha de Radar',
-        radarArea: 'Área de Radar',
+        radarArea: 'Ãrea de Radar',
         nightingale: 'Nightingale',
         radialColumn: 'Coluna Radial',
         radialBar: 'Barra Radial',
@@ -251,7 +251,7 @@ export class AgGridLocaleService {
         statisticalChart: 'Estatístico',
         boxPlot: 'Box Plot',
         rangeBar: 'Barra de Intervalo',
-        rangeArea: 'Área de Intervalo',
+        rangeArea: 'Ãrea de Intervalo',
 
         hierarchicalChart: 'Hierárquico',
         treemap: 'Treemap',
@@ -263,10 +263,10 @@ export class AgGridLocaleService {
 
         combinationChart: 'Combinação',
         columnLineCombo: 'Coluna e Linha',
-        AreaColumnCombo: 'Área e Coluna',
+        AreaColumnCombo: 'Ãrea e Coluna',
 
         // Charts
-        pivotChartTitle: 'Gráfico Pivô',
+        pivotChartTitle: 'Gráfico PivÃ´',
         rangeChartTitle: 'Gráfico de Intervalo',
         settings: 'Configurações',
         data: 'Dados',
@@ -307,7 +307,7 @@ export class AgGridLocaleService {
         cross: 'Cruz',
         diamond: 'Diamante',
         plus: 'Mais',
-        triangle: 'Triângulo',
+        triangle: 'TriÃ¢ngulo',
         heart: 'Coração',
         orientation: 'Orientação',
         fixed: 'Fixo',
@@ -373,7 +373,7 @@ export class AgGridLocaleService {
         selectingZoom: 'Zoom com Seleção',
         durationMillis: 'Duração (ms)',
         crosshairLabel: 'Rótulo da Mira',
-        crosshairSnap: 'Ajustar à Mira',
+        crosshairSnap: 'Ajustar Ã  Mira',
         normal: 'Normal',
         bold: 'Negrito',
         italic: 'Itálico',
@@ -395,7 +395,7 @@ export class AgGridLocaleService {
         pieGroup: 'Grupo de Pizza',
         lineGroup: 'Grupo de Linha',
         scatterGroup: 'Grupo de Dispersão',
-        areaGroup: 'Grupo de Área',
+        areaGroup: 'Grupo de Ãrea',
         polarGroup: 'Grupo Polar',
         statisticalGroup: 'Grupo Estatístico',
         hierarchicalGroup: 'Grupo Hierárquico',
@@ -410,30 +410,30 @@ export class AgGridLocaleService {
         pieTooltip: 'Pizza',
         donutTooltip: 'Rosca',
         lineTooltip: 'Linha',
-        groupedAreaTooltip: 'Área Agrupada',
-        stackedAreaTooltip: 'Área Empilhada',
-        normalizedAreaTooltip: 'Área 100% Empilhada',
+        groupedAreaTooltip: 'Ãrea Agrupada',
+        stackedAreaTooltip: 'Ãrea Empilhada',
+        normalizedAreaTooltip: 'Ãrea 100% Empilhada',
         scatterTooltip: 'Dispersão',
         bubbleTooltip: 'Bolha',
         histogramTooltip: 'Histograma',
         radialColumnTooltip: 'Coluna Radial',
         radialBarTooltip: 'Barra Radial',
         radarLineTooltip: 'Linha de Radar',
-        radarAreaTooltip: 'Área de Radar',
+        radarAreaTooltip: 'Ãrea de Radar',
         nightingaleTooltip: 'Nightingale',
         rangeBarTooltip: 'Barra de Intervalo',
-        rangeAreaTooltip: 'Área de Intervalo',
+        rangeAreaTooltip: 'Ãrea de Intervalo',
         boxPlotTooltip: 'Box Plot',
         treemapTooltip: 'Treemap',
         sunburstTooltip: 'Sunburst',
         waterfallTooltip: 'Cascata',
         heatmapTooltip: 'Mapa de Calor',
         columnLineComboTooltip: 'Combinação de Coluna e Linha',
-        areaColumnComboTooltip: 'Combinação de Área e Coluna',
+        areaColumnComboTooltip: 'Combinação de Ãrea e Coluna',
         customComboTooltip: 'Combinação Personalizada',
         innerRadius: 'Raio Interno',
-        startAngle: 'Ângulo Inicial',
-        endAngle: 'Ângulo Final',
+        startAngle: 'Ã‚ngulo Inicial',
+        endAngle: 'Ã‚ngulo Final',
         reverseDirection: 'Inverter Direção',
         groupPadding: 'Preenchimento do Grupo',
         seriesPadding: 'Preenchimento da Série',
@@ -445,7 +445,7 @@ export class AgGridLocaleService {
         inside: 'Dentro',
         outside: 'Fora',
         noDataToChart: 'Sem dados para exibir no gráfico',
-        pivotChartRequiresPivotMode: 'Gráfico Pivô requer Modo Pivô habilitado.',
+        pivotChartRequiresPivotMode: 'Gráfico PivÃ´ requer Modo PivÃ´ habilitado.',
         chartSettingsToolbarTooltip: 'Menu',
         chartLinkToolbarTooltip: 'Vincular ao Gráfico',
         chartUnlinkToolbarTooltip: 'Desvincular do Gráfico',
@@ -481,8 +481,8 @@ export class AgGridLocaleService {
         groupedBarFull: 'Barra Agrupada Completa',
         stackedBarFull: 'Barra Empilhada Completa',
         normalizedBarFull: 'Barra 100% Empilhada Completa',
-        stackedAreaFull: 'Área Empilhada Completa',
-        normalizedAreaFull: 'Área 100% Empilhada Completa',
+        stackedAreaFull: 'Ãrea Empilhada Completa',
+        normalizedAreaFull: 'Ãrea 100% Empilhada Completa',
         customCombo: 'Combinação Personalizada',
 
         // ARIA
@@ -609,3 +609,4 @@ export class AgGridLocaleService {
     };
   }
 }
+

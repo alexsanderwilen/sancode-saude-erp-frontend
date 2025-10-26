@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+﻿import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, map } from 'rxjs';
 import { SegmentacaoAssistencial } from './segmentacao-assistencial.model';
@@ -40,3 +40,4 @@ export class SegmentacaoAssistencialService {
     return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }
 }
+

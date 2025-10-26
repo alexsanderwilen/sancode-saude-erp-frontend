@@ -1,4 +1,4 @@
-// Browser shims for libraries expecting Node globals
+﻿// Browser shims for libraries expecting Node globals
 (window as any).global = (window as any).global || window;
 (window as any).globalThis = (window as any).globalThis || window;
 (window as any).process = (window as any).process || { env: {} };
@@ -26,3 +26,4 @@ if (environment.production && environment.firebase.measurementId) {
 
 bootstrapApplication(App, appConfig)
   .catch((err) => console.error(err));
+

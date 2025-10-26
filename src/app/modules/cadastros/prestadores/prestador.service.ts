@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+﻿import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, map } from 'rxjs';
 import { Prestador } from './prestador.model';
@@ -77,3 +77,4 @@ export class PrestadorService {
     return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }
 }
+

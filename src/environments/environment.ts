@@ -1,11 +1,11 @@
-export const environment = {
+﻿export const environment = {
   production: false,
   // REST principal (use proxy em dev para evitar CORS)
   apiUrl: '/api',
   // Chat (backend_chat :8081) - em dev usamos proxy com caminhos relativos
   chatApiUrl: '/api/chat',
   chatWsUrl: '/ws-chat',
-  // Config do Firebase (dev) — preencha se for usar SDK no dev
+  // Config do Firebase (dev) â€” preencha se for usar SDK no dev
   firebase: {
     apiKey: '',
     authDomain: '',
@@ -16,3 +16,4 @@ export const environment = {
     measurementId: ''
   }
 };
+

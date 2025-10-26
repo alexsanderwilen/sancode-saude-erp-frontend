@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+﻿import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
 import { MatToolbarModule } from '@angular/material/toolbar';
@@ -28,3 +28,4 @@ import { UserProfileMenuComponent } from '../../../shared/components/user-profil
 export class UsuarioLayoutComponent {
 
 }
+

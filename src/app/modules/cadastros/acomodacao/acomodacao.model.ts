@@ -1,5 +1,6 @@
-export interface Acomodacao {
+﻿export interface Acomodacao {
   id: number;
   descricao: string;
 }
+
 

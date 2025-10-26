@@ -1,4 +1,5 @@
-export interface AbrangenciaGeografica {
+﻿export interface AbrangenciaGeografica {
   id: number;
   descricao: string;
 }
+

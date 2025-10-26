@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, ViewChild, ElementRef, AfterViewChecked, inject, CUSTOM_ELEMENTS_SCHEMA, HostListener } from '@angular/core';
+﻿import { Component, OnDestroy, OnInit, ViewChild, ElementRef, AfterViewChecked, inject, CUSTOM_ELEMENTS_SCHEMA, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
@@ -419,6 +419,7 @@ attachment: { id: resp.id, filename: resp.filename, contentType: resp.contentTyp
     return new Date(msg.createdAt) <= lastRead;
   }
 }
+
 
 
 

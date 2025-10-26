@@ -1,4 +1,5 @@
-export interface SegmentacaoAssistencial {
+﻿export interface SegmentacaoAssistencial {
   id: number;
   descricao: string;
 }
+

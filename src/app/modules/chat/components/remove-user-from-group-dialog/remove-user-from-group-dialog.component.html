@@ -1,4 +1,4 @@
-<h2 mat-dialog-title>Remover usuários do grupo</h2>
+﻿<h2 mat-dialog-title>Remover usuários do grupo</h2>
 <mat-dialog-content>
   <mat-selection-list #userList (selectionChange)="onListSelectionChange($event)">
     <mat-list-option *ngFor="let member of members" [value]="member.username">
@@ -10,3 +10,4 @@
   <button mat-button (click)="onCancel()">Cancelar</button>
   <button mat-button (click)="onRemove()" [disabled]="selectedUsernames.length === 0">Remover</button>
 </mat-dialog-actions>
+

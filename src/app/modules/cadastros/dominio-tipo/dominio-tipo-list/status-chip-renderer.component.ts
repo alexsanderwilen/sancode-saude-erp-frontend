@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+﻿import { Component } from '@angular/core';
 import { ICellRendererAngularComp } from 'ag-grid-angular';
 import { ICellRendererParams } from 'ag-grid-community';
 import { CommonModule } from '@angular/common';
@@ -27,3 +27,4 @@ export class StatusChipRenderer implements ICellRendererAngularComp {
     return true;
   }
 }
+

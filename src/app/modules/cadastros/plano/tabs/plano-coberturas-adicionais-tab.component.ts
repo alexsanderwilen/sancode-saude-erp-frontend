@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, Inject } from '@angular/core';
+﻿import { Component, Input, OnInit, Inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AgGridModule } from 'ag-grid-angular';
 import { ColDef, GridOptions } from 'ag-grid-community';
@@ -154,3 +154,4 @@ export class PlanoCoberturasDialogComponent {
   onCancel(): void { this.ref.close(); }
 }
 import { AgGridLocaleService } from '../../../../shared/services/ag-grid-locale.service';
+

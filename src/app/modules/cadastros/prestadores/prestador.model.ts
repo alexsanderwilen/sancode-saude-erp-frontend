@@ -1,4 +1,4 @@
-export interface Prestador {
+﻿export interface Prestador {
   id?: number;
   tipoPessoa: 'F' | 'J';
   cpfCnpj: string;
@@ -33,3 +33,4 @@ export interface Prestador {
   observacoes?: string;
   idOperadora: number;
 }
+

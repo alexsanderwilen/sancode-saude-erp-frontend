@@ -1,5 +1,6 @@
-export interface TipoPagamento {
+﻿export interface TipoPagamento {
   id: number;
   descricao: string;
 }
+
 

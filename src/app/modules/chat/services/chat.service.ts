@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+﻿import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Client, IMessage } from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
@@ -95,3 +95,4 @@ export class ChatService {
     return this.http.get<ConversationDto[]>(`${CHAT_API_URL}/conversations`);
   }
 }
+

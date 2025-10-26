@@ -1,4 +1,4 @@
-export interface OperadoraEndereco {
+﻿export interface OperadoraEndereco {
   id?: string;
   tipo: string;
   cep: string;
@@ -69,3 +69,4 @@ export interface Page<T> {
   numberOfElements: number;
   empty: boolean;
 }
+

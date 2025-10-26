@@ -1,5 +1,5 @@
-<div class="chat-container">
-  <!-- Nova Barra Lateral de Ícones -->
+﻿<div class="chat-container">
+  <!-- Nova Barra Lateral de Ãcones -->
   <nav class="app-sidebar">
     <button mat-icon-button matTooltip="Mensagens" (click)="showChats()">
       <mat-icon>chat</mat-icon>
@@ -25,7 +25,7 @@
           <app-conversation-list></app-conversation-list>
         </div>
 
-        <!-- Visualização de USUÁRIOS -->
+        <!-- Visualização de USUÃRIOS -->
         <div *ngSwitchCase="'users'">
           <div class="chat-sidebar__header">
             <h3>Todos os Usuários</h3>
@@ -67,7 +67,7 @@
           </div>
         </header>
 
-        <!-- Área de Mensagens -->
+        <!-- Ãrea de Mensagens -->
         <div class="chat-main__messages" #scrollMe>
           <div *ngFor="let msg of messages" class="message"
                [ngClass]="{'message--own': msg.sender === username, 'message--system': msg.type === 'JOIN' || msg.type === 'LEAVE'}">
@@ -141,6 +141,7 @@
     </div>
   </ng-template>
 </div>
+
 
 
 

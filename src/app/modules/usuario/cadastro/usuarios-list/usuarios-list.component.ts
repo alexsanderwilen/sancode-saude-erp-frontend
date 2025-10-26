@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+﻿import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AgGridModule } from 'ag-grid-angular';
 import { ColDef, GridApi, GridOptions, IDatasource, GridReadyEvent, CellClickedEvent, IGetRowsParams } from 'ag-grid-community';
@@ -128,3 +128,4 @@ export class UsuariosListComponent {
     this.router.navigate(['/usuarios/cadastro/new']);
   }
 }
+

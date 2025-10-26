@@ -1,4 +1,4 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+﻿import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { CadastrosHome } from './cadastros-home';
 
@@ -21,3 +21,4 @@ describe('CadastrosHome', () => {
     expect(component).toBeTruthy();
   });
 });
+

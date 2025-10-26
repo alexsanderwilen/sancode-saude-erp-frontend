@@ -1,4 +1,4 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+﻿import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { UsuarioTelefoneForm } from './usuario-telefone-form';
 
@@ -21,3 +21,4 @@ describe('UsuarioTelefoneForm', () => {
     expect(component).toBeTruthy();
   });
 });
+

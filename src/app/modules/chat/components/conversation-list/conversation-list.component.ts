@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+﻿import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatListModule } from '@angular/material/list';
 import { MatIconModule } from '@angular/material/icon';
@@ -41,3 +41,4 @@ export class ConversationListComponent implements OnInit {
     this.router.navigate(['/chat/sala', conversation.type, conversation.id]);
   }
 }
+

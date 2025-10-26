@@ -1,4 +1,4 @@
-import { inject, Injectable } from '@angular/core';
+﻿import { inject, Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, map } from 'rxjs';
 import { DominioTipo } from './dominio-tipo.model';
@@ -104,3 +104,4 @@ export class DominioTipoService {
     };
   }
 }
+

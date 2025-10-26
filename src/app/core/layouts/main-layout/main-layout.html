@@ -21,12 +21,13 @@
     </ng-template>
   </mat-menu>
 
-  <!-- Usar o componente de menu de perfil reutilizÃ¡vel -->
+  <!-- Usar o componente de menu de perfil reutilizável -->
   <app-user-profile-menu></app-user-profile-menu>
 </mat-toolbar>
 <main [ngClass]="{ 'container mt-4': !isChatRoute && !isModuleRoute, 'full-page-content': isChatRoute || isModuleRoute }">
   <router-outlet></router-outlet>
 </main>
+
 
 
 

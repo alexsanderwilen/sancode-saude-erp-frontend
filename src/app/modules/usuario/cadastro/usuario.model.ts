@@ -1,4 +1,4 @@
-export interface UsuarioTelefone {
+﻿export interface UsuarioTelefone {
   id?: number;
   tipo: string;
   ddd: string;

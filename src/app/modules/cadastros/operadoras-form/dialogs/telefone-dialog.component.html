@@ -1,4 +1,4 @@
-<h1 mat-dialog-title>{{ data ? 'Editar Telefone' : 'Novo Telefone' }}</h1>
+﻿<h1 mat-dialog-title>{{ data ? 'Editar Telefone' : 'Novo Telefone' }}</h1>
 <div mat-dialog-content [formGroup]="form">
   <div class="row">
     <div class="col-md-6">
@@ -43,3 +43,4 @@
   <button mat-button (click)="onNoClick()">Cancelar</button>
   <button mat-button [mat-dialog-close]="form.value" [disabled]="!form.valid">Salvar</button>
 </div>
+

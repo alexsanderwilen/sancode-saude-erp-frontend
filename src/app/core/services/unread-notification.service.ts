@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+﻿import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { Client, IMessage } from '@stomp/stompjs';
@@ -92,3 +92,4 @@ export class UnreadNotificationService {
     return this.rrTick$.asObservable();
   }
 }
+

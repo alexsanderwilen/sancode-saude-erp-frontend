@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+﻿import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatListModule } from '@angular/material/list';
 import { MatIconModule } from '@angular/material/icon';
@@ -58,3 +58,4 @@ export class GroupListComponent implements OnInit {
     this.router.navigate(['/chat/sala', 'group', group.id]);
   }
 }
+

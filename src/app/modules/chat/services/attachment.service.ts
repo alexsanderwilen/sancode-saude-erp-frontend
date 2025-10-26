@@ -1,4 +1,4 @@
-import { Injectable, inject } from '@angular/core';
+﻿import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, from } from 'rxjs';
 import { environment } from '../../../../environments/environment';
@@ -52,5 +52,6 @@ export class AttachmentService {
     return this.http.get(url, { responseType: 'blob', observe: 'response' });
   }
 }
+
 
 

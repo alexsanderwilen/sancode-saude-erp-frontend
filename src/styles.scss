@@ -1,4 +1,4 @@
-@use '@angular/material' as mat;
+﻿@use '@angular/material' as mat;
 @include mat.core();
 
 // 1. Definição do Tema Global da Aplicação
@@ -78,3 +78,4 @@ html, body {
 body {
   background-color: #f5f5f5; // Um fundo global mais neutro
 }
+

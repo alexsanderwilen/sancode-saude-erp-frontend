@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+﻿import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, FormArray } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
@@ -154,23 +154,42 @@ export class UsuariosFormComponent implements OnInit {
   }
 
   openDialog(type: string, index?: number, data?: any): void {
-    let dialogRef;
-    if (type === 'telefones') {
-      const dialogData = { ...data, dominioTipos: this.dominioTiposTelefone };
-      dialogRef = this.dialog.open(UsuarioTelefoneFormComponent, { data: dialogData, width: '500px', panelClass: 'sancode-usuario-theme' });
-    } else {
-      const dialogData = { ...data, dominioTipos: this.dominioTiposEmail };
-      dialogRef = this.dialog.open(UsuarioEmailFormComponent, { data: dialogData, width: '500px', panelClass: 'sancode-usuario-theme' });
-    }
+    // Recarrega tipos de domínio mais recentes ao abrir o diálogo
+    this.dominioTipoService.findAll().subscribe({
+      next: (all: DominioTipo[]) => {
+        this.dominioTiposTelefone = all.filter(dt => dt.tipoDoTipo === 'TELEFONE' && dt.status);
+        this.dominioTiposEmail = all.filter(dt => dt.tipoDoTipo === 'EMAIL' && dt.status);
 
-    dialogRef.afterClosed().subscribe(result => {
-      if (!result) return;
-      const formArray = this.form.get(type) as FormArray;
-      if (index !== undefined) {
-        formArray.at(index).patchValue(result);
-      } else {
-        const formGroup = type === 'telefones' ? this.createTelefoneFormGroup(result) : this.createEmailFormGroup(result);
-        formArray.push(formGroup);
+        let dialogRef;
+        if (type === 'telefones') {
+          const dialogData = { ...data, dominioTipos: this.dominioTiposTelefone };
+          dialogRef = this.dialog.open(UsuarioTelefoneFormComponent, { data: dialogData, width: '500px', panelClass: 'sancode-usuario-theme' });
+        } else {
+          const dialogData = { ...data, dominioTipos: this.dominioTiposEmail };
+          dialogRef = this.dialog.open(UsuarioEmailFormComponent, { data: dialogData, width: '500px', panelClass: 'sancode-usuario-theme' });
+        }
+
+        dialogRef.afterClosed().subscribe(result => {
+          if (!result) return;
+          const formArray = this.form.get(type) as FormArray;
+          if (index !== undefined) {
+            formArray.at(index).patchValue(result);
+          } else {
+            const formGroup = type === 'telefones' ? this.createTelefoneFormGroup(result) : this.createEmailFormGroup(result);
+            formArray.push(formGroup);
+          }
+        });
+      },
+      error: () => {
+        // fallback: abre com cache atual
+        let dialogRef;
+        if (type === 'telefones') {
+          const dialogData = { ...data, dominioTipos: this.dominioTiposTelefone };
+          dialogRef = this.dialog.open(UsuarioTelefoneFormComponent, { data: dialogData, width: '500px', panelClass: 'sancode-usuario-theme' });
+        } else {
+          const dialogData = { ...data, dominioTipos: this.dominioTiposEmail };
+          dialogRef = this.dialog.open(UsuarioEmailFormComponent, { data: dialogData, width: '500px', panelClass: 'sancode-usuario-theme' });
+        }
       }
     });
   }
@@ -217,4 +236,5 @@ export class UsuariosFormComponent implements OnInit {
     this.router.navigate(['/usuarios/cadastro']);
   }
 }
+
 

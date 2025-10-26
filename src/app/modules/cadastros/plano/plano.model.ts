@@ -1,4 +1,4 @@
-export interface Plano {
+﻿export interface Plano {
   id?: number;
   idPlanoBase: number;
   idSegmentacao: number;
@@ -20,3 +20,4 @@ export interface Plano {
   acomodacoesIds?: number[];
   coberturasAdicionaisIds?: number[];
 }
+

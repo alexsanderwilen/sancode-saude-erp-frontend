@@ -1,4 +1,4 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+﻿import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { OperadorasForm } from './operadoras-form';
 
@@ -21,3 +21,4 @@ describe('OperadorasForm', () => {
     expect(component).toBeTruthy();
   });
 });
+

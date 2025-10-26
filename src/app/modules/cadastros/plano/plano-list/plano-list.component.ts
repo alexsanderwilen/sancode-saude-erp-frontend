@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+﻿import { Component } from '@angular/core';
 import { AgGridModule } from 'ag-grid-angular';
 import { CellClickedEvent, ColDef, GridApi, GridOptions, GridReadyEvent, IDatasource, IGetRowsParams } from 'ag-grid-community';
 import { PlanoService } from '../plano.service';
@@ -117,3 +117,4 @@ export class PlanoListComponent {
     this.router.navigate(['/cadastros/planos/novo']);
   }
 }
+

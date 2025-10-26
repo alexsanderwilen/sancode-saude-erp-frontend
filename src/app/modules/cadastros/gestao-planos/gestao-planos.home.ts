@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+﻿import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { MatCardModule } from '@angular/material/card';
@@ -32,4 +32,5 @@ export class GestaoPlanosHomeComponent {
     { title: 'Coberturas Adicionais', path: 'coberturas-adicionais' }
   ];
 }
+
 

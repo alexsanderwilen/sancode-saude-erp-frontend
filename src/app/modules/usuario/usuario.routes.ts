@@ -1,4 +1,4 @@
-import { Routes } from '@angular/router';
+﻿import { Routes } from '@angular/router';
 import { UsuarioLayoutComponent } from './usuario-layout/usuario-layout.component';
 import { UsuarioHomeComponent } from './usuario-home/usuario-home.component';
 
@@ -15,3 +15,4 @@ export const USUARIO_ROUTES: Routes = [
     ]
   }
 ];
+

@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+﻿import { Component, Inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatListModule, MatSelectionListChange } from '@angular/material/list';
@@ -48,3 +48,4 @@ export class RemoveUserFromGroupDialogComponent implements OnInit {
     this.dialogRef.close(this.selectedUsernames);
   }
 }
+

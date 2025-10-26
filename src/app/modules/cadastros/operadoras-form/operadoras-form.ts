@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+﻿import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators, FormArray } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
@@ -234,33 +234,56 @@ export class OperadorasFormComponent implements OnInit {
   }
 
   openDialog(type: string, index?: number, data?: any): void {
-    let dialogRef;
-    let dialogData = { ...data };
-    if (type === 'enderecos') {
-      dialogData.dominioTipos = this.dominioTiposEndereco;
-      dialogRef = this.dialog.open(OperadoraEnderecoFormComponent, { data: dialogData, panelClass: 'sancode-cadastro-theme' });
-    } else if (type === 'telefones') {
-      dialogData.dominioTipos = this.dominioTiposTelefone;
-      dialogRef = this.dialog.open(OperadoraTelefoneFormComponent, { data: dialogData, panelClass: 'sancode-cadastro-theme' });
-    } else if (type === 'emails') {
-      dialogData.dominioTipos = this.dominioTiposEmail;
-      dialogRef = this.dialog.open(OperadoraEmailFormComponent, { data: dialogData, width: '500px', panelClass: 'sancode-cadastro-theme' });
-    }
+    // Sempre buscar os tipos de domínio mais recentes antes de abrir o diálogo
+    this.dominioTipoService.findAll().subscribe({
+      next: (all: DominioTipo[]) => {
+        this.dominioTiposEndereco = all.filter((dt) => dt.tipoDoTipo === 'ENDERECO' && dt.status);
+        this.dominioTiposTelefone = all.filter((dt) => dt.tipoDoTipo === 'TELEFONE' && dt.status);
+        this.dominioTiposEmail = all.filter((dt) => dt.tipoDoTipo === 'EMAIL' && dt.status);
 
+        let dialogRef;
+        const dialogData = { ...data } as any;
+        if (type === 'enderecos') {
+          dialogData.dominioTipos = this.dominioTiposEndereco;
+          dialogRef = this.dialog.open(OperadoraEnderecoFormComponent, { data: dialogData, panelClass: 'sancode-cadastro-theme' });
+        } else if (type === 'telefones') {
+          dialogData.dominioTipos = this.dominioTiposTelefone;
+          dialogRef = this.dialog.open(OperadoraTelefoneFormComponent, { data: dialogData, panelClass: 'sancode-cadastro-theme' });
+        } else if (type === 'emails') {
+          dialogData.dominioTipos = this.dominioTiposEmail;
+          dialogRef = this.dialog.open(OperadoraEmailFormComponent, { data: dialogData, width: '500px', panelClass: 'sancode-cadastro-theme' });
+        }
 
-    dialogRef?.afterClosed().subscribe(result => {
-      if (result) {
-        const formArray = this.form.get(type) as FormArray;
-        if (index !== undefined) {
-          formArray.at(index).patchValue(result);
-        } else {
-          if (type === 'enderecos') {
-            formArray.push(this.createEnderecoFormGroup(result));
-          } else if (type === 'telefones') {
-            formArray.push(this.createTelefoneFormGroup(result));
-          } else if (type === 'emails') {
-            formArray.push(this.createEmailFormGroup(result));
+        dialogRef?.afterClosed().subscribe(result => {
+          if (result) {
+            const formArray = this.form.get(type) as FormArray;
+            if (index !== undefined) {
+              formArray.at(index).patchValue(result);
+            } else {
+              if (type === 'enderecos') {
+                formArray.push(this.createEnderecoFormGroup(result));
+              } else if (type === 'telefones') {
+                formArray.push(this.createTelefoneFormGroup(result));
+              } else if (type === 'emails') {
+                formArray.push(this.createEmailFormGroup(result));
+              }
+            }
           }
+        });
+      },
+      error: () => {
+        // Em caso de erro ao atualizar, segue com dados em memória para não travar o fluxo
+        let dialogRef;
+        const dialogData = { ...data } as any;
+        if (type === 'enderecos') {
+          dialogData.dominioTipos = this.dominioTiposEndereco;
+          dialogRef = this.dialog.open(OperadoraEnderecoFormComponent, { data: dialogData, panelClass: 'sancode-cadastro-theme' });
+        } else if (type === 'telefones') {
+          dialogData.dominioTipos = this.dominioTiposTelefone;
+          dialogRef = this.dialog.open(OperadoraTelefoneFormComponent, { data: dialogData, panelClass: 'sancode-cadastro-theme' });
+        } else if (type === 'emails') {
+          dialogData.dominioTipos = this.dominioTiposEmail;
+          dialogRef = this.dialog.open(OperadoraEmailFormComponent, { data: dialogData, width: '500px', panelClass: 'sancode-cadastro-theme' });
         }
       }
     });
@@ -307,3 +330,4 @@ export class OperadorasFormComponent implements OnInit {
     this.router.navigate(['/cadastros/operadoras']);
   }
 }
+

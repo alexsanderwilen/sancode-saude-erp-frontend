@@ -1,4 +1,5 @@
-export interface TipoContratacao {
+﻿export interface TipoContratacao {
   id: number;
   descricao: string;
 }
+

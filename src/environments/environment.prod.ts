@@ -1,4 +1,4 @@
-export const environment = {
+﻿export const environment = {
   production: true,
   // HTTPS via nip.io (temporário) apontando para o IP fixo da VM
   apiUrl: 'https://34.31.30.73.nip.io/api',
@@ -15,4 +15,5 @@ export const environment = {
     measurementId: 'G-129VLNPZ79'
   }
 };
+
 

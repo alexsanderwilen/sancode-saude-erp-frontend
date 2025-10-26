@@ -1,4 +1,4 @@
-<mat-card>
+ï»¿<mat-card>
   <mat-card-title>{{ isEditMode ? 'Editar Plano' : 'Novo Plano' }}</mat-card-title>
   <mat-card-content>
     <form [formGroup]="planoForm" (ngSubmit)="onSubmit()">
@@ -100,7 +100,7 @@
                 <mat-tab label="Tipos de Pagamento" [disabled]="!planoId">
           <app-plano-tipos-pagamento-tab [planoId]="planoId!"></app-plano-tipos-pagamento-tab>
         </mat-tab>
-        <mat-tab label="Acomodações" [disabled]="!planoId">
+        <mat-tab label="AcomodaÃ§Ãµes" [disabled]="!planoId">
           <app-plano-acomodacoes-tab [planoId]="planoId!"></app-plano-acomodacoes-tab>
         </mat-tab>
         <mat-tab label="Coberturas Adicionais" [disabled]="!planoId">
@@ -117,4 +117,5 @@
     </form>
   </mat-card-content>
 </mat-card>
+
 

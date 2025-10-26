@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+﻿import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterOutlet, RouterLink, Router, NavigationEnd } from '@angular/router';
 import { MatToolbarModule } from '@angular/material/toolbar';
@@ -51,3 +51,5 @@ export class MainLayoutComponent {
     this.unreadSvc.getSummary().subscribe(s => this.unread = s);
   }
 }
+
+

@@ -1,4 +1,4 @@
-export interface Usuario {
+﻿export interface Usuario {
   id: number;
   nomeCompleto: string; // Mapeado de nomeCompleto
   username: string;
@@ -6,3 +6,4 @@ export interface Usuario {
   status: 'ATIVO' | 'INATIVO' | 'BLOQUEADO' | 'PENDENTE';
   // Adicione outros campos conforme necessário
 }
+

@@ -1,4 +1,4 @@
-import { Routes } from '@angular/router';
+﻿import { Routes } from '@angular/router';
 import { GestaoPlanosHomeComponent } from './gestao-planos.home';
 import { PlanoBaseListComponent } from '../plano-base/plano-base-list.component';
 import { SegmentacaoAssistencialListComponent } from '../segmentacao-assistencial/segmentacao-assistencial-list.component';
@@ -20,4 +20,5 @@ export const GESTAO_PLANOS_ROUTES: Routes = [
   { path: 'acomodacoes', component: AcomodacaoListComponent, title: 'Acomodações' },
   { path: 'coberturas-adicionais', component: CoberturaAdicionalListComponent, title: 'Coberturas Adicionais' }
 ];
+
 

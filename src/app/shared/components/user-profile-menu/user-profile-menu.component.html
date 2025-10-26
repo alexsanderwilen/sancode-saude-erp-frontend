@@ -1,12 +1,12 @@
-<!-- Botão do Menu de Perfil -->
+﻿<!-- Botão do Menu de Perfil -->
 <button mat-icon-button [matMenuTriggerFor]="profileMenu">
-  <mat-icon>account_circle</mat-icon> <!-- Ícone de usuário -->
+  <mat-icon>account_circle</mat-icon> <!-- Ãcone de usuário -->
 </button>
 
 <!-- Menu de Perfil -->
 <mat-menu #profileMenu="matMenu">
   <div class="profile-info">
-    <mat-icon class="profile-icon-large">account_circle</mat-icon> <!-- Ícone de usuário maior -->
+    <mat-icon class="profile-icon-large">account_circle</mat-icon> <!-- Ãcone de usuário maior -->
     <p *ngIf="user" class="username">{{ user.sub }}</p>
     <p *ngIf="user" class="email">{{ user.email }}</p>
     <p *ngIf="!user" class="username">Convidado</p>
@@ -17,3 +17,4 @@
     <span>Sair</span>
   </button>
 </mat-menu>
+

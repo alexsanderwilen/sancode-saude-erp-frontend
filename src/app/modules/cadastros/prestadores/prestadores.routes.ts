@@ -1,4 +1,4 @@
-import { Routes } from '@angular/router';
+﻿import { Routes } from '@angular/router';
 import { PrestadoresListComponent } from './prestadores-list/prestadores-list.component';
 import { PrestadoresFormComponent } from './prestadores-form/prestadores-form.component';
 
@@ -16,3 +16,4 @@ export const PRESTADORES_ROUTES: Routes = [
     component: PrestadoresFormComponent
   }
 ];
+

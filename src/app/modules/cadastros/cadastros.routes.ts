@@ -1,4 +1,4 @@
-import { Routes } from '@angular/router';
+﻿import { Routes } from '@angular/router';
 import { CadastrosLayoutComponent } from './cadastros-layout/cadastros-layout';
 import { CadastrosHomeComponent } from './cadastros-home/cadastros-home';
 import { OperadorasListComponent } from './operadoras-list/operadoras-list';
@@ -34,3 +34,4 @@ export const CADASTROS_ROUTES: Routes = [
     ]
   }
 ];
+

@@ -1,4 +1,4 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+﻿import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { OperadorasList } from './operadoras-list';
 
@@ -21,3 +21,4 @@ describe('OperadorasList', () => {
     expect(component).toBeTruthy();
   });
 });
+

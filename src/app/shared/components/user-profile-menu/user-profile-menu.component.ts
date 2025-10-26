@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+﻿import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
@@ -40,3 +40,4 @@ export class UserProfileMenuComponent implements OnInit {
     this.router.navigate(['/login']);
   }
 }
+

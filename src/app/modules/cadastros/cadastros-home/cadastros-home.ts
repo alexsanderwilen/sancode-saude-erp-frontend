@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+﻿import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterOutlet } from '@angular/router';
 
@@ -12,3 +12,4 @@ import { RouterOutlet } from '@angular/router';
 export class CadastrosHomeComponent {
 
 }
+

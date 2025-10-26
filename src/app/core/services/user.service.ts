@@ -1,4 +1,4 @@
-import { Injectable, inject } from '@angular/core';
+﻿import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { map, Observable } from 'rxjs';
 import { Page } from '@shared/models/page.model';
@@ -47,3 +47,4 @@ export class UserService {
     return this.http.get<Usuario>(`${this.apiUrl}/username/${username}`);
   }
 }
+

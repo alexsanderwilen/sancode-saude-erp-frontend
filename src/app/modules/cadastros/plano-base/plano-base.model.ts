@@ -1,4 +1,4 @@
-export interface OperadoraRef {
+﻿export interface OperadoraRef {
   idOperadora: string;
   razaoSocial?: string;
   nomeFantasia?: string;
@@ -11,3 +11,4 @@ export interface PlanoBase {
   ativo: boolean;
   descricao?: string; // computed label for UI
 }
+

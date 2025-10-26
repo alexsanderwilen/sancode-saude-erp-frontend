@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+﻿import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { PlanoService } from '../plano.service';
@@ -167,3 +167,4 @@ export class PlanoFormComponent implements OnInit {
     });
   }
 }
+

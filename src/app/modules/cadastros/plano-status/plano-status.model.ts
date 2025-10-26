@@ -1,4 +1,5 @@
-export interface PlanoStatus {
+﻿export interface PlanoStatus {
   id: number;
   descricao: string;
 }
+

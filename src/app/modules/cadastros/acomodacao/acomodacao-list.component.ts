@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+﻿import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AgGridModule } from 'ag-grid-angular';
 import { ColDef, GridOptions, IDatasource, IGetRowsParams, GridApi, GridReadyEvent } from 'ag-grid-community';
@@ -103,3 +103,4 @@ export class AcomodacaoDialogComponent {
   onSave(): void { this.ref.close({ saved: true }); }
   onCancel(): void { this.ref.close(); }
 }
+
