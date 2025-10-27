@@ -163,10 +163,10 @@ export class UsuariosFormComponent implements OnInit {
         let dialogRef;
         if (type === 'telefones') {
           const dialogData = { ...data, dominioTipos: this.dominioTiposTelefone };
-          dialogRef = this.dialog.open(UsuarioTelefoneFormComponent, { data: dialogData, width: '500px', panelClass: 'sancode-usuario-theme' });
+          dialogRef = this.dialog.open(UsuarioTelefoneFormComponent, { data: dialogData, width: '500px', panelClass: 'sancode-usuario-theme', disableClose: true });
         } else {
           const dialogData = { ...data, dominioTipos: this.dominioTiposEmail };
-          dialogRef = this.dialog.open(UsuarioEmailFormComponent, { data: dialogData, width: '500px', panelClass: 'sancode-usuario-theme' });
+          dialogRef = this.dialog.open(UsuarioEmailFormComponent, { data: dialogData, width: '500px', panelClass: 'sancode-usuario-theme', disableClose: true });
         }
 
         dialogRef.afterClosed().subscribe(result => {
@@ -185,10 +185,10 @@ export class UsuariosFormComponent implements OnInit {
         let dialogRef;
         if (type === 'telefones') {
           const dialogData = { ...data, dominioTipos: this.dominioTiposTelefone };
-          dialogRef = this.dialog.open(UsuarioTelefoneFormComponent, { data: dialogData, width: '500px', panelClass: 'sancode-usuario-theme' });
+          dialogRef = this.dialog.open(UsuarioTelefoneFormComponent, { data: dialogData, width: '500px', panelClass: 'sancode-usuario-theme', disableClose: true });
         } else {
           const dialogData = { ...data, dominioTipos: this.dominioTiposEmail };
-          dialogRef = this.dialog.open(UsuarioEmailFormComponent, { data: dialogData, width: '500px', panelClass: 'sancode-usuario-theme' });
+          dialogRef = this.dialog.open(UsuarioEmailFormComponent, { data: dialogData, width: '500px', panelClass: 'sancode-usuario-theme', disableClose: true });
         }
       }
     });

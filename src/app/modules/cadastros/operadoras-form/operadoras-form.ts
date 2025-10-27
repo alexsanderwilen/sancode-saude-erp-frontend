@@ -245,13 +245,13 @@ export class OperadorasFormComponent implements OnInit {
         const dialogData = { ...data } as any;
         if (type === 'enderecos') {
           dialogData.dominioTipos = this.dominioTiposEndereco;
-          dialogRef = this.dialog.open(OperadoraEnderecoFormComponent, { data: dialogData, panelClass: 'sancode-cadastro-theme' });
+          dialogRef = this.dialog.open(OperadoraEnderecoFormComponent, { data: dialogData, panelClass: 'sancode-cadastro-theme', disableClose: true });
         } else if (type === 'telefones') {
           dialogData.dominioTipos = this.dominioTiposTelefone;
-          dialogRef = this.dialog.open(OperadoraTelefoneFormComponent, { data: dialogData, panelClass: 'sancode-cadastro-theme' });
+          dialogRef = this.dialog.open(OperadoraTelefoneFormComponent, { data: dialogData, panelClass: 'sancode-cadastro-theme', disableClose: true });
         } else if (type === 'emails') {
           dialogData.dominioTipos = this.dominioTiposEmail;
-          dialogRef = this.dialog.open(OperadoraEmailFormComponent, { data: dialogData, width: '500px', panelClass: 'sancode-cadastro-theme' });
+          dialogRef = this.dialog.open(OperadoraEmailFormComponent, { data: dialogData, width: '500px', panelClass: 'sancode-cadastro-theme', disableClose: true });
         }
 
         dialogRef?.afterClosed().subscribe(result => {
@@ -277,13 +277,13 @@ export class OperadorasFormComponent implements OnInit {
         const dialogData = { ...data } as any;
         if (type === 'enderecos') {
           dialogData.dominioTipos = this.dominioTiposEndereco;
-          dialogRef = this.dialog.open(OperadoraEnderecoFormComponent, { data: dialogData, panelClass: 'sancode-cadastro-theme' });
+          dialogRef = this.dialog.open(OperadoraEnderecoFormComponent, { data: dialogData, panelClass: 'sancode-cadastro-theme', disableClose: true });
         } else if (type === 'telefones') {
           dialogData.dominioTipos = this.dominioTiposTelefone;
-          dialogRef = this.dialog.open(OperadoraTelefoneFormComponent, { data: dialogData, panelClass: 'sancode-cadastro-theme' });
+          dialogRef = this.dialog.open(OperadoraTelefoneFormComponent, { data: dialogData, panelClass: 'sancode-cadastro-theme', disableClose: true });
         } else if (type === 'emails') {
           dialogData.dominioTipos = this.dominioTiposEmail;
-          dialogRef = this.dialog.open(OperadoraEmailFormComponent, { data: dialogData, width: '500px', panelClass: 'sancode-cadastro-theme' });
+          dialogRef = this.dialog.open(OperadoraEmailFormComponent, { data: dialogData, width: '500px', panelClass: 'sancode-cadastro-theme', disableClose: true });
         }
       }
     });

@@ -3,6 +3,7 @@ import { provideRouter } from '@angular/router';
 
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { routes } from './app.routes';
+import { MAT_DIALOG_DEFAULT_OPTIONS } from '@angular/material/dialog';
 import { jwtInterceptor } from './core/interceptors/jwt.interceptor';
 import { provideNgxMask } from 'ngx-mask';
 
@@ -13,7 +14,8 @@ export const appConfig: ApplicationConfig = {
     // Habilita logs detalhados de navegação no console do browser
     provideRouter(routes),
     provideHttpClient(withInterceptors([jwtInterceptor])),
-    provideNgxMask()
+    provideNgxMask(),
+    { provide: MAT_DIALOG_DEFAULT_OPTIONS, useValue: { hasBackdrop: true, disableClose: true } }
   ]
 };
 

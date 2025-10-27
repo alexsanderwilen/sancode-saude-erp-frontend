@@ -44,7 +44,8 @@ export class GroupListComponent implements OnInit {
 
   openCreateGroupDialog(): void {
     const dialogRef = this.dialog.open(GroupFormDialogComponent, {
-      width: '400px'
+      width: '400px',
+      disableClose: true
     });
 
     dialogRef.afterClosed().subscribe(result => {

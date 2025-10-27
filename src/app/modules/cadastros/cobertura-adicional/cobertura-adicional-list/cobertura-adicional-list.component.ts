@@ -55,7 +55,7 @@ export class CoberturaAdicionalListComponent {
       tipo: [row?.tipo || ''],
       obrigatoriaAns: [row?.obrigatoriaAns || false]
     });
-    const ref = this.dialog.open(CoberturaAdicionalFormComponent, { width: '640px', data: { form, title: row ? 'Editar' : 'Novo' } });
+    const ref = this.dialog.open(CoberturaAdicionalFormComponent, { width: '640px', data: { form, title: row ? 'Editar' : 'Novo' }, disableClose: true });
     ref.afterClosed().subscribe(res => {
       if (res?.saved) {
         const payload = form.value;
@@ -67,4 +67,3 @@ export class CoberturaAdicionalListComponent {
 
   remove(row: any): void { this.service.delete(row.id).subscribe(() => this.load()); }
 }
-

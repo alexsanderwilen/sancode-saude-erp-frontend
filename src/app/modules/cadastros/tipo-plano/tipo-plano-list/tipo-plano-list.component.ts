@@ -93,7 +93,7 @@ export class TipoPlanoListComponent {
       descricaoAns: [row?.descricaoAns || ''],
       observacoesPraticas: [row?.observacoesPraticas || '']
     });
-    const ref = this.dialog.open(TipoPlanoFormComponent, { width: '640px', data: { form, title: row ? 'Editar' : 'Novo' } });
+    const ref = this.dialog.open(TipoPlanoFormComponent, { width: '640px', data: { form, title: row ? 'Editar' : 'Novo' }, disableClose: true });
     ref.afterClosed().subscribe(res => {
       if (res?.saved) {
         const payload = form.value;

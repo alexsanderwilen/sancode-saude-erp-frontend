@@ -287,6 +287,7 @@ export class ChatRoomComponent implements OnInit, OnDestroy, AfterViewChecked {
     const dialogRef = this.dialog.open(AddUserToGroupDialogComponent, {
       width: '400px',
       data: { groupId: this.activeRecipientId },
+      disableClose: true,
     });
     dialogRef.afterClosed().subscribe((result: string[]) => {
       if (result && result.length > 0) {
@@ -301,6 +302,7 @@ export class ChatRoomComponent implements OnInit, OnDestroy, AfterViewChecked {
     const dialogRef = this.dialog.open(RemoveUserFromGroupDialogComponent, {
       width: '400px',
       data: { groupId: this.activeRecipientId },
+      disableClose: true,
     });
     dialogRef.afterClosed().subscribe((result: string[]) => {
       if (result && result.length > 0) {

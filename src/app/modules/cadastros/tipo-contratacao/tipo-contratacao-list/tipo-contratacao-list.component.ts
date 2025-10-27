@@ -76,7 +76,7 @@ export class TipoContratacaoListComponent {
 
   openDialog(row?: any): void {
     const form: FormGroup = this.fb.group({ id: [row?.id || null], descricao: [row?.descricao || '', Validators.required] });
-    const ref = this.dialog.open(TipoContratacaoFormComponent, { width: '520px', data: { form, title: row ? 'Editar' : 'Novo' } });
+    const ref = this.dialog.open(TipoContratacaoFormComponent, { width: '520px', data: { form, title: row ? 'Editar' : 'Novo' }, disableClose: true });
     ref.afterClosed().subscribe(res => {
       if (res?.saved) {
         const payload = { id: form.value.id, descricao: form.value.descricao };
@@ -88,4 +88,3 @@ export class TipoContratacaoListComponent {
 
   remove(row: any): void { this.service.delete(row.id).subscribe(() => this.gridApi?.refreshInfiniteCache()); }
 }
-

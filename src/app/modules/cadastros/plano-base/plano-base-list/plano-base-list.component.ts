@@ -112,7 +112,7 @@ export class PlanoBaseListComponent {
     const tiposPlano$ = this.http.get<any[]>(`${this.apiUrl.replace('planos-base','tipos-plano')}`);
     const abrangencias$ = this.http.get<any>(`${environment.apiUrl}/abrangencias-geograficas`, { params: new HttpParams().set('page','0').set('size','1000') }).pipe(map((p: any) => p.content));
     const tiposContratacao$ = this.http.get<any>(`${environment.apiUrl}/tipos-contratacao`, { params: new HttpParams().set('page','0').set('size','1000') }).pipe(map((p: any) => p.content));
-    const ref = this.dialog.open(PlanoBaseFormComponent, { width: '900px', data: { form, title: row ? 'Editar' : 'Novo', operadoras$, tiposPlano$, abrangencias$, tiposContratacao$ } });
+    const ref = this.dialog.open(PlanoBaseFormComponent, { width: '900px', data: { form, title: row ? 'Editar' : 'Novo', operadoras$, tiposPlano$, abrangencias$, tiposContratacao$ }, disableClose: true });
     ref.afterClosed().subscribe(res => {
       if (res?.saved) {
         const payload: any = {

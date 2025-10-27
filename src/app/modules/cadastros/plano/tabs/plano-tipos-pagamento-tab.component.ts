@@ -84,7 +84,8 @@ export class PlanoTiposPagamentoTabComponent implements OnInit {
         form,
         options$: this.tipoPagamentoService.getTiposPagamento(),
         label: 'Tipo de Pagamento'
-      }
+      },
+      disableClose: true,
     });
     ref.afterClosed().subscribe(result => {
       if (result?.saved) {

@@ -86,7 +86,8 @@ export class PlanoCoberturasAdicionaisTabComponent implements OnInit {
         form,
         options$: this.coberturaService.getCoberturas(),
         label: 'Cobertura'
-      }
+      },
+      disableClose: true,
     });
     ref.afterClosed().subscribe(result => {
       if (result?.saved) {
@@ -109,7 +110,8 @@ export class PlanoCoberturasAdicionaisTabComponent implements OnInit {
         form,
         options$: this.coberturaService.getCoberturas(),
         label: 'Cobertura'
-      }
+      },
+      disableClose: true,
     });
     ref.afterClosed().subscribe(result => {
       if (result?.saved) {

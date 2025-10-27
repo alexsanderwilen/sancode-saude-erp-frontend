@@ -135,7 +135,8 @@ export class DominioTipoListComponent implements OnInit {
     const dialogRef = this.dialog.open(DominioTipoFormComponent, {
       width: '700px',
       panelClass: 'sancode-cadastro-theme',
-      data: data
+      data: data,
+      disableClose: true,
     });
 
     dialogRef.afterClosed().subscribe(result => {
