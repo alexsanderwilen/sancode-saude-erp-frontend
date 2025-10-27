@@ -1,105 +1,131 @@
-<h3>{{ isEditMode ? 'Editar' : 'Novo' }} Beneficiário</h3>
+<div class="container mt-4">
+  <h2>{{ isEditMode ? 'Editar Beneficiário' : 'Novo Beneficiário' }}</h2>
+  <form [formGroup]="form" (ngSubmit)="save()">
 
-<form [formGroup]="form" class="row g-3">
-  <mat-card>
-    <mat-card-content>
-      <div class="row g-3">
-        <div class="col-md-6">
-          <mat-form-field appearance="outline" class="w-100">
-            <mat-label>Nome Completo</mat-label>
-            <input matInput formControlName="nomeCompleto" />
-          </mat-form-field>
-        </div>
-        <div class="col-md-6">
-          <mat-form-field appearance="outline" class="w-100">
-            <mat-label>Nome Social</mat-label>
-            <input matInput formControlName="nomeSocial" />
-          </mat-form-field>
-        </div>
+    <mat-tab-group mat-align-tabs="start">
+      <mat-tab label="Dados Pessoais">
+        <div class="row mt-3">
+          <div class="col-md-6">
+            <mat-form-field class="w-100">
+              <mat-label>Nome Completo</mat-label>
+              <input matInput formControlName="nomeCompleto" />
+            </mat-form-field>
 
-        <div class="col-md-3">
-          <mat-form-field appearance="outline" class="w-100">
-            <mat-label>CPF</mat-label>
-            <input matInput formControlName="cpf" mask="000.000.000-00" />
-          </mat-form-field>
-        </div>
-        <div class="col-md-3">
-          <mat-form-field appearance="outline" class="w-100">
-            <mat-label>CNS</mat-label>
-            <input matInput formControlName="cns" />
-          </mat-form-field>
-        </div>
-        <div class="col-md-3">
-          <mat-form-field appearance="outline" class="w-100">
-            <mat-label>RG</mat-label>
-            <input matInput formControlName="rg" />
-          </mat-form-field>
-        </div>
-        <div class="col-md-3">
-          <mat-form-field appearance="outline" class="w-100">
-            <mat-label>Orgão Emissor</mat-label>
-            <input matInput formControlName="orgaoEmissor" />
-          </mat-form-field>
-        </div>
+            <mat-form-field class="w-100">
+              <mat-label>CPF</mat-label>
+              <input matInput formControlName="cpf" mask="000.000.000-00" />
+            </mat-form-field>
 
-        <div class="col-md-3">
-          <mat-form-field appearance="outline" class="w-100">
-            <mat-label>Data de Nascimento</mat-label>
-            <input matInput [matDatepicker]="picker" formControlName="dataNascimento" />
-            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-            <mat-datepicker #picker></mat-datepicker>
-          </mat-form-field>
+            <mat-form-field class="w-100">
+              <mat-label>Data de Nascimento</mat-label>
+              <input matInput [matDatepicker]="picker" formControlName="dataNascimento" />
+              <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+              <mat-datepicker #picker></mat-datepicker>
+            </mat-form-field>
+
+            <div class="mt-2">
+              <mat-checkbox formControlName="ativo">Ativo</mat-checkbox>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <mat-form-field class="w-100">
+              <mat-label>Nome Social</mat-label>
+              <input matInput formControlName="nomeSocial" />
+            </mat-form-field>
+
+            <mat-form-field class="w-100">
+              <mat-label>CNS</mat-label>
+              <input matInput formControlName="cns" />
+            </mat-form-field>
+
+            <div class="row">
+              <div class="col-md-6">
+                <mat-form-field class="w-100">
+                  <mat-label>RG</mat-label>
+                  <input matInput formControlName="rg" />
+                </mat-form-field>
+              </div>
+              <div class="col-md-6">
+                <mat-form-field class="w-100">
+                  <mat-label>Órgão Emissor</mat-label>
+                  <input matInput formControlName="orgaoEmissor" />
+                </mat-form-field>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-md-6">
+                <mat-form-field class="w-100">
+                  <mat-label>Sexo</mat-label>
+                  <mat-select formControlName="idSexo">
+                    <mat-option *ngFor="let s of sexos" [value]="s.idSexo">{{ s.descricao }}</mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+              <div class="col-md-6">
+                <mat-form-field class="w-100">
+                  <mat-label>Estado Civil</mat-label>
+                  <mat-select formControlName="idEstadoCivil">
+                    <mat-option *ngFor="let e of estadosCivis" [value]="e.idEstadoCivil">{{ e.descricao }}</mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+            </div>
+          </div>
         </div>
+      </mat-tab>
 
-        <div class="col-md-3">
-          <mat-form-field appearance="outline" class="w-100">
-            <mat-label>Sexo</mat-label>
-            <mat-select formControlName="idSexo">
-              <mat-option *ngFor="let s of sexos" [value]="s.idSexo">{{ s.descricao }}</mat-option>
-            </mat-select>
-          </mat-form-field>
+      <mat-tab label="Endereços">
+        <div class="mt-3">
+          <button mat-raised-button color="accent" (click)="openDialog('enderecos'); $event.preventDefault(); $event.stopPropagation();">
+            <mat-icon>add</mat-icon> Adicionar Endereço
+          </button>
+          <ag-grid-angular
+            style="width: 100%; height: 300px;"
+            class="ag-theme-quartz"
+            [rowData]="enderecos.value"
+            [columnDefs]="colDefsEnderecos"
+            [gridOptions]="gridOptionsEnderecos">
+          </ag-grid-angular>
         </div>
+      </mat-tab>
 
-        <div class="col-md-3">
-          <mat-form-field appearance="outline" class="w-100">
-            <mat-label>Estado Civil</mat-label>
-            <mat-select formControlName="idEstadoCivil">
-              <mat-option *ngFor="let e of estadosCivis" [value]="e.idEstadoCivil">{{ e.descricao }}</mat-option>
-            </mat-select>
-          </mat-form-field>
+      <mat-tab label="Telefones">
+        <div class="mt-3">
+          <button mat-raised-button color="accent" (click)="openDialog('telefones'); $event.preventDefault(); $event.stopPropagation();">
+            <mat-icon>add</mat-icon> Adicionar Telefone
+          </button>
+          <ag-grid-angular
+            style="width: 100%; height: 300px;"
+            class="ag-theme-quartz"
+            [rowData]="telefones.value"
+            [columnDefs]="colDefsTelefones"
+            [gridOptions]="gridOptionsTelefones">
+          </ag-grid-angular>
         </div>
+      </mat-tab>
 
-        <div class="col-md-3 d-flex align-items-center">
-          <mat-checkbox formControlName="ativo">Ativo</mat-checkbox>
+      <mat-tab label="E-mails">
+        <div class="mt-3">
+          <button mat-raised-button color="accent" (click)="openDialog('emails'); $event.preventDefault(); $event.stopPropagation();">
+            <mat-icon>add</mat-icon> Adicionar E-mail
+          </button>
+          <ag-grid-angular
+            style="width: 100%; height: 300px;"
+            class="ag-theme-quartz"
+            [rowData]="emails.value"
+            [columnDefs]="colDefsEmails"
+            [gridOptions]="gridOptionsEmails">
+          </ag-grid-angular>
         </div>
-      </div>
-    </mat-card-content>
-  </mat-card>
+      </mat-tab>
+    </mat-tab-group>
 
-  <mat-tab-group>
-    <mat-tab label="Endereços">
-      <div class="d-flex justify-content-end my-2">
-        <button mat-stroked-button color="primary" (click)="openDialog('enderecos')"><mat-icon>add</mat-icon>Adicionar</button>
-      </div>
-      <ag-grid-angular class="ag-theme-alpine" style="width: 100%; height: 35vh;" [gridOptions]="gridOptionsEnderecos" [rowData]="enderecos.value"></ag-grid-angular>
-    </mat-tab>
-    <mat-tab label="Telefones">
-      <div class="d-flex justify-content-end my-2">
-        <button mat-stroked-button color="primary" (click)="openDialog('telefones')"><mat-icon>add</mat-icon>Adicionar</button>
-      </div>
-      <ag-grid-angular class="ag-theme-alpine" style="width: 100%; height: 35vh;" [gridOptions]="gridOptionsTelefones" [rowData]="telefones.value"></ag-grid-angular>
-    </mat-tab>
-    <mat-tab label="E-mails">
-      <div class="d-flex justify-content-end my-2">
-        <button mat-stroked-button color="primary" (click)="openDialog('emails')"><mat-icon>add</mat-icon>Adicionar</button>
-      </div>
-      <ag-grid-angular class="ag-theme-alpine" style="width: 100%; height: 35vh;" [gridOptions]="gridOptionsEmails" [rowData]="emails.value"></ag-grid-angular>
-    </mat-tab>
-  </mat-tab-group>
-
-  <div class="d-flex gap-2 mt-3">
-    <button mat-raised-button color="primary" (click)="save()">Salvar</button>
-    <button mat-button color="warn" (click)="cancel()">Cancelar</button>
-  </div>
-</form>
+    <div class="d-flex justify-content-end mt-3">
+      <button mat-stroked-button type="button" (click)="cancel()" class="me-2">Cancelar</button>
+      <button mat-raised-button color="primary" type="submit" [disabled]="form.invalid">Salvar</button>
+    </div>
+  </form>
+</div>
 
