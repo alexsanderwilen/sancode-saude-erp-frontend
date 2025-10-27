@@ -89,7 +89,7 @@ export class PlanoListComponent {
     const action = (params.event?.target as HTMLElement).dataset['action'];
     if (!action) return;
     if (action === 'edit') {
-      this.router.navigate(['/cadastros/planos/editar', (params.data as any).id]);
+      this.router.navigate(['/cadastros/gestao-planos/planos/editar', (params.data as any).id]);
     } else if (action === 'delete') {
       this.dialog.open(ConfirmDialogComponent, {
         data: {
@@ -114,7 +114,7 @@ export class PlanoListComponent {
   }
 
   navigateToForm(): void {
-    this.router.navigate(['/cadastros/planos/novo']);
+    this.router.navigate(['/cadastros/gestao-planos/planos/novo']);
   }
 }
 

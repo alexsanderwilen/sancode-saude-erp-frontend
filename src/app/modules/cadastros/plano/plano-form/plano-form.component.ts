@@ -163,7 +163,7 @@ export class PlanoFormComponent implements OnInit {
     }
 
     save$.subscribe(() => {
-      this.router.navigate(['/cadastros/planos']);
+      this.router.navigate(['/cadastros/gestao-planos/planos']);
     });
   }
 }
