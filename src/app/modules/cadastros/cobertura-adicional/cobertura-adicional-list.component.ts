@@ -34,6 +34,7 @@ export class CoberturaAdicionalListComponent {
     { headerName: 'Descrição', field: 'descricao', flex: 1, sortable: true, filter: true },
     { headerName: 'Tipo', field: 'tipo', width: 160, sortable: true, filter: true },
     { headerName: 'Obrigatória ANS', field: 'obrigatoriaAns', width: 160, sortable: true, filter: true },
+    { headerName: 'Descrição Detalhada', field: 'descricaoDetalhada', flex: 1, sortable: true, filter: true },
     { headerName: 'Ações', width: 160, cellRenderer: () => `
       <button data-action=\"edit\" class=\"btn btn-sm btn-outline-primary\">Editar</button>
       <button data-action=\"delete\" class=\"btn btn-sm btn-outline-danger\">Excluir</button>
@@ -55,6 +56,7 @@ export class CoberturaAdicionalListComponent {
     const form: FormGroup = this.fb.group({
       id: [row?.id || null],
       descricao: [row?.descricao || '', Validators.required],
+      descricaoDetalhada: [row?.descricaoDetalhada || ''],
       tipo: [row?.tipo || ''],
       obrigatoriaAns: [row?.obrigatoriaAns || false]
     });
@@ -71,22 +73,33 @@ export class CoberturaAdicionalListComponent {
   remove(row: any): void { this.service.delete(row.id).subscribe(() => this.load()); }
 }
 
-@Component({
-  selector: 'app-cobertura-adicional-dialog',
-  standalone: true,
-  imports: [CommonModule, BaseModalFormComponent, ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatCheckboxModule],
-  template: `
+@Component({ selector: 'app-cobertura-adicional-dialog', standalone: true, imports: [CommonModule, BaseModalFormComponent, ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatCheckboxModule], styles: [`.mat-mdc-form-field { width: 100%; }`], template: `
   <app-base-modal-form [title]="data.title" (save)="onSave()" (cancel)="onCancel()">
     <form [formGroup]="data.form">
+      <!-- Linha 1: Descrição (ocupando toda a linha) -->
       <mat-form-field class="full-width">
         <mat-label>Descrição</mat-label>
         <input matInput formControlName="descricao" required>
       </mat-form-field>
+
+      <!-- Linha 2: Tipo (metade) + Obrigatória ANS (metade, alinhado verticalmente) -->
+      <div class="row">
+        <div class="col-md-8">
+          <mat-form-field class="full-width">
+            <mat-label>Tipo</mat-label>
+            <input matInput formControlName="tipo">
+          </mat-form-field>
+        </div>
+        <div class="col-md-4 d-flex align-items-center">
+          <mat-checkbox formControlName="obrigatoriaAns">Obrigatória ANS</mat-checkbox>
+        </div>
+      </div>
+
+      <!-- Linha 3: Descrição Detalhada (ocupando toda a linha) -->
       <mat-form-field class="full-width">
-        <mat-label>Tipo</mat-label>
-        <input matInput formControlName="tipo">
+        <mat-label>Descrição Detalhada</mat-label>
+        <textarea matInput formControlName="descricaoDetalhada" rows="3"></textarea>
       </mat-form-field>
-      <mat-checkbox formControlName="obrigatoriaAns">Obrigatória ANS</mat-checkbox>
     </form>
   </app-base-modal-form>
   `
@@ -97,6 +110,17 @@ export class CoberturaAdicionalDialogComponent {
   onCancel(): void { this.ref.close(); }
 }
 import { AgGridLocaleService } from '../../../shared/services/ag-grid-locale.service';
+
+
+
+
+
+
+
+
+
+
+
 
 
 
