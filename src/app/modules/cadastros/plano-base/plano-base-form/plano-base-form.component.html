@@ -1,0 +1,77 @@
+<app-base-modal-form [title]="data.title" (save)="onSave()" (cancel)="onCancel()">
+  <form [formGroup]="data.form">
+    <div class="row">
+      <div class="col-md-6">
+        <mat-form-field>
+          <mat-label>Tipo de Plano</mat-label>
+          <mat-select formControlName="tipoPlanoId" required>
+            <mat-option *ngFor="let tp of (data.tiposPlano$ | async)" [value]="tp.id">{{ tp.descricao }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <div class="col-md-6">
+        <mat-form-field>
+          <mat-label>Operadora</mat-label>
+          <mat-select formControlName="operadoraId" required>
+            <mat-option *ngFor="let op of (data.operadoras$ | async)" [value]="op.idOperadora">{{ op.razaoSocial || op.nomeFantasia }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-4">
+        <mat-form-field>
+          <mat-label>Código ANS</mat-label>
+          <input matInput formControlName="codigoProdutoAns" required>
+        </mat-form-field>
+      </div>
+      <div class="col-md-8">
+        <mat-form-field>
+          <mat-label>Nome do Produto</mat-label>
+          <input matInput formControlName="nomeProduto" required>
+        </mat-form-field>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-6">
+        <mat-form-field>
+          <mat-label>Abrangência</mat-label>
+          <mat-select formControlName="abrangenciaId" required>
+            <mat-option *ngFor="let ab of (data.abrangencias$ | async)" [value]="ab.id">{{ ab.descricao }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <div class="col-md-6">
+        <mat-form-field>
+          <mat-label>Tipo de Contratação</mat-label>
+          <mat-select formControlName="tipoContratacaoId" required>
+            <mat-option *ngFor="let tc of (data.tiposContratacao$ | async)" [value]="tc.id">{{ tc.descricao }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-6">
+        <mat-form-field>
+          <mat-label>Data Registro ANS</mat-label>
+          <input matInput [matDatepicker]="picker" formControlName="dataRegistroAns">
+          <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+          <mat-datepicker #picker></mat-datepicker>
+        </mat-form-field>
+      </div>
+      <div class="col-md-6 d-flex align-items-center gap-3 mt-3">
+        <mat-checkbox formControlName="permiteComercializacao">Permite Comercialização</mat-checkbox>
+        <mat-checkbox formControlName="ativo">Ativo</mat-checkbox>
+      </div>
+    </div>
+
+    <mat-form-field>
+      <mat-label>Descrição</mat-label>
+      <textarea matInput formControlName="descricao" rows="3"></textarea>
+    </mat-form-field>
+  </form>
+</app-base-modal-form>
+

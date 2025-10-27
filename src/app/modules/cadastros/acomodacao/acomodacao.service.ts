@@ -22,5 +22,15 @@ export class AcomodacaoService {
       .set('sort', `${sort},${order}`);
     return this.http.get<Page<Acomodacao>>(this.apiUrl, { params });
   }
+
+  create(payload: Partial<Acomodacao>): Observable<Acomodacao> {
+    return this.http.post<Acomodacao>(this.apiUrl, payload);
+  }
+  update(id: number, payload: Partial<Acomodacao>): Observable<Acomodacao> {
+    return this.http.put<Acomodacao>(`${this.apiUrl}/${id}`, payload);
+  }
+  delete(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${id}`);
+  }
 }
 

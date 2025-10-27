@@ -1,4 +1,4 @@
-﻿import { Component } from '@angular/core';
+import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { MatCardModule } from '@angular/material/card';
@@ -26,11 +26,11 @@ export class GestaoPlanosHomeComponent {
     { title: 'Segmentações Assistenciais', path: 'segmentacoes' },
     { title: 'Abrangências Geográficas', path: 'abrangencias' },
     { title: 'Tipos de Contratação', path: 'tipos-contratacao' },
+    { title: 'Tipos de Plano', path: 'tipos-plano' },
     { title: 'Status de Plano', path: 'planos-status' },
     { title: 'Tipos de Pagamento', path: 'tipos-pagamento' },
     { title: 'Acomodações', path: 'acomodacoes' },
     { title: 'Coberturas Adicionais', path: 'coberturas-adicionais' }
   ];
 }
-
 
