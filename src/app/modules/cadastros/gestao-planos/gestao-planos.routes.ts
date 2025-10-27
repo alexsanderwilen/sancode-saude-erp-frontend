@@ -7,7 +7,7 @@ import { TipoContratacaoListComponent } from '../tipo-contratacao/tipo-contratac
 import { PlanoStatusListComponent } from '../plano-status/plano-status-list.component';
 import { TipoPagamentoListComponent } from '../tipo-pagamento/tipo-pagamento-list.component';
 import { AcomodacaoListComponent } from '../acomodacao/acomodacao-list.component';
-import { CoberturaAdicionalListComponent } from '../cobertura-adicional/cobertura-adicional-list.component';
+import { CoberturaAdicionalListComponent } from '../cobertura-adicional/cobertura-adicional-list/cobertura-adicional-list.component';
 
 export const GESTAO_PLANOS_ROUTES: Routes = [
   { path: '', component: GestaoPlanosHomeComponent, title: 'Gestão de Planos' },
