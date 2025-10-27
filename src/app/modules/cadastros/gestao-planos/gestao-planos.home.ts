@@ -23,6 +23,7 @@ import { MatButtonModule } from '@angular/material/button';
 export class GestaoPlanosHomeComponent {
   links = [
     { title: 'Planos Base', path: 'planos-base' },
+    { title: 'Planos', path: 'planos' },
     { title: 'Segmentações Assistenciais', path: 'segmentacoes' },
     { title: 'Abrangências Geográficas', path: 'abrangencias' },
     { title: 'Tipos de Contratação', path: 'tipos-contratacao' },

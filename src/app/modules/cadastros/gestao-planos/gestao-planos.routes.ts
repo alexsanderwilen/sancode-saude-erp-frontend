@@ -16,6 +16,7 @@ export const GESTAO_PLANOS_ROUTES: Routes = [
   { path: 'segmentacoes', component: SegmentacaoAssistencialListComponent, title: 'Segmentações Assistenciais' },
   { path: 'abrangencias', component: AbrangenciaGeograficaListComponent, title: 'Abrangências Geográficas' },
   { path: 'tipos-contratacao', component: TipoContratacaoListComponent, title: 'Tipos de Contratação' },
+  { path: 'planos', loadChildren: () => import('../plano/plano.routes').then(m => m.PLANO_ROUTES), title: 'Planos' },
   { path: 'tipos-plano', component: TipoPlanoListComponent, title: 'Tipos de Plano' },
   { path: 'planos-status', component: PlanoStatusListComponent, title: 'Status de Plano' },
   { path: 'tipos-pagamento', component: TipoPagamentoListComponent, title: 'Tipos de Pagamento' },
