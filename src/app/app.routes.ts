@@ -16,7 +16,7 @@ export const routes: Routes = [
       { path: 'home', component: HomeComponent, title: 'Home' },
       {
         path: 'cadastros',
-        loadChildren: () => import('./modules/cadastros/cadastros.routes').then(m => m.CADASTROS_ROUTES)
+        loadChildren: () => import('./modules/cadastros/cadastros2.routes').then(m => m.CADASTROS_ROUTES)
       },
       {
         path: 'usuarios',
