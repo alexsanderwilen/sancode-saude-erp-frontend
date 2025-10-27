@@ -1,10 +1,10 @@
-﻿import { Routes } from '@angular/router';
+import { Routes } from '@angular/router';
 import { GestaoPlanosHomeComponent } from './gestao-planos.home';
 import { PlanoBaseListComponent } from '../plano-base/plano-base-list.component';
 import { SegmentacaoAssistencialListComponent } from '../segmentacao-assistencial/segmentacao-assistencial-list/segmentacao-assistencial-list.component';
-import { AbrangenciaGeograficaListComponent } from '../abrangencia-geografica/abrangencia-geografica-list.component';
-import { TipoContratacaoListComponent } from '../tipo-contratacao/tipo-contratacao-list.component';
-import { PlanoStatusListComponent } from '../plano-status/plano-status-list.component';
+import { AbrangenciaGeograficaListComponent } from '../abrangencia-geografica/abrangencia-geografica-list/abrangencia-geografica-list.component';
+import { TipoContratacaoListComponent } from '../tipo-contratacao/tipo-contratacao-list/tipo-contratacao-list.component';
+import { PlanoStatusListComponent } from '../plano-status/plano-status-list/plano-status-list.component';
 import { TipoPagamentoListComponent } from '../tipo-pagamento/tipo-pagamento-list.component';
 import { AcomodacaoListComponent } from '../acomodacao/acomodacao-list.component';
 import { CoberturaAdicionalListComponent } from '../cobertura-adicional/cobertura-adicional-list/cobertura-adicional-list.component';
@@ -20,6 +20,4 @@ export const GESTAO_PLANOS_ROUTES: Routes = [
   { path: 'acomodacoes', component: AcomodacaoListComponent, title: 'Acomodações' },
   { path: 'coberturas-adicionais', component: CoberturaAdicionalListComponent, title: 'Coberturas Adicionais' }
 ];
-
-
 
