@@ -1,4 +1,4 @@
-﻿import { Component, Input, OnInit } from '@angular/core';
+﻿import { Component, Input, OnInit, Output, EventEmitter, Inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AgGridModule } from 'ag-grid-angular';
 import { ColDef, GridOptions } from 'ag-grid-community';
@@ -11,8 +11,8 @@ import { BaseModalFormComponent } from '../../../../shared/components/base-modal
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Inject } from '@angular/core';
 import { Observable } from 'rxjs';
+import { AgGridLocaleService } from '../../../../shared/services/ag-grid-locale.service';
 
 @Component({
   selector: 'app-plano-acomodacoes-tab',
@@ -28,7 +28,7 @@ import { Observable } from 'rxjs';
   ],
   template: `
   <div class="mb-2">
-    <button type="button" mat-stroked-button color="primary" (click)="openAddDialog()" [disabled]="!planoId">Adicionar</button>
+    <button type="button" mat-stroked-button color="primary" (click)="openAddDialog()">Adicionar</button>
   </div>
   <ag-grid-angular class="ag-theme-quartz" style="width: 100%; height: 320px;"
                    [gridOptions]="gridOptions"
@@ -38,7 +38,10 @@ import { Observable } from 'rxjs';
   `
 })
 export class PlanoAcomodacoesTabComponent implements OnInit {
-  @Input() planoId!: number;
+  @Input() planoId?: number;
+  @Input() selectedIds: number[] = [];
+  @Output() selectedIdsChange = new EventEmitter<number[]>();
+
   columnDefs: ColDef[] = [
     { headerName: 'ID', field: 'id', width: 100, sortable: true, filter: true },
     { headerName: 'Acomodação', field: 'acomodacao.descricao', flex: 1, sortable: true, filter: true },
@@ -63,8 +66,28 @@ export class PlanoAcomodacoesTabComponent implements OnInit {
     private agGridLocaleService: AgGridLocaleService
   ) {}
 
-  ngOnInit(): void { this.gridOptions = { ...this.agGridLocaleService.getDefaultGridOptions(), pagination: true, paginationPageSize: 10 }; if (this.planoId) this.load(); }
-  load(): void { this.planoService.listPlanoAcomodacoes(this.planoId).subscribe(d => this.rowData = d); }
+  ngOnInit(): void {
+    this.gridOptions = { ...this.agGridLocaleService.getDefaultGridOptions(), pagination: true, paginationPageSize: 10 };
+    this.load();
+  }
+
+  private load(): void {
+    if (this.planoId) {
+      this.planoService.listPlanoAcomodacoes(this.planoId).subscribe(d => this.rowData = d);
+    } else {
+      this.refreshLocalRowData();
+    }
+  }
+
+  private refreshLocalRowData(): void {
+    this.acomodacaoService.getAcomodacoes().subscribe(opts => {
+      const map = new Map<number, Acomodacao>(opts.map(o => [o.id, o] as const));
+      this.rowData = (this.selectedIds || [])
+        .map(id => map.get(id))
+        .filter((o): o is Acomodacao => !!o)
+        .map(o => ({ acomodacao: { id: o.id, descricao: o.descricao } }));
+    });
+  }
 
   openAddDialog(): void {
     const form: FormGroup = this.fb.group({ acomodacaoId: [null, Validators.required] });
@@ -75,15 +98,35 @@ export class PlanoAcomodacoesTabComponent implements OnInit {
         form,
         options$: this.acomodacaoService.getAcomodacoes(),
         label: 'Acomodação'
-      }
+      },
+      disableClose: true,
     });
     ref.afterClosed().subscribe(result => {
       if (result?.saved) {
-        this.planoService.addPlanoAcomodacao(this.planoId, form.value.acomodacaoId).subscribe(() => this.load());
+        const id = form.value.acomodacaoId as number;
+        if (this.planoId) {
+          this.planoService.addPlanoAcomodacao(this.planoId, id).subscribe(() => this.load());
+        } else if (id != null && !this.selectedIds.includes(id)) {
+          this.selectedIds = [...this.selectedIds, id];
+          this.selectedIdsChange.emit(this.selectedIds);
+          this.refreshLocalRowData();
+        }
       }
     });
   }
-  remove(row: any): void { this.planoService.deletePlanoAcomodacao(row.id).subscribe(() => this.load()); }
+
+  remove(row: any): void {
+    if (this.planoId) {
+      this.planoService.deletePlanoAcomodacao(row.id).subscribe(() => this.load());
+    } else {
+      const id = row?.acomodacao?.id as number;
+      if (id != null) {
+        this.selectedIds = this.selectedIds.filter(x => x !== id);
+        this.selectedIdsChange.emit(this.selectedIds);
+        this.refreshLocalRowData();
+      }
+    }
+  }
 }
 
 @Component({
@@ -111,5 +154,4 @@ export class PlanoAcomodacoesDialogComponent {
   onSave(): void { this.ref.close({ saved: true }); }
   onCancel(): void { this.ref.close(); }
 }
-import { AgGridLocaleService } from '../../../../shared/services/ag-grid-locale.service';
 

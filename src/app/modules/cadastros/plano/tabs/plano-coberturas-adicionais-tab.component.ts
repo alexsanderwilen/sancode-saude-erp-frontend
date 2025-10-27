@@ -1,4 +1,4 @@
-﻿import { Component, Input, OnInit, Inject } from '@angular/core';
+﻿import { Component, Input, OnInit, Output, EventEmitter, Inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AgGridModule } from 'ag-grid-angular';
 import { ColDef, GridOptions } from 'ag-grid-community';
@@ -14,6 +14,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Observable } from 'rxjs';
+import { AgGridLocaleService } from '../../../../shared/services/ag-grid-locale.service';
 
 @Component({
   selector: 'app-plano-coberturas-adicionais-tab',
@@ -31,7 +32,7 @@ import { Observable } from 'rxjs';
   ],
   template: `
   <div class="mb-2">
-    <button type="button" mat-stroked-button color="primary" (click)="openAddDialog()" [disabled]="!planoId">Adicionar</button>
+    <button type="button" mat-stroked-button color="primary" (click)="openAddDialog()">Adicionar</button>
   </div>
   <ag-grid-angular class="ag-theme-quartz" style="width: 100%; height: 320px;"
                    [gridOptions]="gridOptions"
@@ -41,7 +42,10 @@ import { Observable } from 'rxjs';
   `
 })
 export class PlanoCoberturasAdicionaisTabComponent implements OnInit {
-  @Input() planoId!: number;
+  @Input() planoId?: number;
+  @Input() selectedIds: number[] = [];
+  @Output() selectedIdsChange = new EventEmitter<number[]>();
+
   columnDefs: ColDef[] = [
     { headerName: 'ID', field: 'id', width: 90, sortable: true, filter: true },
     { headerName: 'Cobertura', field: 'coberturaAdicional.descricao', flex: 1, sortable: true, filter: true },
@@ -70,8 +74,28 @@ export class PlanoCoberturasAdicionaisTabComponent implements OnInit {
     private agGridLocaleService: AgGridLocaleService
   ) {}
 
-  ngOnInit(): void { this.gridOptions = { ...this.agGridLocaleService.getDefaultGridOptions(), pagination: true, paginationPageSize: 10 }; if (this.planoId) this.load(); }
-  load(): void { this.planoService.listPlanoCoberturas(this.planoId).subscribe(d => this.rowData = d); }
+  ngOnInit(): void { 
+    this.gridOptions = { ...this.agGridLocaleService.getDefaultGridOptions(), pagination: true, paginationPageSize: 10 }; 
+    this.load();
+  }
+
+  private load(): void { 
+    if (this.planoId) {
+      this.planoService.listPlanoCoberturas(this.planoId).subscribe(d => this.rowData = d); 
+    } else {
+      this.refreshLocalRowData();
+    }
+  }
+
+  private refreshLocalRowData(): void {
+    this.coberturaService.getCoberturas().subscribe(opts => {
+      const map = new Map<number, CoberturaAdicional>(opts.map(o => [o.id, o] as const));
+      this.rowData = (this.selectedIds || [])
+        .map(id => map.get(id))
+        .filter((o): o is CoberturaAdicional => !!o)
+        .map(o => ({ coberturaAdicional: { id: o.id, descricao: o.descricao }, inclusa: true, observacao: '' }));
+    });
+  }
 
   openAddDialog(): void {
     const form: FormGroup = this.fb.group({
@@ -92,12 +116,22 @@ export class PlanoCoberturasAdicionaisTabComponent implements OnInit {
     ref.afterClosed().subscribe(result => {
       if (result?.saved) {
         const v = form.value;
-        this.planoService.addPlanoCobertura(this.planoId, v.coberturaId, v.inclusa, v.observacao).subscribe(() => this.load());
+        if (this.planoId) {
+          this.planoService.addPlanoCobertura(this.planoId, v.coberturaId, v.inclusa, v.observacao).subscribe(() => this.load());
+        } else {
+          const id = v.coberturaId as number;
+          if (id != null && !this.selectedIds.includes(id)) {
+            this.selectedIds = [...this.selectedIds, id];
+            this.selectedIdsChange.emit(this.selectedIds);
+            this.refreshLocalRowData();
+          }
+        }
       }
     });
   }
 
   openEditDialog(row: any): void {
+    if (!this.planoId) { return; }
     const form: FormGroup = this.fb.group({
       coberturaId: [row.coberturaAdicional?.id, Validators.required],
       inclusa: [row.inclusa],
@@ -122,7 +156,18 @@ export class PlanoCoberturasAdicionaisTabComponent implements OnInit {
     });
   }
 
-  remove(row: any): void { this.planoService.deletePlanoCobertura(row.id).subscribe(() => this.load()); }
+  remove(row: any): void { 
+    if (this.planoId) {
+      this.planoService.deletePlanoCobertura(row.id).subscribe(() => this.load()); 
+    } else {
+      const id = row?.coberturaAdicional?.id as number;
+      if (id != null) {
+        this.selectedIds = this.selectedIds.filter(x => x !== id);
+        this.selectedIdsChange.emit(this.selectedIds);
+        this.refreshLocalRowData();
+      }
+    }
+  }
 }
 
 @Component({
@@ -155,5 +200,4 @@ export class PlanoCoberturasDialogComponent {
   onSave(): void { this.ref.close({ saved: true }); }
   onCancel(): void { this.ref.close(); }
 }
-import { AgGridLocaleService } from '../../../../shared/services/ag-grid-locale.service';
 

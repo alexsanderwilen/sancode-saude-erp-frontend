@@ -97,14 +97,23 @@
           </div>
         </mat-tab>
 
-                <mat-tab label="Tipos de Pagamento" [disabled]="!planoId">
-          <app-plano-tipos-pagamento-tab [planoId]="planoId!"></app-plano-tipos-pagamento-tab>
+                <mat-tab label="Tipos de Pagamento" >
+          <app-plano-tipos-pagamento-tab
+            [planoId]="planoId || undefined"
+            [selectedIds]="selectedTiposPagamento"
+            (selectedIdsChange)="selectedTiposPagamento = $event"></app-plano-tipos-pagamento-tab>
         </mat-tab>
-        <mat-tab label="Acomodações" [disabled]="!planoId">
-          <app-plano-acomodacoes-tab [planoId]="planoId!"></app-plano-acomodacoes-tab>
+        <mat-tab label="Acomodações" >
+          <app-plano-acomodacoes-tab
+            [planoId]="planoId || undefined"
+            [selectedIds]="selectedAcomodacoes"
+            (selectedIdsChange)="selectedAcomodacoes = $event"></app-plano-acomodacoes-tab>
         </mat-tab>
-        <mat-tab label="Coberturas Adicionais" [disabled]="!planoId">
-          <app-plano-coberturas-adicionais-tab [planoId]="planoId!"></app-plano-coberturas-adicionais-tab>
+        <mat-tab label="Coberturas Adicionais" >
+          <app-plano-coberturas-adicionais-tab
+            [planoId]="planoId || undefined"
+            [selectedIds]="selectedCoberturas"
+            (selectedIdsChange)="selectedCoberturas = $event"></app-plano-coberturas-adicionais-tab>
         </mat-tab>
 
       </mat-tab-group>
@@ -117,5 +126,6 @@
     </form>
   </mat-card-content>
 </mat-card>
+
 
 

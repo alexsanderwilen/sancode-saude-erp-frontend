@@ -1,9 +1,9 @@
-﻿import { Component, Input, OnInit } from '@angular/core';
+﻿import { Component, Input, OnInit, Output, EventEmitter, Inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AgGridModule } from 'ag-grid-angular';
 import { ColDef, GridOptions } from 'ag-grid-community';
 import { MatButtonModule } from '@angular/material/button';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatDialog, MatDialogModule, MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { PlanoService } from '../plano.service';
 import { TipoPagamentoService } from '../../tipo-pagamento/tipo-pagamento.service';
 import { TipoPagamento } from '../../tipo-pagamento/tipo-pagamento.model';
@@ -11,6 +11,8 @@ import { BaseModalFormComponent } from '../../../../shared/components/base-modal
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Observable } from 'rxjs';
+import { AgGridLocaleService } from '../../../../shared/services/ag-grid-locale.service';
 
 @Component({
   selector: 'app-plano-tipos-pagamento-tab',
@@ -26,21 +28,20 @@ import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angula
   ],
   template: `
   <div class="mb-2">
-    <button type="button" mat-stroked-button color="primary" (click)="openAddDialog()" [disabled]="!planoId">Adicionar</button>
+    <button type="button" mat-stroked-button color="primary" (click)="openAddDialog()">Adicionar</button>
   </div>
   <ag-grid-angular class="ag-theme-quartz" style="width: 100%; height: 320px;"
                    [gridOptions]="gridOptions"
                    [rowData]="rowData"
                    [columnDefs]="columnDefs">
   </ag-grid-angular>
-
-  <ng-template #addDialog>
-    <!-- Placeholder for AOT -->
-  </ng-template>
   `
 })
 export class PlanoTiposPagamentoTabComponent implements OnInit {
-  @Input() planoId!: number;
+  @Input() planoId?: number;
+  @Input() selectedIds: number[] = [];
+  @Output() selectedIdsChange = new EventEmitter<number[]>();
+
   columnDefs: ColDef[] = [
     { headerName: 'ID', field: 'id', width: 100, sortable: true, filter: true },
     { headerName: 'Tipo de Pagamento', field: 'tipoPagamento.descricao', flex: 1, sortable: true, filter: true },
@@ -48,8 +49,7 @@ export class PlanoTiposPagamentoTabComponent implements OnInit {
         <button type="button" data-action="delete" class="btn btn-sm btn-outline-danger">Excluir</button>
       `,
       onCellClicked: (p: any) => {
-        if (p?.event) { try { p.event.preventDefault(); p.event.stopPropagation(); } catch {}
-        }
+        if (p?.event) { try { p.event.preventDefault(); p.event.stopPropagation(); } catch {} }
         const action = (p.event?.target as HTMLElement)?.getAttribute('data-action');
         if (action === 'delete') this.remove(p.data);
       }
@@ -68,11 +68,25 @@ export class PlanoTiposPagamentoTabComponent implements OnInit {
 
   ngOnInit(): void {
     this.gridOptions = { ...this.agGridLocaleService.getDefaultGridOptions(), pagination: true, paginationPageSize: 10 };
-    if (this.planoId) this.load();
+    this.load();
   }
 
-  load(): void {
-    this.planoService.listPlanoTiposPagamento(this.planoId).subscribe(d => this.rowData = d);
+  private load(): void {
+    if (this.planoId) {
+      this.planoService.listPlanoTiposPagamento(this.planoId).subscribe(d => this.rowData = d);
+    } else {
+      this.refreshLocalRowData();
+    }
+  }
+
+  private refreshLocalRowData(): void {
+    this.tipoPagamentoService.getTiposPagamento().subscribe(opts => {
+      const map = new Map<number, TipoPagamento>(opts.map(o => [o.id, o] as const));
+      this.rowData = (this.selectedIds || [])
+        .map(id => map.get(id))
+        .filter((o): o is TipoPagamento => !!o)
+        .map(o => ({ tipoPagamento: { id: o.id, descricao: o.descricao } }));
+    });
   }
 
   openAddDialog(): void {
@@ -89,20 +103,31 @@ export class PlanoTiposPagamentoTabComponent implements OnInit {
     });
     ref.afterClosed().subscribe(result => {
       if (result?.saved) {
-        this.planoService.addPlanoTipoPagamento(this.planoId, form.value.tipoPagamentoId).subscribe(() => this.load());
+        const id = form.value.tipoPagamentoId as number;
+        if (this.planoId) {
+          this.planoService.addPlanoTipoPagamento(this.planoId, id).subscribe(() => this.load());
+        } else if (id != null && !this.selectedIds.includes(id)) {
+          this.selectedIds = [...this.selectedIds, id];
+          this.selectedIdsChange.emit(this.selectedIds);
+          this.refreshLocalRowData();
+        }
       }
     });
   }
 
   remove(row: any): void {
-    this.planoService.deletePlanoTipoPagamento(row.id).subscribe(() => this.load());
+    if (this.planoId) {
+      this.planoService.deletePlanoTipoPagamento(row.id).subscribe(() => this.load());
+    } else {
+      const id = row?.tipoPagamento?.id as number;
+      if (id != null) {
+        this.selectedIds = this.selectedIds.filter(x => x !== id);
+        this.selectedIdsChange.emit(this.selectedIds);
+        this.refreshLocalRowData();
+      }
+    }
   }
 }
-
-// Dialog wrapper using BaseModalFormComponent
-import { Inject } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-dialog-wrapper',
@@ -129,5 +154,4 @@ export class DialogWrapperComponent {
   onSave(): void { this.ref.close({ saved: true }); }
   onCancel(): void { this.ref.close(); }
 }
-import { AgGridLocaleService } from '../../../../shared/services/ag-grid-locale.service';
 
