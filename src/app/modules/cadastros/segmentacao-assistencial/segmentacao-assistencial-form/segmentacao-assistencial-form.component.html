@@ -1,0 +1,9 @@
+<app-base-modal-form [title]="data.title" (save)="onSave()" (cancel)="onCancel()">
+  <form [formGroup]="data.form">
+    <mat-form-field class="full-width">
+      <mat-label>Descrição</mat-label>
+      <input matInput formControlName="descricao" required>
+    </mat-form-field>
+  </form>
+</app-base-modal-form>
+
