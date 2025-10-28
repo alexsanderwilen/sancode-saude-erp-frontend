@@ -18,15 +18,18 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatSelectModule } from '@angular/material/select';
 
 import { BeneficiarioService } from '../beneficiario.service';
-import { Beneficiario, BeneficiarioEmail, BeneficiarioEndereco, BeneficiarioTelefone, EstadoCivil, Sexo } from '../beneficiario.model';
+import { Beneficiario, BeneficiarioEmail, BeneficiarioEndereco, BeneficiarioPlano, BeneficiarioTelefone, EstadoCivil, Parentesco, Sexo, Situacao } from '../beneficiario.model';
 import { ConfirmDialogComponent } from '../../../shared/components/confirm-dialog/confirm-dialog';
 import { DominioTipoService } from '../dominio-tipo/dominio-tipo.service';
 import { DominioTipo } from '../dominio-tipo/dominio-tipo.model';
 import { OperadoraEnderecoFormComponent } from '../operadoras-form/dialogs/operadora-endereco-form/operadora-endereco-form.component';
 import { OperadoraTelefoneFormComponent } from '../operadoras-form/dialogs/operadora-telefone-form/operadora-telefone-form.component';
 import { OperadoraEmailFormComponent } from '../operadoras-form/dialogs/operadora-email-form/operadora-email-form.component';
+import { BeneficiarioPlanoFormComponent } from './dialogs/beneficiario-plano-form.component';
 import { AgGridLocaleService } from '../../../shared/services/ag-grid-locale.service';
 import { SexoEstadoService } from '../sexo-estado.service';
+import { PlanoService } from '../plano/plano.service';
+import { BeneficiarioPlanoService } from '../beneficiario-plano.service';
 
 @Component({
   selector: 'app-beneficiarios-form',
@@ -72,6 +75,17 @@ export class BeneficiariosFormComponent implements OnInit {
 
   sexos: Sexo[] = [];
   estadosCivis: EstadoCivil[] = [];
+  parentescos: Parentesco[] = [];
+  situacoes: Situacao[] = [];
+  planos: any[] = [];
+  private planosMap = new Map<number, string>();
+  private situacoesMap = new Map<number, string>();
+  private parentescosMap = new Map<number, string>();
+
+  // Planos (vínculos)
+  beneficiarioPlanos: BeneficiarioPlano[] = [];
+  gridOptionsPlanos: any;
+  colDefsPlanos: any[];
 
   constructor(
     private formBuilder: FormBuilder,
@@ -82,7 +96,9 @@ export class BeneficiariosFormComponent implements OnInit {
     private dialog: MatDialog,
     private dominioTipoService: DominioTipoService,
     private agGridLocaleService: AgGridLocaleService,
-    private sexoEstadoService: SexoEstadoService
+    private sexoEstadoService: SexoEstadoService,
+    private planoServiceFE: PlanoService,
+    private beneficiarioPlanoService: BeneficiarioPlanoService
   ) {
     this.form = this.formBuilder.group({
       idSexo: [null, Validators.required],
@@ -144,12 +160,45 @@ export class BeneficiariosFormComponent implements OnInit {
       context: { componentParent: this, type: 'emails' },
       suppressRowClickSelection: true
     };
+
+    this.colDefsPlanos = [
+      { headerName: 'Carteirinha', field: 'numeroCarteirinha', sortable: true, filter: true },
+      { headerName: 'Plano ID', field: 'idPlano', width: 110, sortable: true, filter: true },
+      { headerName: 'Plano', valueGetter: (p: any) => this.planoNome(p.data?.idPlano), flex: 1, sortable: true, filter: true },
+      { headerName: 'Vínculo', field: 'tipoVinculo', width: 120, sortable: true, filter: true },
+      { headerName: 'Situação ID', field: 'idSituacao', width: 130, sortable: true, filter: true },
+      { headerName: 'Situação', valueGetter: (p: any) => this.situacaoNome(p.data?.idSituacao), width: 150, sortable: true, filter: true },
+      { headerName: 'Parentesco ID', field: 'idParentesco', width: 150, sortable: true, filter: true },
+      { headerName: 'Parentesco', valueGetter: (p: any) => this.parentescoNome(p.data?.idParentesco), width: 160, sortable: true, filter: true },
+      { headerName: 'Início', field: 'dataInicioVigencia', width: 120, sortable: true, filter: true },
+      { headerName: 'Fim', field: 'dataFimVigencia', width: 120, sortable: true, filter: true },
+      { headerName: 'Ações', cellRenderer: this.actionsRenderer.bind(this), width: 140 }
+    ];
+    this.gridOptionsPlanos = {
+      ...this.agGridLocaleService.getDefaultGridOptions(),
+      columnDefs: this.colDefsPlanos,
+      rowSelection: 'single',
+      context: { componentParent: this, type: 'planos' },
+      suppressRowClickSelection: true
+    };
   }
 
   ngOnInit(): void {
     this.loadDominioTipos();
     this.sexoEstadoService.getSexos().subscribe(data => this.sexos = data.filter(s => s.ativo));
     this.sexoEstadoService.getEstadosCivis().subscribe(data => this.estadosCivis = data.filter(e => e.ativo));
+    this.sexoEstadoService.getParentescos().subscribe(d => {
+      this.parentescos = d.filter(x => x.ativo);
+      this.parentescosMap = new Map(this.parentescos.map(p => [p.idParentesco, p.descricao]));
+    });
+    this.sexoEstadoService.getSituacoes().subscribe(d => {
+      this.situacoes = d.filter(x => x.ativo);
+      this.situacoesMap = new Map(this.situacoes.map(s => [s.idSituacao, s.descricao]));
+    });
+    this.planoServiceFE.getPlanos().subscribe(list => {
+      this.planos = list;
+      this.planosMap = new Map(this.planos.map((p: any) => [p.id, p.nomeComercial]));
+    });
 
     this.beneficiarioId = this.route.snapshot.params['id'];
     if (this.beneficiarioId) {
@@ -160,7 +209,28 @@ export class BeneficiariosFormComponent implements OnInit {
         model.telefones.forEach(t => this.telefones.push(this.createTelefoneFormGroup(t)));
         model.emails.forEach(em => this.emails.push(this.createEmailFormGroup(em)));
       });
+      this.loadPlanos();
     }
+  }
+
+  loadPlanos(): void {
+    if (!this.beneficiarioId) return;
+    this.beneficiarioPlanoService.listByBeneficiario(this.beneficiarioId).subscribe(v => this.beneficiarioPlanos = v);
+  }
+
+  planoNome(id?: number): string {
+    if (id == null) return '';
+    return this.planosMap.get(id) || '';
+  }
+
+  situacaoNome(id?: number): string {
+    if (id == null) return '';
+    return this.situacoesMap.get(id) || '';
+  }
+
+  parentescoNome(id?: number): string {
+    if (id == null) return '';
+    return this.parentescosMap.get(id) || '';
   }
 
   loadDominioTipos(): void {
@@ -259,20 +329,39 @@ export class BeneficiariosFormComponent implements OnInit {
         } else if (type === 'emails') {
           dialogData.dominioTipos = this.dominioTiposEmail;
           dialogRef = this.dialog.open(OperadoraEmailFormComponent, { data: dialogData, width: '500px', panelClass: 'sancode-cadastro-theme', disableClose: true });
+        } else if (type === 'planos') {
+          const dialogPayload = {
+            ...data,
+            planos: this.planos,
+            parentescos: this.parentescos,
+            situacoes: this.situacoes
+          };
+          dialogRef = this.dialog.open(BeneficiarioPlanoFormComponent, { data: dialogPayload, panelClass: 'sancode-cadastro-theme', disableClose: true });
         }
 
         dialogRef?.afterClosed().subscribe(result => {
           if (result) {
-            const formArray = this.form.get(type) as FormArray;
-            if (index !== undefined) {
-              formArray.at(index).patchValue(result);
+            if (type === 'planos') {
+              // create or update vínculo via API
+              const payload = result as BeneficiarioPlano;
+              payload.idBeneficiario = this.beneficiarioId!;
+              if (result.id) {
+                this.beneficiarioPlanoService.update(result.id, payload).subscribe(() => this.loadPlanos());
+              } else {
+                this.beneficiarioPlanoService.create(this.beneficiarioId!, payload).subscribe(() => this.loadPlanos());
+              }
             } else {
-              if (type === 'enderecos') {
-                formArray.push(this.createEnderecoFormGroup(result));
-              } else if (type === 'telefones') {
-                formArray.push(this.createTelefoneFormGroup(result));
-              } else if (type === 'emails') {
-                formArray.push(this.createEmailFormGroup(result));
+              const formArray = this.form.get(type) as FormArray;
+              if (index !== undefined) {
+                formArray.at(index).patchValue(result);
+              } else {
+                if (type === 'enderecos') {
+                  formArray.push(this.createEnderecoFormGroup(result));
+                } else if (type === 'telefones') {
+                  formArray.push(this.createTelefoneFormGroup(result));
+                } else if (type === 'emails') {
+                  formArray.push(this.createEmailFormGroup(result));
+                }
               }
             }
           }
@@ -286,8 +375,17 @@ export class BeneficiariosFormComponent implements OnInit {
       data: { title: 'Confirmar Exclusão', message: `Tem certeza que deseja excluir este ${type.slice(0, -1)}?` }
     }).afterClosed().subscribe(result => {
       if (result) {
-        const formArray = this.form.get(type) as FormArray;
-        formArray.removeAt(index);
+        if (type === 'planos') {
+          const item = this.beneficiarioPlanos[index];
+          if (item?.id) {
+            this.beneficiarioPlanoService.delete(item.id).subscribe({
+              next: () => this.loadPlanos()
+            });
+          }
+        } else {
+          const formArray = this.form.get(type) as FormArray;
+          formArray.removeAt(index);
+        }
       }
     });
   }

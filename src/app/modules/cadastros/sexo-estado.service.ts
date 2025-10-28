@@ -2,7 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
-import { EstadoCivil, Sexo } from './beneficiario.model';
+import { EstadoCivil, Parentesco, Sexo, Situacao } from './beneficiario.model';
 
 @Injectable({ providedIn: 'root' })
 export class SexoEstadoService {
@@ -14,5 +14,13 @@ export class SexoEstadoService {
 
   getEstadosCivis(): Observable<EstadoCivil[]> {
     return this.http.get<EstadoCivil[]>(environment.apiUrl + '/estado-civil');
+  }
+
+  getParentescos(): Observable<Parentesco[]> {
+    return this.http.get<Parentesco[]>(environment.apiUrl + '/parentesco');
+  }
+
+  getSituacoes(): Observable<Situacao[]> {
+    return this.http.get<Situacao[]>(environment.apiUrl + '/situacao');
   }
 }

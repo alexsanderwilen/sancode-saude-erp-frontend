@@ -1,0 +1,144 @@
+<h2 mat-dialog-title>{{ form.get('id')?.value ? 'Editar' : 'Adicionar' }} Plano</h2>
+<div mat-dialog-content>
+  <form [formGroup]="form" class="row g-3">
+    <div class="col-md-6">
+      <mat-form-field class="w-100">
+        <mat-label>Plano</mat-label>
+        <mat-select formControlName="idPlano">
+          <mat-option *ngFor="let p of data.planos" [value]="p.id">{{ p.nomeComercial }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <div class="col-md-6">
+      <mat-form-field class="w-100">
+        <mat-label>Número Carteirinha</mat-label>
+        <input matInput formControlName="numeroCarteirinha" />
+      </mat-form-field>
+    </div>
+
+    <div class="col-md-4">
+      <mat-form-field class="w-100">
+        <mat-label>Vínculo</mat-label>
+        <mat-select formControlName="tipoVinculo">
+          <mat-option *ngFor="let t of tiposVinculo" [value]="t.value">{{ t.label }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <div class="col-md-4">
+      <mat-form-field class="w-100">
+        <mat-label>Situação</mat-label>
+        <mat-select formControlName="idSituacao">
+          <mat-option *ngFor="let s of data.situacoes" [value]="s.idSituacao">{{ s.descricao }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <div class="col-md-4">
+      <mat-form-field class="w-100">
+        <mat-label>Parentesco</mat-label>
+        <mat-select formControlName="idParentesco">
+          <mat-option *ngFor="let p of data.parentescos" [value]="p.idParentesco">{{ p.descricao }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <div class="col-md-4">
+      <mat-form-field class="w-100">
+        <mat-label>Data Adesão</mat-label>
+        <input matInput [matDatepicker]="p1" formControlName="dataAdesao" />
+        <mat-datepicker-toggle matSuffix [for]="p1"></mat-datepicker-toggle>
+        <mat-datepicker #p1></mat-datepicker>
+      </mat-form-field>
+    </div>
+    <div class="col-md-4">
+      <mat-form-field class="w-100">
+        <mat-label>Início Vigência</mat-label>
+        <input matInput [matDatepicker]="p2" formControlName="dataInicioVigencia" />
+        <mat-datepicker-toggle matSuffix [for]="p2"></mat-datepicker-toggle>
+        <mat-datepicker #p2></mat-datepicker>
+      </mat-form-field>
+    </div>
+    <div class="col-md-4">
+      <mat-form-field class="w-100">
+        <mat-label>Fim Vigência</mat-label>
+        <input matInput [matDatepicker]="p3" formControlName="dataFimVigencia" />
+        <mat-datepicker-toggle matSuffix [for]="p3"></mat-datepicker-toggle>
+        <mat-datepicker #p3></mat-datepicker>
+      </mat-form-field>
+    </div>
+
+    <div class="col-md-4 d-flex align-items-center">
+      <mat-checkbox formControlName="emCarencia">Em Carência</mat-checkbox>
+    </div>
+    <div class="col-md-4">
+      <mat-form-field class="w-100">
+        <mat-label>Fim Carência</mat-label>
+        <input matInput [matDatepicker]="p4" formControlName="dataFimCarencia" />
+        <mat-datepicker-toggle matSuffix [for]="p4"></mat-datepicker-toggle>
+        <mat-datepicker #p4></mat-datepicker>
+      </mat-form-field>
+    </div>
+
+    <div class="col-md-4">
+      <mat-form-field class="w-100">
+        <mat-label>Valor Mensalidade</mat-label>
+        <input matInput type="number" formControlName="valorMensalidade" />
+      </mat-form-field>
+    </div>
+
+    <div class="col-md-4 d-flex align-items-center">
+      <mat-checkbox formControlName="possuiCoparticipacao">Coparticipação</mat-checkbox>
+    </div>
+    <div class="col-md-4">
+      <mat-form-field class="w-100">
+        <mat-label>% Coparticipação</mat-label>
+        <input matInput type="number" formControlName="percentualCoparticipacao" />
+      </mat-form-field>
+    </div>
+
+    <div class="col-md-4 d-flex align-items-center">
+      <mat-checkbox formControlName="possuiDoencaPreexistente">Doença Preexistente</mat-checkbox>
+    </div>
+    <div class="col-12">
+      <mat-form-field class="w-100">
+        <mat-label>Descrição Doenças Preexistentes</mat-label>
+        <textarea matInput formControlName="descricaoDoencasPreexistentes"></textarea>
+      </mat-form-field>
+    </div>
+
+    <div class="col-md-4">
+      <mat-form-field class="w-100">
+        <mat-label>Matrícula</mat-label>
+        <input matInput formControlName="matriculaFuncionario" />
+      </mat-form-field>
+    </div>
+    <div class="col-md-4">
+      <mat-form-field class="w-100">
+        <mat-label>Cargo</mat-label>
+        <input matInput formControlName="cargo" />
+      </mat-form-field>
+    </div>
+    <div class="col-md-4">
+      <mat-form-field class="w-100">
+        <mat-label>Departamento</mat-label>
+        <input matInput formControlName="departamento" />
+      </mat-form-field>
+    </div>
+
+    <div class="col-md-4">
+      <mat-form-field class="w-100">
+        <mat-label>Data Admissão</mat-label>
+        <input matInput [matDatepicker]="p5" formControlName="dataAdmissao" />
+        <mat-datepicker-toggle matSuffix [for]="p5"></mat-datepicker-toggle>
+        <mat-datepicker #p5></mat-datepicker>
+      </mat-form-field>
+    </div>
+    <div class="col-md-4 d-flex align-items-center">
+      <mat-checkbox formControlName="ativo">Ativo</mat-checkbox>
+    </div>
+  </form>
+</div>
+<div mat-dialog-actions class="d-flex justify-content-end gap-2">
+  <button mat-button (click)="cancel()">Cancelar</button>
+  <button mat-raised-button color="primary" (click)="save()" [disabled]="form.invalid">Salvar</button>
+  </div>
+

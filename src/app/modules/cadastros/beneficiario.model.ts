@@ -71,3 +71,40 @@ export interface EstadoCivil {
   ativo: boolean;
 }
 
+export interface Parentesco {
+  idParentesco: number;
+  descricao: string;
+  ativo: boolean;
+}
+
+export interface Situacao {
+  idSituacao: number;
+  descricao: string;
+  ativo: boolean;
+}
+
+export interface BeneficiarioPlano {
+  id?: number;
+  idBeneficiario: string;
+  idTitular?: string | null;
+  idPlano: number;
+  idSituacao: number;
+  idParentesco: number;
+  numeroCarteirinha: string;
+  tipoVinculo: 'TITULAR' | 'DEPENDENTE';
+  dataAdesao: string;
+  dataInicioVigencia: string;
+  dataFimVigencia?: string | null;
+  emCarencia: boolean;
+  dataFimCarencia?: string | null;
+  valorMensalidade?: number | null;
+  possuiCoparticipacao: boolean;
+  percentualCoparticipacao?: number | null;
+  possuiDoencaPreexistente: boolean;
+  descricaoDoencasPreexistentes?: string | null;
+  matriculaFuncionario?: string | null;
+  cargo?: string | null;
+  departamento?: string | null;
+  dataAdmissao?: string | null;
+  ativo: boolean;
+}
