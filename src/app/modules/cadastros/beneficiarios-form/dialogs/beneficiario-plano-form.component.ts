@@ -2,6 +2,7 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { BaseModalFormComponent } from '../../../../shared/components/base-modal-form/base-modal-form.component';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
@@ -17,6 +18,7 @@ import { provideNativeDateAdapter } from '@angular/material/core';
     CommonModule,
     ReactiveFormsModule,
     MatDialogModule,
+    BaseModalFormComponent,
     MatFormFieldModule,
     MatInputModule,
     MatSelectModule,
@@ -30,6 +32,7 @@ import { provideNativeDateAdapter } from '@angular/material/core';
 })
 export class BeneficiarioPlanoFormComponent implements OnInit {
   form!: FormGroup;
+  isEditMode = false;
 
   tiposVinculo = [
     { value: 'TITULAR', label: 'Titular' },
@@ -44,6 +47,7 @@ export class BeneficiarioPlanoFormComponent implements OnInit {
 
   ngOnInit(): void {
     const v = this.data || {};
+    this.isEditMode = !!v.id;
     this.form = this.fb.group({
       id: [v.id],
       idPlano: [v.idPlano || null, Validators.required],
@@ -79,4 +83,3 @@ export class BeneficiarioPlanoFormComponent implements OnInit {
     this.dialogRef.close();
   }
 }
-

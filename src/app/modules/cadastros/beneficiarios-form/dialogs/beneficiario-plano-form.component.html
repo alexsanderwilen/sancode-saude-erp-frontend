@@ -1,5 +1,9 @@
-<h2 mat-dialog-title>{{ form.get('id')?.value ? 'Editar' : 'Adicionar' }} Plano</h2>
-<div mat-dialog-content>
+<app-base-modal-form
+  [title]="isEditMode ? 'Editar Plano do Beneficiário' : 'Adicionar Plano ao Beneficiário'"
+  moduleTheme="cadastros"
+  (save)="save()"
+  (cancel)="cancel()">
+
   <form [formGroup]="form" class="row g-3">
     <div class="col-md-6">
       <mat-form-field class="w-100">
@@ -136,9 +140,5 @@
       <mat-checkbox formControlName="ativo">Ativo</mat-checkbox>
     </div>
   </form>
-</div>
-<div mat-dialog-actions class="d-flex justify-content-end gap-2">
-  <button mat-button (click)="cancel()">Cancelar</button>
-  <button mat-raised-button color="primary" (click)="save()" [disabled]="form.invalid">Salvar</button>
-  </div>
 
+</app-base-modal-form>

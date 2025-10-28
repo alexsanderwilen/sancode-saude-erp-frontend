@@ -334,7 +334,8 @@ export class BeneficiariosFormComponent implements OnInit {
             ...data,
             planos: this.planos,
             parentescos: this.parentescos,
-            situacoes: this.situacoes
+            situacoes: this.situacoes,
+            title: data?.id ? 'Editar Plano do Beneficiário' : 'Adicionar Plano ao Beneficiário'
           };
           dialogRef = this.dialog.open(BeneficiarioPlanoFormComponent, { data: dialogPayload, panelClass: 'sancode-cadastro-theme', disableClose: true });
         }
