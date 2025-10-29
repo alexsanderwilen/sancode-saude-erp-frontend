@@ -1,1 +1,9 @@
-
+.ans-home {
+  max-width: 920px;
+}
+.ans-home h2 {
+  margin-bottom: 8px;
+}
+.ans-home p {
+  color: #555;
+}
