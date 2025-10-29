@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { TissService } from '../../services/tiss.service';
+import { TissService } from '../services/tiss.service';
 import { FormsModule } from '@angular/forms';
 
 @Component({

@@ -1,10 +1,10 @@
 import { Routes } from '@angular/router';
-import { DashboardComponent } from './pages/dashboard/dashboard.component';
-import { ExecucoesListComponent } from './pages/validacoes/execucoes-list/execucoes-list.component';
-import { ResultadosGridComponent } from './pages/validacoes/resultados-list/resultados-grid.component';
-import { RegrasListComponent } from './pages/validacoes/regras-list/regras-list.component';
-import { ExportacoesComponent } from './pages/exportacoes/exportacoes.component';
-import { TissPageComponent } from './pages/tiss/tiss-page.component';
+import { DashboardComponent } from './dashboard/dashboard.component';
+import { ExecucoesListComponent } from './validacoes/execucoes-list/execucoes-list.component';
+import { ResultadosGridComponent } from './validacoes/resultados-list/resultados-grid.component';
+import { RegrasListComponent } from './validacoes/regras-list/regras-list.component';
+import { ExportacoesComponent } from './exportacoes/exportacoes.component';
+import { TissPageComponent } from './tiss/tiss-page.component';
 import { RegulacaoAnsHomeComponent } from './regulacao-ans.home';
 
 export const REGULACAO_ANS_ROUTES: Routes = [

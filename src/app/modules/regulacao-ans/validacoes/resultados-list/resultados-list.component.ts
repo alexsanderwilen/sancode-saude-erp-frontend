@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { ValidationsService } from '../../../services/validations.service';
+import { ValidationsService } from '../../services/validations.service';
 
 @Component({
   selector: 'app-ans-resultados',

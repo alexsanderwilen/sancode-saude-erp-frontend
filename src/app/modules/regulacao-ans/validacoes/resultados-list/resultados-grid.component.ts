@@ -3,8 +3,8 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AgGridModule } from 'ag-grid-angular';
 import { ColDef, GridApi, GridOptions, IDatasource, IGetRowsParams } from 'ag-grid-community';
-import { ValidationsService } from '../../../services/validations.service';
-import { ExportsService } from '../../../services/exports.service';
+import { ValidationsService } from '../../services/validations.service';
+import { ExportsService } from '../../services/exports.service';
 
 @Component({
   selector: 'app-ans-resultados-grid',

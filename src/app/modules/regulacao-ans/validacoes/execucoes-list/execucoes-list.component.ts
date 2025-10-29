@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ValidationsService } from '../../../services/validations.service';
+import { ValidationsService } from '../../services/validations.service';
 
 @Component({
   selector: 'app-ans-execucoes',
@@ -22,4 +22,3 @@ export class ExecucoesListComponent {
   load() { this.svc.executions(0, 20).subscribe(p => this.execucoes = p.content || []); }
   run() { this.svc.run().subscribe(() => this.load()); }
 }
-

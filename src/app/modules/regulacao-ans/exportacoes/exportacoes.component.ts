@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 // duplicate import removed
-import { ExportsService } from '../../services/exports.service';
+import { ExportsService } from '../services/exports.service';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 
