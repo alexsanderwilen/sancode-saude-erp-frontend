@@ -1,6 +1,6 @@
 <div class="p-3">
-  <h2>Resultados de Valida��ǜo</h2>
-  <label>Execu��ǜo ID: <input [(ngModel)]="execucaoId" /></label>
+  <h2>Resultados de Validação</h2>
+  <label>Execução ID: <input [(ngModel)]="execucaoId" /></label>
   <button (click)="load()" class="btn btn-outline-secondary btn-sm">Carregar</button>
   <ul class="mt-3">
     <li *ngFor="let r of resultados">{{r.regraCodigo}} - {{r.severidade}} - {{r.mensagem}}</li>

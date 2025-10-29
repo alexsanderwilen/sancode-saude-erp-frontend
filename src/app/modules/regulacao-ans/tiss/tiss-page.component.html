@@ -20,7 +20,7 @@
   </div>
   <div *ngIf="resp">
     <div class="alert" [ngClass]="resp.ok ? 'alert-success' : 'alert-danger'">
-      {{ resp.ok ? 'XML vǭlido segundo TISS' : 'Erros encontrados' }} (perfil: {{resp.versionOrProfile}})
+      {{ resp.ok ? 'XML válido segundo TISS' : 'Erros encontrados' }} (perfil: {{resp.versionOrProfile}})
     </div>
     <ul *ngIf="resp.errors?.length">
       <li *ngFor="let e of resp.errors">{{e}}</li>

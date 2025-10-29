@@ -21,12 +21,12 @@ export class ResultadosGridComponent {
   ate = '';
   columnDefs: ColDef[] = [
     { headerName: 'Regra', field: 'regraCodigo', width: 140 },
-    { headerName: 'T��tulo', field: 'titulo', flex: 1 },
+    { headerName: 'Título', field: 'titulo', flex: 1 },
     { headerName: 'Severidade', field: 'severidade', width: 120 },
     { headerName: 'Entidade', field: 'entidade', width: 140 },
     { headerName: 'ID', field: 'entidadeId', width: 220 },
     { headerName: 'Mensagem', field: 'mensagem', flex: 2 },
-    { headerName: 'A����es', width: 180, cellRenderer: (p: any) => this.actionButtons(p.data), onCellClicked: (p: any) => this.onAction(p) },
+    { headerName: 'Ações', width: 180, cellRenderer: (p: any) => this.actionButtons(p.data), onCellClicked: (p: any) => this.onAction(p) },
     { headerName: 'Criado em', field: 'criadoEm', width: 200 }
   ];
   gridOptions: GridOptions = { rowModelType: 'infinite', pagination: true, paginationPageSize: 20, cacheBlockSize: 20 };
