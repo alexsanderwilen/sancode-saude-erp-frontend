@@ -9,7 +9,9 @@ export class ValidationsService {
   constructor(private http: HttpClient) {}
 
   run(disparo: string = 'MANUAL', escopo: string = 'GERAL', parametros?: any): Observable<any> {
-    return this.http.post(`${this.base}/run?disparo=${disparo}&escopo=${escopo}`, parametros ? JSON.stringify(parametros) : '');
+    const params = new HttpParams().set('disparo', disparo).set('escopo', escopo);
+    const body = parametros ?? {};
+    return this.http.post(`${this.base}/run`, body, { params });
   }
 
   executions(page: number, size: number): Observable<any> {

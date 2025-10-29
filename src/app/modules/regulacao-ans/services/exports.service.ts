@@ -9,11 +9,11 @@ export class ExportsService {
   constructor(private http: HttpClient) {}
 
   create(tipo: string, parametros?: any): Observable<{ idExport: number }> {
-    return this.http.post<{ idExport: number }>(`${this.base}/${tipo}`, parametros ? JSON.stringify(parametros) : '');
+    const body = parametros ?? {};
+    return this.http.post<{ idExport: number }>(`${this.base}/${tipo}`, body);
   }
 
   download(idExport: number): Observable<Blob> {
     return this.http.get(`${this.base}/${idExport}/download`, { responseType: 'blob' });
   }
 }
-
