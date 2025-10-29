@@ -1,0 +1,28 @@
+<div class="sancode-ans-theme">
+  <mat-toolbar color="primary">
+    <a mat-button routerLink="" [routerLinkActiveOptions]="{exact: true}" routerLinkActive="active-link">
+      <mat-icon>home</mat-icon>
+      <span class="ms-2">Início</span>
+    </a>
+
+    <a mat-button routerLink="dashboard" routerLinkActive="active-link">Dashboard</a>
+    <a mat-button routerLink="validacoes/execucoes" routerLinkActive="active-link">Execuções</a>
+    <a mat-button routerLink="validacoes/resultados" routerLinkActive="active-link">Resultados</a>
+    <a mat-button routerLink="validacoes/regras" routerLinkActive="active-link">Regras</a>
+    <a mat-button routerLink="exportacoes" routerLinkActive="active-link">Exportações</a>
+    <a mat-button routerLink="tiss" routerLinkActive="active-link">TISS</a>
+
+    <span class="spacer"></span>
+
+    <app-user-profile-menu></app-user-profile-menu>
+
+    <a mat-icon-button routerLink="/home" matTooltip="Voltar para o menu principal">
+      <mat-icon>exit_to_app</mat-icon>
+    </a>
+  </mat-toolbar>
+
+  <div class="container-fluid p-4">
+    <router-outlet></router-outlet>
+  </div>
+</div>
+
