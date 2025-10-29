@@ -10,31 +10,8 @@ import { ExportsService } from '../../services/exports.service';
   selector: 'app-ans-resultados-grid',
   standalone: true,
   imports: [CommonModule, FormsModule, AgGridModule],
-  template: `
-    <div class="p-3">
-      <h2>Resultados de Validação</h2>
-      <div class="row g-2 align-items-end">
-        <div class="col-auto"><label class="form-label">Execução</label><input class="form-control form-control-sm" [(ngModel)]="execucaoId" /></div>
-        <div class="col-auto"><label class="form-label">Severidade</label>
-          <select class="form-select form-select-sm" [(ngModel)]="severidade">
-            <option value="">Todas</option><option>INFO</option><option>WARN</option><option>ERROR</option><option>BLOCK</option>
-          </select></div>
-        <div class="col-auto"><label class="form-label">Entidade</label>
-          <select class="form-select form-select-sm" [(ngModel)]="entidade">
-            <option value="">Todas</option><option>BENEFICIARIO</option><option>PLANO</option><option>OPERADORA</option><option>GUIA</option><option>LOTE</option>
-          </select></div>
-        <div class="col-auto"><label class="form-label">De (ISO)</label><input class="form-control form-control-sm" [(ngModel)]="de" placeholder="2025-10-01T00:00:00"/></div>
-        <div class="col-auto"><label class="form-label">Até (ISO)</label><input class="form-control form-control-sm" [(ngModel)]="ate" placeholder="2025-10-31T23:59:59"/></div>
-        <div class="col-auto"><button (click)="refresh()" class="btn btn-outline-secondary btn-sm">Aplicar</button></div>
-      </div>
-      <div class="mt-2">
-        <button class="btn btn-sm btn-outline-primary" (click)="exportarCSV()">Exportar CSV (filtros)</button>
-      </div>
-      <div class="mt-2 ag-theme-quartz" style="height: 500px;">
-        <ag-grid-angular [columnDefs]="columnDefs" [gridOptions]="gridOptions" (gridReady)="onGridReady($event)"></ag-grid-angular>
-      </div>
-    </div>
-  `
+  templateUrl: './resultados-grid.component.html',
+  styleUrls: ['./resultados-grid.component.css']
 })
 export class ResultadosGridComponent {
   execucaoId: number | null = null;
@@ -44,12 +21,12 @@ export class ResultadosGridComponent {
   ate = '';
   columnDefs: ColDef[] = [
     { headerName: 'Regra', field: 'regraCodigo', width: 140 },
-    { headerName: 'Título', field: 'titulo', flex: 1 },
+    { headerName: 'T��tulo', field: 'titulo', flex: 1 },
     { headerName: 'Severidade', field: 'severidade', width: 120 },
     { headerName: 'Entidade', field: 'entidade', width: 140 },
     { headerName: 'ID', field: 'entidadeId', width: 220 },
     { headerName: 'Mensagem', field: 'mensagem', flex: 2 },
-    { headerName: 'Ações', width: 180, cellRenderer: (p: any) => this.actionButtons(p.data), onCellClicked: (p: any) => this.onAction(p) },
+    { headerName: 'A����es', width: 180, cellRenderer: (p: any) => this.actionButtons(p.data), onCellClicked: (p: any) => this.onAction(p) },
     { headerName: 'Criado em', field: 'criadoEm', width: 200 }
   ];
   gridOptions: GridOptions = { rowModelType: 'infinite', pagination: true, paginationPageSize: 20, cacheBlockSize: 20 };
@@ -117,3 +94,4 @@ export class ResultadosGridComponent {
     });
   }
 }
+

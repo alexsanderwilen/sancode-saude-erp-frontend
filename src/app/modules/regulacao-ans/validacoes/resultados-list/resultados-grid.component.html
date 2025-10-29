@@ -1,0 +1,24 @@
+<div class="p-3">
+  <h2>Resultados de Valida��ǜo</h2>
+  <div class="row g-2 align-items-end">
+    <div class="col-auto"><label class="form-label">Execu��ǜo</label><input class="form-control form-control-sm" [(ngModel)]="execucaoId" /></div>
+    <div class="col-auto"><label class="form-label">Severidade</label>
+      <select class="form-select form-select-sm" [(ngModel)]="severidade">
+        <option value="">Todas</option><option>INFO</option><option>WARN</option><option>ERROR</option><option>BLOCK</option>
+      </select></div>
+    <div class="col-auto"><label class="form-label">Entidade</label>
+      <select class="form-select form-select-sm" [(ngModel)]="entidade">
+        <option value="">Todas</option><option>BENEFICIARIO</option><option>PLANO</option><option>OPERADORA</option><option>GUIA</option><option>LOTE</option>
+      </select></div>
+    <div class="col-auto"><label class="form-label">De (ISO)</label><input class="form-control form-control-sm" [(ngModel)]="de" placeholder="2025-10-01T00:00:00"/></div>
+    <div class="col-auto"><label class="form-label">AtǸ (ISO)</label><input class="form-control form-control-sm" [(ngModel)]="ate" placeholder="2025-10-31T23:59:59"/></div>
+    <div class="col-auto"><button (click)="refresh()" class="btn btn-outline-secondary btn-sm">Aplicar</button></div>
+  </div>
+  <div class="mt-2">
+    <button class="btn btn-sm btn-outline-primary" (click)="exportarCSV()">Exportar CSV (filtros)</button>
+  </div>
+  <div class="mt-2 ag-theme-quartz" style="height: 500px;">
+    <ag-grid-angular [columnDefs]="columnDefs" [gridOptions]="gridOptions" (gridReady)="onGridReady($event)"></ag-grid-angular>
+  </div>
+</div>
+

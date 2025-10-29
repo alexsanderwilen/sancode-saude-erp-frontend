@@ -1,0 +1,10 @@
+<h3>Regula��ǜo e Compliance ANS</h3>
+<div class="row g-3">
+  <div class="col-md-3" *ngFor="let link of links">
+    <mat-card class="p-3">
+      <div class="mb-2"><strong>{{ link.title }}</strong></div>
+      <button mat-stroked-button color="primary" [routerLink]="link.path">Abrir</button>
+    </mat-card>
+  </div>
+</div>
+
