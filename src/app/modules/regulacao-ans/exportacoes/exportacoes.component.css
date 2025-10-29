@@ -1,1 +1,33 @@
+:host { display: block; }
+.page-header h1 { font-size: 1.6rem; margin: 0; }
+.page-subtitle { color: #6c757d; }
+.btn-icon { display: inline-flex; align-items: center; gap: .5rem; }
+.filter-grid .form-label { font-weight: 500; }
+.shadow-soft { box-shadow: 0 6px 20px rgba(0,0,0,.06); }
+.sticky-actions { position: sticky; top: .75rem; z-index: 10; }
 
+/* Visual polish to approach the provided reference */
+:root {
+  --primary-erp: #0b6fa4;
+  --muted: #6c757d;
+}
+
+.ans-sib-page h1 .fw-semibold { font-weight: 600; }
+.kpi-card .display-6 { font-size: 1.8rem; }
+.table thead th { white-space: nowrap; }
+.status-dot { width: .6rem; height: .6rem; border-radius: 50%; display: inline-block; margin-right: .4rem; }
+.status-ok { background: #22c55e; }
+.status-warn { background: #f59e0b; }
+.status-err { background: #ef4444; }
+.badge-soft { background: rgba(11, 111, 164, .1); color: var(--primary-erp); }
+.card-header-tabs .nav-link { color: inherit; }
+.card-header-tabs .nav-link.active { font-weight: 600; }
+
+/* Buttons */
+.btn-success { background-color: #198754; border-color: #198754; }
+.btn-outline-primary { border-color: var(--primary-erp); color: var(--primary-erp); }
+.btn-outline-primary:hover { background: rgba(11,111,164,.08); }
+.btn-outline-secondary:hover { background: rgba(0,0,0,.04); }
+
+/* Spacing adjustments */
+.ans-sib-page .card + .card { margin-top: 1rem; }

@@ -2,3 +2,16 @@
 .active-link { background-color: rgba(0, 0, 0, 0.15); border-radius: 4px; }
 mat-toolbar a { margin-right: 8px; }
 
+/* Enable vertical scrolling inside module layout */
+.sancode-ans-theme {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0; /* allow child to compute height for scrolling */
+}
+
+.sancode-ans-theme > .container-fluid {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto; /* vertical scroll within module area */
+}

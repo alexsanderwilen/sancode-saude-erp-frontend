@@ -16,4 +16,11 @@ export class ExportsService {
   download(idExport: number): Observable<HttpResponse<Blob>> {
     return this.http.get(`${this.base}/${idExport}/download`, { responseType: 'blob', observe: 'response' });
   }
+
+  list(page: number, size: number): Observable<any> {
+    const params = { page, size } as any;
+    return this.http.get(`${this.base}`, { params });
+  }
+
+  get(id: number): Observable<any> { return this.http.get(`${this.base}/${id}`); }
 }

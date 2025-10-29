@@ -1,33 +1,197 @@
-<div class="p-3">
-  <h2>Exportações ANS</h2>
-  <div class="btn-group">
-    <button class="btn btn-primary btn-sm" (click)="gerar('RELATORIO_INCONSISTENCIAS')">Relatório Inconsistências (CSV)</button>
-    <button class="btn btn-outline-primary btn-sm" (click)="gerar('RELATORIO_INCONSISTENCIAS_ZIP')">Relatório (ZIP)</button>
+<div class="ans-sib-page">
+  <!-- Header + actions -->
+  <div class="page-header d-flex justify-content-between flex-column flex-lg-row align-items-start align-items-lg-center mb-3">
+    <div>
+      <h1 class="mt-0">Exportações ANS · <span class="fw-semibold">SIB</span></h1>
+      <div class="page-subtitle">Gerar arquivo do SIB, aplicar filtros e baixar relatórios.</div>
+    </div>
+    <div class="sticky-actions mt-3 mt-lg-0">
+      <div class="btn-group">
+        <button class="btn btn-success btn-icon" (click)="gerarSib()"><i class="bi bi-play-circle"></i> Gerar SIB (mov)</button>
+        <button class="btn btn-outline-primary btn-icon" (click)="gerar('RELATORIO_INCONSISTENCIAS')"><i class="bi bi-filetype-csv"></i> Inconsistências (CSV)</button>
+        <button class="btn btn-outline-secondary btn-icon" (click)="gerar('RELATORIO_INCONSISTENCIAS_ZIP')"><i class="bi bi-archive"></i> Relatório (ZIP)</button>
+      </div>
+    </div>
   </div>
 
-  <div class="row g-2 mt-3">
-    <div class="col-auto">
-      <label class="form-label">Competência (YYYY-MM)</label>
-      <input class="form-control form-control-sm" [(ngModel)]="competencia" placeholder="2025-10" />
+  <!-- KPIs -->
+  <div class="row g-3 mb-3">
+    <div class="col-6 col-lg-3">
+      <div class="card kpi-card shadow-soft">
+        <div class="card-body">
+          <div class="text-uppercase small text-muted">Competência</div>
+          <div class="display-6 fw-semibold">{{ competencia || '—' }}</div>
+          <div class="small text-muted">Insira a competência no filtro</div>
+        </div>
+      </div>
     </div>
-    <div class="col-auto d-flex align-items-end">
-      <button class="btn btn-success btn-sm" (click)="gerarSib()">Gerar SIB (mov)</button>
+    <div class="col-6 col-lg-3">
+      <div class="card kpi-card shadow-soft">
+        <div class="card-body">
+          <div class="text-uppercase small text-muted">Último ID gerado</div>
+          <div class="display-6 fw-semibold">{{ ultimoId || '—' }}</div>
+          <div class="d-flex gap-2 mt-2" *ngIf="ultimoId">
+            <button class="btn btn-sm btn-outline-primary" (click)="baixar()"><i class="bi bi-download"></i> Baixar</button>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 
-  <div class="row g-2 mt-3">
-    <div class="col-auto"><label class="form-label">Execução</label><input class="form-control form-control-sm" [(ngModel)]="execucaoId" /></div>
-    <div class="col-auto"><label class="form-label">Severidade</label>
-      <select class="form-select form-select-sm" [(ngModel)]="severidade">
-        <option value="">Todas</option><option>INFO</option><option>WARN</option><option>ERROR</option><option>BLOCK</option>
-      </select></div>
-    <div class="col-auto"><label class="form-label">Entidade</label>
-      <select class="form-select form-select-sm" [(ngModel)]="entidade">
-        <option value="">Todas</option><option>BENEFICIARIO</option><option>PLANO</option><option>OPERADORA</option><option>GUIA</option><option>LOTE</option>
-      </select></div>
-    <div class="col-auto"><label class="form-label">De (ISO)</label><input class="form-control form-control-sm" [(ngModel)]="de" placeholder="2025-10-01T00:00:00"/></div>
-    <div class="col-auto"><label class="form-label">Até (ISO)</label><input class="form-control form-control-sm" [(ngModel)]="ate" placeholder="2025-10-31T23:59:59"/></div>
+  <!-- Filtros -->
+  <div class="card shadow-soft mb-3">
+    <div class="card-body">
+      <div class="row g-3 filter-grid">
+        <div class="col-12 col-md-3">
+          <label class="form-label">Competência (YYYY-MM)</label>
+          <input type="text" class="form-control" [(ngModel)]="competencia" placeholder="2025-10">
+        </div>
+
+        <div class="col-6 col-md-3">
+          <label class="form-label">Execução (ID)</label>
+          <input type="number" class="form-control" [(ngModel)]="execucaoId" placeholder="ex.: 1032">
+        </div>
+
+        <div class="col-6 col-md-2">
+          <label class="form-label">Severidade</label>
+          <select class="form-select" [(ngModel)]="severidade">
+            <option value="">Todas</option>
+            <option>INFO</option>
+            <option>WARN</option>
+            <option>ERROR</option>
+            <option>BLOCK</option>
+          </select>
+        </div>
+
+        <div class="col-6 col-md-2">
+          <label class="form-label">Entidade</label>
+          <select class="form-select" [(ngModel)]="entidade">
+            <option value="">Todas</option>
+            <option>BENEFICIARIO</option>
+            <option>PLANO</option>
+            <option>OPERADORA</option>
+            <option>GUIA</option>
+            <option>LOTE</option>
+          </select>
+        </div>
+
+        <div class="col-12 col-md-3">
+          <label class="form-label">De (ISO)</label>
+          <input type="text" class="form-control" [(ngModel)]="de" placeholder="2025-10-01T00:00:00">
+        </div>
+        <div class="col-12 col-md-3">
+          <label class="form-label">Até (ISO)</label>
+          <input type="text" class="form-control" [(ngModel)]="ate" placeholder="2025-10-31T23:59:59">
+        </div>
+
+        <div class="col-12 col-md-6 d-flex align-items-end gap-2">
+          <button class="btn btn-primary btn-icon" (click)="gerar('RELATORIO_INCONSISTENCIAS')"><i class="bi bi-search"></i> Aplicar filtros (CSV)</button>
+          <button class="btn btn-outline-secondary btn-icon" (click)="severidade=''; entidade=''; execucaoId=null; de=''; ate=''"><i class="bi bi-eraser"></i> Limpar</button>
+        </div>
+      </div>
+    </div>
   </div>
-  <div *ngIf="ultimoId">Último ID: {{ultimoId}} <button class="btn btn-link btn-sm" (click)="baixar()">baixar</button></div>
+
+  <!-- Tabelas estilizadas (espelhando o mock) -->
+  <div class="card shadow-soft">
+    <div class="card-header bg-white">
+      <ul class="nav nav-tabs card-header-tabs" role="tablist">
+        <li class="nav-item"><button class="nav-link" [class.active]="tab==='execucoes'" (click)="setTab('execucoes')" type="button"><i class="bi bi-clock-history me-1"></i> Execuções recentes</button></li>
+        <li class="nav-item"><button class="nav-link" [class.active]="tab==='arquivos'" (click)="setTab('arquivos')" type="button"><i class="bi bi-folder2-open me-1"></i> Arquivos gerados</button></li>
+        <li class="nav-item"><button class="nav-link" [class.active]="tab==='rejeicoes'" (click)="setTab('rejeicoes')" type="button"><i class="bi bi-exclamation-triangle me-1"></i> Top rejeições</button></li>
+      </ul>
+    </div>
+    <div class="card-body">
+      <div class="tab-content">
+        <div class="tab-pane" [class.show]="tab==='execucoes'" [class.active]="tab==='execucoes'" id="tabExec">
+          <div class="table-responsive">
+            <table class="table align-middle">
+              <thead>
+                <tr>
+                  <th>Status</th>
+                  <th>ID Execução</th>
+                  <th>Competência</th>
+                  <th>Início</th>
+                  <th>Fim</th>
+                  <th>Total</th>
+                  <th>OK</th>
+                  <th>Com Erro</th>
+                  <th class="text-end">Ações</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let e of execucoes">
+                  <td>
+                    <span class="status-dot" [ngClass]="{
+                      'status-ok': e.status==='CONCLUIDO',
+                      'status-err': e.status==='ERRO',
+                      'status-warn': e.status!=='CONCLUIDO' && e.status!=='ERRO'
+                    }"></span>{{ e.status || '—' }}
+                  </td>
+                  <td>#{{ e.id }}</td>
+                  <td>
+                    <span class="badge rounded-pill badge-soft">{{ compDe(e) }}</span>
+                  </td>
+                  <td>—</td>
+                  <td>—</td>
+                  <td>—</td>
+                  <td>—</td>
+                  <td>—</td>
+                  <td class="text-end">
+                    <div class="btn-group">
+                      <button class="btn btn-sm btn-outline-secondary" (click)="detalhes(e)"><i class="bi bi-eye"></i> Detalhes</button>
+                      <button class="btn btn-sm btn-outline-primary" [disabled]="!e.id" (click)="baixarId(e.id)"><i class="bi bi-download"></i> SIB.txt</button>
+                      <button class="btn btn-sm btn-outline-success" (click)="gerar('RELATORIO_INCONSISTENCIAS')"><i class="bi bi-filetype-csv"></i> Inconsistências</button>
+                    </div>
+                  </td>
+                </tr>
+                <tr *ngIf="!execucoes.length && !loadingExec"><td colspan="9" class="text-center text-muted">Sem execuções no momento</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="mt-2" *ngIf="expandedId">
+            <div class="small text-muted">Detalhes (ID {{expandedId}})</div>
+            <pre class="small bg-light p-2 border rounded">{{ paramsOf(execById(expandedId)) }}</pre>
+          </div>
+        </div>
+        <div class="tab-pane" [class.show]="tab==='arquivos'" [class.active]="tab==='arquivos'" id="tabArq">
+          <div class="table-responsive">
+            <table class="table align-middle">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Tipo</th>
+                  <th>Arquivo</th>
+                  <th>Status</th>
+                  <th class="text-end">Ações</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let e of execucoes">
+                  <td>#{{e.id}}</td>
+                  <td>{{e.tipo}}</td>
+                  <td><span class="text-muted">{{e.arquivoStorage?.split('/').pop() || '—'}}</span></td>
+                  <td>{{e.status}}</td>
+                  <td class="text-end">
+                    <button class="btn btn-sm btn-outline-primary" [disabled]="!e.id" (click)="baixarId(e.id)"><i class="bi bi-download"></i> Baixar</button>
+                  </td>
+                </tr>
+                <tr *ngIf="!execucoes.length && !loadingExec"><td colspan="5" class="text-center text-muted">Nada gerado ainda</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="tab-pane" [class.show]="tab==='rejeicoes'" [class.active]="tab==='rejeicoes'" id="tabErros">
+          <div *ngIf="loadingRej" class="text-muted small">Carregando...</div>
+          <div *ngIf="!loadingRej && !topRejeicoes.length" class="text-muted small">Sem dados com os filtros atuais</div>
+          <ul class="list-group" *ngIf="topRejeicoes.length">
+            <li class="list-group-item d-flex justify-content-between align-items-center" *ngFor="let r of topRejeicoes">
+              <span>{{r.chave}}</span>
+              <span class="badge text-bg-secondary rounded-pill">{{r.count}}</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
-
