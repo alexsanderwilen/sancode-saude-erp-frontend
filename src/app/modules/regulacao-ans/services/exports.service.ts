@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 
@@ -13,7 +13,7 @@ export class ExportsService {
     return this.http.post<{ idExport: number }>(`${this.base}/${tipo}`, body);
   }
 
-  download(idExport: number): Observable<Blob> {
-    return this.http.get(`${this.base}/${idExport}/download`, { responseType: 'blob' });
+  download(idExport: number): Observable<HttpResponse<Blob>> {
+    return this.http.get(`${this.base}/${idExport}/download`, { responseType: 'blob', observe: 'response' });
   }
 }

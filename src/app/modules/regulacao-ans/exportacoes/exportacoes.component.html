@@ -4,6 +4,17 @@
     <button class="btn btn-primary btn-sm" (click)="gerar('RELATORIO_INCONSISTENCIAS')">Relatório Inconsistências (CSV)</button>
     <button class="btn btn-outline-primary btn-sm" (click)="gerar('RELATORIO_INCONSISTENCIAS_ZIP')">Relatório (ZIP)</button>
   </div>
+
+  <div class="row g-2 mt-3">
+    <div class="col-auto">
+      <label class="form-label">Competência (YYYY-MM)</label>
+      <input class="form-control form-control-sm" [(ngModel)]="competencia" placeholder="2025-10" />
+    </div>
+    <div class="col-auto d-flex align-items-end">
+      <button class="btn btn-success btn-sm" (click)="gerarSib()">Gerar SIB (mov)</button>
+    </div>
+  </div>
+
   <div class="row g-2 mt-3">
     <div class="col-auto"><label class="form-label">Execução</label><input class="form-control form-control-sm" [(ngModel)]="execucaoId" /></div>
     <div class="col-auto"><label class="form-label">Severidade</label>

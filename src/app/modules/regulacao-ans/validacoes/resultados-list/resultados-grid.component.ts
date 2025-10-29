@@ -83,15 +83,19 @@ export class ResultadosGridComponent {
     this.exports.create('RELATORIO_INCONSISTENCIAS', params).subscribe((r: any) => {
       const id = r?.idExport ?? r?.id;
       if (!id) return;
-      this.exports.download(id).subscribe(blob => {
+      this.exports.download(id).subscribe(resp => {
+        const blob = resp.body as Blob;
+        const cd = resp.headers.get('content-disposition') || '';
+        const match = /filename\*=UTF-8''([^;]+)|filename="?([^";]+)"?/i.exec(cd || '');
+        let filename = 'inconsistencias.csv';
+        if (match) filename = decodeURIComponent(match[1] || match[2]);
         const url = window.URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
-        a.download = 'inconsistencias.csv';
+        a.download = filename;
         a.click();
         window.URL.revokeObjectURL(url);
       });
     });
   }
 }
-
