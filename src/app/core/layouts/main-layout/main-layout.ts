@@ -43,7 +43,7 @@ export class MainLayoutComponent {
     ).subscribe((event: NavigationEnd) => {
       const url = event.urlAfterRedirects;
       this.isChatRoute = url.startsWith('/chat');
-      this.isModuleRoute = url.startsWith('/cadastros') || url.startsWith('/usuarios') || url.startsWith('/chat');
+      this.isModuleRoute = url.startsWith('/cadastros') || url.startsWith('/usuarios') || url.startsWith('/chat') || url.startsWith('/ans');
     });
 
     // conectar notificações e assinar contagem

@@ -26,6 +26,10 @@ export const routes: Routes = [
         path: 'chat',
         loadChildren: () => import('./modules/chat/chat.routes').then(m => m.CHAT_ROUTES)
       },
+      {
+        path: 'ans',
+        loadChildren: () => import('./modules/regulacao-ans/regulacao-ans.routes').then(m => m.REGULACAO_ANS_ROUTES)
+      },
       { path: '', redirectTo: 'home', pathMatch: 'full' }
     ]
   },

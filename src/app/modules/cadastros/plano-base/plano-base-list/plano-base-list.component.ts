@@ -18,6 +18,7 @@ import { AgGridLocaleService } from '../../../../shared/services/ag-grid-locale.
 import { PlanoBaseService } from '../plano-base.service';
 import { OperadoraService } from '../../operadora.service';
 import { PlanoBaseFormComponent } from '../plano-base-form/plano-base-form.component';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-plano-base-list',
@@ -64,7 +65,8 @@ export class PlanoBaseListComponent {
     private fb: FormBuilder,
     private operadoraService: OperadoraService,
     private agGridLocaleService: AgGridLocaleService,
-    private planoBaseService: PlanoBaseService
+    private planoBaseService: PlanoBaseService,
+    private route: ActivatedRoute
   ) {
     this.datasource = this.createDatasource();
     this.gridOptions = {
@@ -78,6 +80,17 @@ export class PlanoBaseListComponent {
   }
 
   onGridReady(params: GridReadyEvent): void { this.gridApi = params.api; }
+  ngOnInit(): void {
+    this.route.queryParamMap.subscribe(q => {
+      const editId = q.get('editId');
+      if (editId) {
+        this.planoBaseService.getPlanosBasePaged(0, 1, 'id', 'asc').subscribe(() => {
+          // fetch single by API if exists (reusing service update/get not available); use generic GET
+          this.http.get<any>(`${this.apiUrl}/${editId}`).subscribe(row => this.openDialog(row));
+        });
+      }
+    });
+  }
   createDatasource(): IDatasource {
     return {
       getRows: (params: IGetRowsParams) => {

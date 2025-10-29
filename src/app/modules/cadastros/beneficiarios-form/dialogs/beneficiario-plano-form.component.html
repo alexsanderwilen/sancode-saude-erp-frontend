@@ -8,7 +8,7 @@
     <div class="col-md-6">
       <mat-form-field class="w-100">
         <mat-label>Plano</mat-label>
-        <mat-select formControlName="idPlano" (openedChange)="opened && refreshPlanos()">
+        <mat-select formControlName="idPlano" (openedChange)="$event && refreshPlanos()">
           <mat-option *ngFor="let p of data.planos" [value]="p.id">{{ p.nomeComercial }}</mat-option>
         </mat-select>
       </mat-form-field>
@@ -31,7 +31,7 @@
     <div class="col-md-4">
       <mat-form-field class="w-100">
         <mat-label>Situação</mat-label>
-        <mat-select formControlName="idSituacao" (openedChange)="opened && refreshSituacoes()">
+        <mat-select formControlName="idSituacao" (openedChange)="$event && refreshSituacoes()">
           <mat-option *ngFor="let s of data.situacoes" [value]="s.idSituacao">{{ s.descricao }}</mat-option>
         </mat-select>
       </mat-form-field>
@@ -39,7 +39,7 @@
     <div class="col-md-4">
       <mat-form-field class="w-100">
         <mat-label>Parentesco</mat-label>
-        <mat-select formControlName="idParentesco" (openedChange)="opened && refreshParentescos()">
+        <mat-select formControlName="idParentesco" (openedChange)="$event && refreshParentescos()">
           <mat-option *ngFor="let p of data.parentescos" [value]="p.idParentesco">{{ p.descricao }}</mat-option>
         </mat-select>
       </mat-form-field>

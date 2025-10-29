@@ -1,0 +1,52 @@
+import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { TissService } from '../../services/tiss.service';
+import { FormsModule } from '@angular/forms';
+
+@Component({
+  selector: 'app-ans-tiss',
+  standalone: true,
+  imports: [CommonModule, FormsModule],
+  template: `
+    <div class="p-3">
+      <h2>TISS</h2>
+      <div class="mb-2">
+        <label>Perfil de schemas</label>
+        <select class="form-select form-select-sm w-auto" [(ngModel)]="profile">
+          <option value="default">Default (base)</option>
+          <option value="arquivos_schemas_ans_tiss">arquivos_schemas_ans_tiss</option>
+          <option value="3.06.01">3.06.01</option>
+          <option value="3.05.00">3.05.00</option>
+        </select>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Upload XML</label>
+        <input type="file" (change)="onFile($event)" class="form-control form-control-sm" accept=".xml" />
+      </div>
+      <div class="mb-3">
+        <label>XML (validar inline)</label>
+        <textarea class="form-control" rows="6" [(ngModel)]="xml"></textarea>
+        <button class="btn btn-outline-primary btn-sm mt-2" (click)="validate()">Validar</button>
+      </div>
+      <div *ngIf="resp">
+        <div class="alert" [ngClass]="resp.ok ? 'alert-success' : 'alert-danger'">
+          {{ resp.ok ? 'XML válido segundo TISS' : 'Erros encontrados' }} (perfil: {{resp.versionOrProfile}})
+        </div>
+        <ul *ngIf="resp.errors?.length">
+          <li *ngFor="let e of resp.errors">{{e}}</li>
+        </ul>
+      </div>
+    </div>
+  `
+})
+export class TissPageComponent {
+  xml = '';
+  resp: any;
+  profile: string = 'arquivos_schemas_ans_tiss';
+  constructor(private svc: TissService) {}
+  validate() { this.svc.validate(this.xml, this.profile).subscribe(r => this.resp = r); }
+  onFile(evt: any) {
+    const f = evt.target?.files?.[0]; if (!f) return;
+    this.svc.upload(f, this.profile).subscribe(r => this.resp = r);
+  }
+}
