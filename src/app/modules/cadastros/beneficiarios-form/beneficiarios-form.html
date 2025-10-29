@@ -58,7 +58,7 @@
               <div class="col-md-6">
                 <mat-form-field class="w-100">
                   <mat-label>Sexo</mat-label>
-                  <mat-select formControlName="idSexo">
+                  <mat-select formControlName="idSexo" (openedChange)="onSexoOpened($event)">
                     <mat-option *ngFor="let s of sexos" [value]="s.idSexo">{{ s.descricao }}</mat-option>
                   </mat-select>
                 </mat-form-field>
@@ -66,7 +66,7 @@
               <div class="col-md-6">
                 <mat-form-field class="w-100">
                   <mat-label>Estado Civil</mat-label>
-                  <mat-select formControlName="idEstadoCivil">
+                  <mat-select formControlName="idEstadoCivil" (openedChange)="onEstadoCivilOpened($event)">
                     <mat-option *ngFor="let e of estadosCivis" [value]="e.idEstadoCivil">{{ e.descricao }}</mat-option>
                   </mat-select>
                 </mat-form-field>

@@ -30,6 +30,7 @@ import { AgGridLocaleService } from '../../../shared/services/ag-grid-locale.ser
 import { SexoEstadoService } from '../sexo-estado.service';
 import { PlanoService } from '../plano/plano.service';
 import { BeneficiarioPlanoService } from '../beneficiario-plano.service';
+import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-beneficiarios-form',
@@ -218,6 +219,26 @@ export class BeneficiariosFormComponent implements OnInit {
     this.beneficiarioPlanoService.listByBeneficiario(this.beneficiarioId).subscribe(v => this.beneficiarioPlanos = v);
   }
 
+  onSexoOpened(opened: boolean): void {
+    if (opened) {
+      this.refreshSexos();
+    }
+  }
+
+  onEstadoCivilOpened(opened: boolean): void {
+    if (opened) {
+      this.refreshEstadosCivis();
+    }
+  }
+
+  refreshSexos(): void {
+    this.sexoEstadoService.getSexos().subscribe(data => this.sexos = data.filter(s => s.ativo));
+  }
+
+  refreshEstadosCivis(): void {
+    this.sexoEstadoService.getEstadosCivis().subscribe(data => this.estadosCivis = data.filter(e => e.ativo));
+  }
+
   planoNome(id?: number): string {
     if (id == null) return '';
     return this.planosMap.get(id) || '';
@@ -330,14 +351,40 @@ export class BeneficiariosFormComponent implements OnInit {
           dialogData.dominioTipos = this.dominioTiposEmail;
           dialogRef = this.dialog.open(OperadoraEmailFormComponent, { data: dialogData, width: '500px', panelClass: 'sancode-cadastro-theme', disableClose: true });
         } else if (type === 'planos') {
-          const dialogPayload = {
-            ...data,
-            planos: this.planos,
-            parentescos: this.parentescos,
-            situacoes: this.situacoes,
-            title: data?.id ? 'Editar Plano do Beneficiário' : 'Adicionar Plano ao Beneficiário'
-          };
-          dialogRef = this.dialog.open(BeneficiarioPlanoFormComponent, { data: dialogPayload, panelClass: 'sancode-cadastro-theme', disableClose: true });
+          // Recarrega listas auxiliares antes de abrir
+          forkJoin({
+            planos: this.planoServiceFE.getPlanos(),
+            parentescos: this.sexoEstadoService.getParentescos(),
+            situacoes: this.sexoEstadoService.getSituacoes()
+          }).subscribe(({ planos, parentescos, situacoes }) => {
+            this.planos = planos;
+            this.planosMap = new Map(this.planos.map((p: any) => [p.id, p.nomeComercial]));
+            this.parentescos = parentescos.filter(p => p.ativo);
+            this.parentescosMap = new Map(this.parentescos.map(p => [p.idParentesco, p.descricao]));
+            this.situacoes = situacoes.filter(s => s.ativo);
+            this.situacoesMap = new Map(this.situacoes.map(s => [s.idSituacao, s.descricao]));
+
+            const dialogPayload = {
+              ...data,
+              planos: this.planos,
+              parentescos: this.parentescos,
+              situacoes: this.situacoes,
+              title: data?.id ? 'Editar Plano do Beneficiário' : 'Adicionar Plano ao Beneficiário'
+            };
+            this.dialog.open(BeneficiarioPlanoFormComponent, { data: dialogPayload, panelClass: 'sancode-cadastro-theme', disableClose: true })
+              .afterClosed().subscribe(result => {
+                if (result) {
+                  const payload = result as BeneficiarioPlano;
+                  payload.idBeneficiario = this.beneficiarioId!;
+                  if (result.id) {
+                    this.beneficiarioPlanoService.update(result.id, payload).subscribe(() => this.loadPlanos());
+                  } else {
+                    this.beneficiarioPlanoService.create(this.beneficiarioId!, payload).subscribe(() => this.loadPlanos());
+                  }
+                }
+              });
+          });
+          return; // evita executar o afterClosed comum abaixo
         }
 
         dialogRef?.afterClosed().subscribe(result => {

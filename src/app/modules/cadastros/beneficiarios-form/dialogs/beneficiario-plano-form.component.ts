@@ -3,6 +3,8 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { BaseModalFormComponent } from '../../../../shared/components/base-modal-form/base-modal-form.component';
+import { PlanoService } from '../../plano/plano.service';
+import { SexoEstadoService } from '../../sexo-estado.service';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
@@ -42,7 +44,9 @@ export class BeneficiarioPlanoFormComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private dialogRef: MatDialogRef<BeneficiarioPlanoFormComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: any
+    @Inject(MAT_DIALOG_DATA) public data: any,
+    private planoService: PlanoService,
+    private sexoEstadoService: SexoEstadoService
   ) {}
 
   ngOnInit(): void {
@@ -81,5 +85,16 @@ export class BeneficiarioPlanoFormComponent implements OnInit {
 
   cancel(): void {
     this.dialogRef.close();
+  }
+
+  // Refresh lists while interacting
+  refreshPlanos(): void {
+    this.planoService.getPlanos().subscribe(list => this.data.planos = list);
+  }
+  refreshParentescos(): void {
+    this.sexoEstadoService.getParentescos().subscribe(list => this.data.parentescos = list.filter((p: any) => p.ativo));
+  }
+  refreshSituacoes(): void {
+    this.sexoEstadoService.getSituacoes().subscribe(list => this.data.situacoes = list.filter((s: any) => s.ativo));
   }
 }

@@ -11,6 +11,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatSelectModule } from '@angular/material/select';
 import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
 import { DominioTipo } from '../../../dominio-tipo/dominio-tipo.model';
+import { DominioTipoService } from '../../../dominio-tipo/dominio-tipo.service';
 
 @Component({
   selector: 'app-operadora-telefone-form',
@@ -37,7 +38,8 @@ export class OperadoraTelefoneFormComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     public dialogRef: MatDialogRef<OperadoraTelefoneFormComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: any
+    @Inject(MAT_DIALOG_DATA) public data: any,
+    private dominioTipoService: DominioTipoService
   ) {}
 
   ngOnInit(): void {
@@ -51,6 +53,12 @@ export class OperadoraTelefoneFormComponent implements OnInit {
       numero: [this.data?.numero || '', Validators.required],
       ramal: [this.data?.ramal || ''],
       whatsapp: [this.data?.whatsapp || false]
+    });
+  }
+
+  refreshTipos(): void {
+    this.dominioTipoService.findAll().subscribe(all => {
+      this.dominioTipos = (all as DominioTipo[]).filter(dt => dt.tipoDoTipo === 'TELEFONE' && dt.status);
     });
   }
 

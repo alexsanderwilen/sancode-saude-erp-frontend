@@ -11,6 +11,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatSelectModule } from '@angular/material/select';
 import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
 import { DominioTipo } from '../../../dominio-tipo/dominio-tipo.model';
+import { DominioTipoService } from '../../../dominio-tipo/dominio-tipo.service';
 
 @Component({
   selector: 'app-operadora-endereco-form',
@@ -37,7 +38,8 @@ export class OperadoraEnderecoFormComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     public dialogRef: MatDialogRef<OperadoraEnderecoFormComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: any
+    @Inject(MAT_DIALOG_DATA) public data: any,
+    private dominioTipoService: DominioTipoService
   ) {}
 
   ngOnInit(): void {
@@ -54,6 +56,12 @@ export class OperadoraEnderecoFormComponent implements OnInit {
       bairro: [this.data?.bairro || '', Validators.required],
       cidade: [this.data?.cidade || '', Validators.required],
       uf: [this.data?.uf || '', Validators.required],
+    });
+  }
+
+  refreshTipos(): void {
+    this.dominioTipoService.findAll().subscribe(all => {
+      this.dominioTipos = (all as DominioTipo[]).filter(dt => dt.tipoDoTipo === 'ENDERECO' && dt.status);
     });
   }
 

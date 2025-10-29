@@ -9,6 +9,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSelectModule } from '@angular/material/select';
 import { DominioTipo } from '../../../dominio-tipo/dominio-tipo.model';
+import { DominioTipoService } from '../../../dominio-tipo/dominio-tipo.service';
 
 @Component({
   selector: 'app-operadora-email-form',
@@ -32,7 +33,8 @@ export class OperadoraEmailFormComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     public dialogRef: MatDialogRef<OperadoraEmailFormComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: any
+    @Inject(MAT_DIALOG_DATA) public data: any,
+    private dominioTipoService: DominioTipoService
   ) {}
 
   ngOnInit(): void {
@@ -54,6 +56,12 @@ export class OperadoraEmailFormComponent implements OnInit {
 
   onCancel(): void {
     this.dialogRef.close();
+  }
+
+  refreshTipos(): void {
+    this.dominioTipoService.findAll().subscribe(all => {
+      this.dominioTipos = (all as DominioTipo[]).filter(dt => dt.tipoDoTipo === 'EMAIL' && dt.status);
+    });
   }
 }
 
