@@ -69,6 +69,25 @@ $sancode-health-usuario-theme: mat.m2-define-light-theme((
   @include mat.all-component-themes($sancode-health-usuario-theme);
 }
 
+/* Tema específico para Regulação ANS */
+$sancode-health-ans-primary: mat.m2-define-palette(mat.$m2-light-green-palette, 900);
+$sancode-health-ans-accent: mat.m2-define-palette(mat.$m2-teal-palette, 500);
+$sancode-health-ans-warn: mat.m2-define-palette(mat.$m2-red-palette, 500);
+
+$sancode-health-ans-theme: mat.m2-define-light-theme((
+  color: (
+    primary: $sancode-health-ans-primary,
+    accent: $sancode-health-ans-accent,
+    warn: $sancode-health-ans-warn,
+  ),
+  typography: mat.m2-define-typography-config(),
+  density: 0,
+));
+
+.sancode-ans-theme {
+  @include mat.all-component-themes($sancode-health-ans-theme);
+}
+
 html, body {
   height: 100%;
   margin: 0; // Adicionado para remover margens padrão
