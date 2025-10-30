@@ -92,7 +92,7 @@
     </div>
   </div>
 
-  <!-- Tabelas estilizadas (espelhando o mock) -->
+  <!-- Conteúdo -->
   <div class="card shadow-soft">
     <div class="card-header bg-white">
       <ul class="nav nav-tabs card-header-tabs" role="tablist">
@@ -104,50 +104,16 @@
     <div class="card-body">
       <div class="tab-content">
         <div class="tab-pane" [class.show]="tab==='execucoes'" [class.active]="tab==='execucoes'" id="tabExec">
-          <div class="table-responsive">
-            <table class="table align-middle">
-              <thead>
-                <tr>
-                  <th>Status</th>
-                  <th>ID Execução</th>
-                  <th>Competência</th>
-                  <th>Início</th>
-                  <th>Fim</th>
-                  <th>Total</th>
-                  <th>OK</th>
-                  <th>Com Erro</th>
-                  <th class="text-end">Ações</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr *ngFor="let e of execucoes">
-                  <td>
-                    <span class="status-dot" [ngClass]="{
-                      'status-ok': e.status==='CONCLUIDO',
-                      'status-err': e.status==='ERRO',
-                      'status-warn': e.status!=='CONCLUIDO' && e.status!=='ERRO'
-                    }"></span>{{ e.status || '—' }}
-                  </td>
-                  <td>#{{ e.id }}</td>
-                  <td>
-                    <span class="badge rounded-pill badge-soft">{{ compDe(e) }}</span>
-                  </td>
-                  <td>—</td>
-                  <td>—</td>
-                  <td>—</td>
-                  <td>—</td>
-                  <td>—</td>
-                  <td class="text-end">
-                    <div class="btn-group">
-                      <button class="btn btn-sm btn-outline-secondary" (click)="detalhes(e)"><i class="bi bi-eye"></i> Detalhes</button>
-                      <button class="btn btn-sm btn-outline-primary" [disabled]="!e.id" (click)="baixarId(e.id)"><i class="bi bi-download"></i> SIB.txt</button>
-                      <button class="btn btn-sm btn-outline-success" (click)="gerar('RELATORIO_INCONSISTENCIAS')"><i class="bi bi-filetype-csv"></i> Inconsistências</button>
-                    </div>
-                  </td>
-                </tr>
-                <tr *ngIf="!execucoes.length && !loadingExec"><td colspan="9" class="text-center text-muted">Sem execuções no momento</td></tr>
-              </tbody>
-            </table>
+          <div class="ag-grid-container ag-theme-quartz">
+            <ag-grid-angular
+              class="w-100 h-100"
+              [rowData]="execucoes"
+              [columnDefs]="columnDefs"
+              [defaultColDef]="defaultColDef"
+              [pagination]="true"
+              [paginationPageSize]="sizeExec"
+              (cellClicked)="onGridCellClicked($event)"
+            ></ag-grid-angular>
           </div>
           <div class="mt-2" *ngIf="expandedId">
             <div class="small text-muted">Detalhes (ID {{expandedId}})</div>

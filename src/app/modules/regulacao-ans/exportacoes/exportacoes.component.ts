@@ -4,11 +4,13 @@ import { SibService } from '../services/sib.service';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { ValidationsService } from '../services/validations.service';
+import { AgGridAngular } from 'ag-grid-angular';
+import { ColDef } from 'ag-grid-community';
 
 @Component({
   selector: 'app-ans-exportacoes',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, AgGridAngular],
   templateUrl: './exportacoes.component.html',
   styleUrls: ['./exportacoes.component.css']
 })
@@ -20,6 +22,35 @@ export class ExportacoesComponent implements OnInit {
   tab: 'execucoes'|'arquivos'|'rejeicoes' = 'execucoes';
   execucoes: any[] = []; totalExecucoes = 0; pageExec = 0; sizeExec = 10; loadingExec = false; expandedId?: number;
   topRejeicoes: { chave: string; count: number }[] = []; loadingRej = false;
+
+  // AgGrid
+  columnDefs: ColDef[] = [
+    {
+      headerName: 'Status', field: 'status', width: 140, sortable: true, resizable: true,
+      cellRenderer: (params: any) => {
+        const st = params?.value || '';
+        const cls = st === 'CONCLUIDO' ? 'status-ok' : (st === 'ERRO' ? 'status-err' : 'status-warn');
+        return `<span class="status-dot ${cls}"></span>${st || '—'}`;
+      }
+    },
+    { headerName: 'ID Execução', field: 'id', width: 130, valueFormatter: (p: any) => p.value != null ? `#${p.value}` : '—', sortable: true, resizable: true },
+    { headerName: 'Competência', field: 'parametros', valueGetter: (p: any) => this.compDe(p.data), sortable: true, resizable: true },
+    { headerName: 'Início', field: 'inicio', valueFormatter: (p: any) => p.value || '—', resizable: true },
+    { headerName: 'Fim', field: 'fim', valueFormatter: (p: any) => p.value || '—', resizable: true },
+    { headerName: 'Total', field: 'total', valueFormatter: (p: any) => p.value ?? '—', width: 110, resizable: true },
+    { headerName: 'OK', field: 'ok', valueFormatter: (p: any) => p.value ?? '—', width: 100, resizable: true },
+    { headerName: 'Com Erro', field: 'erro', valueFormatter: (p: any) => p.value ?? '—', width: 120, resizable: true },
+    {
+      headerName: 'Ações', colId: 'acoes', width: 220, pinned: 'right', cellRenderer: () => {
+        return `
+          <div class="btn-group">
+            <button class="btn btn-sm btn-outline-secondary" data-action="detalhes"><i class="bi bi-eye"></i> Detalhes</button>
+            <button class="btn btn-sm btn-outline-primary" data-action="baixar"><i class="bi bi-download"></i> SIB.txt</button>
+          </div>`;
+      }
+    }
+  ];
+  defaultColDef: ColDef = { flex: 1, minWidth: 100, filter: true };
 
   constructor(private svc: ExportsService, private sib: SibService, private validations: ValidationsService) {}
 
@@ -94,5 +125,14 @@ export class ExportacoesComponent implements OnInit {
     if (!p) return '{}';
     if (typeof p === 'string') return p;
     try { return JSON.stringify(p, null, 2); } catch { return '{}'; }
+  }
+
+  onGridCellClicked(e: any) {
+    const ds = (e?.event?.target as HTMLElement | null)?.dataset;
+    const action = ds ? (ds['action'] as string | undefined) : undefined;
+    if (!action) return;
+    const row = e?.data;
+    if (action === 'detalhes') { this.detalhes(row); }
+    if (action === 'baixar') { this.baixarId(row?.id); }
   }
 }

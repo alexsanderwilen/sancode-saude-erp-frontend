@@ -101,3 +101,7 @@ body {
 /* Smooth and delicate page scrolling */
 html { scroll-behavior: smooth; }
 
+
+// Ag-Grid global styles
+@import 'ag-grid-community/styles/ag-grid.css';
+@import 'ag-grid-community/styles/ag-theme-quartz.css';
