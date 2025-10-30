@@ -107,11 +107,9 @@
           <div class="ag-grid-container ag-theme-quartz">
             <ag-grid-angular
               class="w-100 h-100"
+              [gridOptions]="gridOptions"
               [rowData]="execucoes"
               [columnDefs]="columnDefs"
-              [defaultColDef]="defaultColDef"
-              [pagination]="true"
-              [paginationPageSize]="sizeExec"
               (cellClicked)="onGridCellClicked($event)"
             ></ag-grid-angular>
           </div>

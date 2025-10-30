@@ -5,7 +5,8 @@ import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { ValidationsService } from '../services/validations.service';
 import { AgGridAngular } from 'ag-grid-angular';
-import { ColDef } from 'ag-grid-community';
+import { ColDef, GridOptions } from 'ag-grid-community';
+import { AgGridLocaleService } from '../../../shared/services/ag-grid-locale.service';
 
 @Component({
   selector: 'app-ans-exportacoes',
@@ -24,6 +25,7 @@ export class ExportacoesComponent implements OnInit {
   topRejeicoes: { chave: string; count: number }[] = []; loadingRej = false;
 
   // AgGrid
+  gridOptions: GridOptions = {};
   columnDefs: ColDef[] = [
     {
       headerName: 'Status', field: 'status', width: 140, sortable: true, resizable: true,
@@ -52,7 +54,19 @@ export class ExportacoesComponent implements OnInit {
   ];
   defaultColDef: ColDef = { flex: 1, minWidth: 100, filter: true };
 
-  constructor(private svc: ExportsService, private sib: SibService, private validations: ValidationsService) {}
+  constructor(
+    private svc: ExportsService,
+    private sib: SibService,
+    private validations: ValidationsService,
+    private agGridLocale: AgGridLocaleService
+  ) {
+    this.gridOptions = {
+      ...this.agGridLocale.getDefaultGridOptions(),
+      pagination: true,
+      paginationPageSize: this.sizeExec,
+      defaultColDef: this.defaultColDef
+    };
+  }
 
   ngOnInit(): void { this.loadExecucoes(); }
   setTab(t: 'execucoes'|'arquivos'|'rejeicoes') { this.tab = t; if (t === 'execucoes' || t === 'arquivos') this.loadExecucoes(); if (t === 'rejeicoes') this.loadTopRejeicoes(); }
