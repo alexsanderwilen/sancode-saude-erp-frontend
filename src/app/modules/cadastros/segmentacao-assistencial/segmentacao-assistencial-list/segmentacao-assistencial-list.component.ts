@@ -1,13 +1,14 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AgGridModule } from 'ag-grid-angular';
-import { ColDef, GridApi, GridOptions, GridReadyEvent, IDatasource, IGetRowsParams } from 'ag-grid-community';
+import { ColDef, GridApi, GridOptions, GridReadyEvent, IDatasource, IGetRowsParams, CellClickedEvent } from 'ag-grid-community';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { SegmentacaoAssistencialService } from '../segmentacao-assistencial.service';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AgGridLocaleService } from '../../../../shared/services/ag-grid-locale.service';
 import { SegmentacaoAssistencialFormComponent } from '../segmentacao-assistencial-form/segmentacao-assistencial-form.component';
+import { SegmentacaoAssistencial } from '../segmentacao-assistencial.model';
 
 @Component({
   selector: 'app-segmentacao-assistencial-list',
@@ -17,20 +18,20 @@ import { SegmentacaoAssistencialFormComponent } from '../segmentacao-assistencia
   styleUrls: ['./segmentacao-assistencial-list.component.scss']
 })
 export class SegmentacaoAssistencialListComponent {
-  gridOptions: GridOptions;
+  gridOptions: GridOptions<SegmentacaoAssistencial>;
   datasource!: IDatasource;
-  private gridApi!: GridApi;
+  private gridApi!: GridApi<SegmentacaoAssistencial>;
 
-  columnDefs: ColDef[] = [
+  columnDefs: ColDef<SegmentacaoAssistencial>[] = [
     { headerName: 'ID', field: 'id', width: 120, sortable: true, filter: true },
     { headerName: 'Descrição', field: 'descricao', flex: 1 },
     { headerName: 'Ações', width: 160, cellRenderer: () => `
       <button data-action="edit" class="btn btn-sm btn-outline-primary">Editar</button>
       <button data-action="delete" class="btn btn-sm btn-outline-danger">Excluir</button>
-    `, onCellClicked: (p: any) => {
+    `, onCellClicked: (p: CellClickedEvent<SegmentacaoAssistencial>) => {
       const action = (p.event?.target as HTMLElement)?.getAttribute('data-action');
-      if (action === 'edit') this.openDialog(p.data);
-      if (action === 'delete') this.remove(p.data);
+      if (action === 'edit') this.openDialog(p.data!);
+      if (action === 'delete') this.remove(p.data!);
     }}
   ];
 
@@ -44,7 +45,7 @@ export class SegmentacaoAssistencialListComponent {
     this.gridOptions = { ...this.agGridLocaleService.getDefaultGridOptions(), rowModelType: 'infinite', pagination: true, paginationPageSize: 20, cacheBlockSize: 20, defaultColDef: { sortable: true, filter: true } };
   }
 
-  onGridReady(params: GridReadyEvent): void { this.gridApi = params.api; }
+  onGridReady(params: GridReadyEvent<SegmentacaoAssistencial>): void { this.gridApi = params.api; }
 
   createDatasource(): IDatasource {
     return {
@@ -62,7 +63,7 @@ export class SegmentacaoAssistencialListComponent {
     };
   }
 
-  openDialog(row?: any): void {
+  openDialog(row?: SegmentacaoAssistencial): void {
     const form: FormGroup = this.fb.group({ id: [row?.id || null], descricao: [row?.descricao || '', Validators.required] });
     const ref = this.dialog.open(SegmentacaoAssistencialFormComponent, { width: '520px', data: { form, title: row ? 'Editar' : 'Novo' }, disableClose: true });
     ref.afterClosed().subscribe(res => {
@@ -74,5 +75,5 @@ export class SegmentacaoAssistencialListComponent {
     });
   }
 
-  remove(row: any): void { this.service.delete(row.id).subscribe(() => this.gridApi?.refreshInfiniteCache()); }
+  remove(row: SegmentacaoAssistencial): void { this.service.delete(row.id).subscribe(() => this.gridApi?.refreshInfiniteCache()); }
 }

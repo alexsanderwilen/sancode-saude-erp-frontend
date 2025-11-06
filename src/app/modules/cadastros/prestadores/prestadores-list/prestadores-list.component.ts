@@ -24,7 +24,7 @@ export class PrestadoresListComponent implements OnInit {
   public datasource!: IDatasource;
   public gridOptions: GridOptions<Prestador>;
 
-  public columnDefs: ColDef[] = [
+  public columnDefs: ColDef<Prestador>[] = [
     { headerName: 'ID', field: 'id', width: 110, sortable: true, filter: true },
     { headerName: 'Nome / Razão Social', field: 'nomeRazaoSocial', flex: 1, sortable: true, filter: true },
     { headerName: 'CPF / CNPJ', field: 'cpfCnpj', width: 160, sortable: true, filter: true },
@@ -54,7 +54,7 @@ export class PrestadoresListComponent implements OnInit {
       pagination: true,
       paginationPageSize: 20,
       cacheBlockSize: 20,
-      onCellClicked: (params: CellClickedEvent) => this.onActionClick(params)
+      onCellClicked: (params: CellClickedEvent<Prestador>) => this.onActionClick(params)
     };
   }
 
@@ -82,20 +82,24 @@ export class PrestadoresListComponent implements OnInit {
     };
   }
 
-  onActionClick(params: CellClickedEvent): void {
+  onActionClick(params: CellClickedEvent<Prestador>): void {
     const action = (params.event?.target as HTMLElement).getAttribute('data-action');
     if (!action) return;
     if (action === 'edit') {
-      this.router.navigate(['/cadastros/prestadores/editar', (params.data as any).id]);
+      const id = params.data?.id;
+      if (id == null) return;
+      this.router.navigate(['/cadastros/prestadores/editar', id]);
     } else if (action === 'delete') {
+      const id = params.data?.id;
+      if (id == null) return;
       this.dialog.open(ConfirmDialogComponent, {
         data: {
           title: 'Confirmar Exclusão',
-          message: `Deseja excluir o prestador ${(params.data as any).nomeRazaoSocial}?`
+          message: `Deseja excluir o prestador ${params.data!.nomeRazaoSocial}?`
         }
       }).afterClosed().subscribe(result => {
         if (result) {
-          this.prestadorService.deletePrestador((params.data as any).id).subscribe({
+          this.prestadorService.deletePrestador(id).subscribe({
             next: () => {
               this.snackBar.open('Prestador excluído com sucesso!', 'Fechar', { duration: 3000 });
               this.gridApi.refreshInfiniteCache();

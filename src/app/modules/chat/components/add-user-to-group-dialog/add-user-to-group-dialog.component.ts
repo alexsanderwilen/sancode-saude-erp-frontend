@@ -35,7 +35,7 @@ export class AddUserToGroupDialogComponent implements OnInit {
       group: this.groupService.getGroupById(this.data.groupId)
     }).pipe(
       map(({ allUsers, group }) => {
-        const memberUsernames = new Set(group.members.map((m: any) => m.username));
+        const memberUsernames = new Set(group.members.map((m: { username: string }) => m.username));
         return allUsers.content.filter((u: Usuario) => !memberUsernames.has(u.username));
       })
     ).subscribe(filteredUsers => {

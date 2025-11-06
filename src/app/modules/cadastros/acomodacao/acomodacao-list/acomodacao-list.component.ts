@@ -1,12 +1,13 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AgGridModule } from 'ag-grid-angular';
-import { ColDef, GridApi, GridOptions, GridReadyEvent, IDatasource, IGetRowsParams } from 'ag-grid-community';
+import { ColDef, GridApi, GridOptions, GridReadyEvent, IDatasource, IGetRowsParams, CellClickedEvent } from 'ag-grid-community';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AgGridLocaleService } from '../../../../shared/services/ag-grid-locale.service';
 import { AcomodacaoService } from '../acomodacao.service';
+import { Acomodacao } from '../acomodacao.model';
 import { AcomodacaoFormComponent } from '../acomodacao-form/acomodacao-form.component';
 
 @Component({
@@ -17,11 +18,11 @@ import { AcomodacaoFormComponent } from '../acomodacao-form/acomodacao-form.comp
   styleUrls: ['./acomodacao-list.component.scss']
 })
 export class AcomodacaoListComponent {
-  gridOptions: GridOptions;
+  gridOptions: GridOptions<Acomodacao>;
   datasource!: IDatasource;
-  private gridApi!: GridApi;
+  private gridApi!: GridApi<Acomodacao>;
 
-  columnDefs: ColDef[] = [
+  columnDefs: ColDef<Acomodacao>[] = [
     { headerName: 'ID', field: 'id', width: 120 },
     { headerName: 'Descrição', field: 'descricao', flex: 1 },
     {
@@ -31,10 +32,10 @@ export class AcomodacaoListComponent {
         <button data-action="edit" class="btn btn-sm btn-outline-primary">Editar</button>
         <button data-action="delete" class="btn btn-sm btn-outline-danger">Excluir</button>
       `,
-      onCellClicked: (p: any) => {
+      onCellClicked: (p: CellClickedEvent<Acomodacao>) => {
         const action = (p.event?.target as HTMLElement)?.getAttribute('data-action');
-        if (action === 'edit') this.openDialog(p.data);
-        if (action === 'delete') this.remove(p.data);
+        if (action === 'edit') this.openDialog(p.data!);
+        if (action === 'delete') this.remove(p.data!);
       }
     }
   ];
@@ -56,7 +57,7 @@ export class AcomodacaoListComponent {
     };
   }
 
-  onGridReady(params: GridReadyEvent): void { this.gridApi = params.api; }
+  onGridReady(params: GridReadyEvent<Acomodacao>): void { this.gridApi = params.api; }
 
   createDatasource(): IDatasource {
     return {
@@ -74,7 +75,7 @@ export class AcomodacaoListComponent {
     };
   }
 
-  openDialog(row?: any): void {
+  openDialog(row?: Acomodacao): void {
     const form: FormGroup = this.fb.group({ id: [row?.id || null], descricao: [row?.descricao || '', Validators.required] });
     const ref = this.dialog.open(AcomodacaoFormComponent, { width: '520px', data: { form, title: row ? 'Editar' : 'Novo' }, disableClose: true });
     ref.afterClosed().subscribe(res => {
@@ -86,5 +87,5 @@ export class AcomodacaoListComponent {
     });
   }
 
-  remove(row: any): void { this.service.delete(row.id).subscribe(() => this.gridApi?.refreshInfiniteCache()); }
+  remove(row: Acomodacao): void { this.service.delete(row.id).subscribe(() => this.gridApi?.refreshInfiniteCache()); }
 }

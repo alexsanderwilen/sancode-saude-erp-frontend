@@ -28,17 +28,9 @@ import { ConversationListComponent } from '../conversation-list/conversation-lis
 import { GroupListComponent } from '../group-list/group-list.component';
 import { AddUserToGroupDialogComponent } from '../add-user-to-group-dialog/add-user-to-group-dialog.component';
 import { RemoveUserFromGroupDialogComponent } from '../remove-user-from-group-dialog/remove-user-from-group-dialog.component';
+import { ChatMessage } from '../../models/message.model';
 
-// Mensagem do chat (texto ou com anexo)
-export interface ChatMessage {
-  type: 'CHAT' | 'JOIN' | 'LEAVE' | 'GROUP';
-  content?: string;
-  sender: string;
-  recipient?: string; // username ou groupId
-  createdAt?: string;
-  tempId?: string;
-  attachment?: { id: number; filename?: string; contentType?: string; size?: number };
-}
+// Tipos de mensagem movidos para models/message.model.ts
 
 @Component({
   selector: 'app-chat-room',
@@ -258,8 +250,9 @@ export class ChatRoomComponent implements OnInit, OnDestroy, AfterViewChecked {
     }));
   }
 
-  onEnterPressed(event: any): void {
-    if (event.key === 'Enter' && !event.shiftKey) {
+  onEnterPressed(event: Event): void {
+    const e = event as KeyboardEvent;
+    if (!e.shiftKey) {
       event.preventDefault();
       this.sendMessage();
     }
@@ -319,9 +312,10 @@ export class ChatRoomComponent implements OnInit, OnDestroy, AfterViewChecked {
     el?.click();
   }
 
-  onFileSelected(event: any): void {
-    const file: File | undefined = event?.target?.files?.[0];
-    event.target.value = '';
+  onFileSelected(event: Event): void {
+    const input = event.target as HTMLInputElement | null;
+    const file: File | undefined = input?.files?.[0] || undefined;
+    if (input) input.value = '';
     if (!file || !this.activeRecipientId || !this.chatType) return;
 
     const tempId = Date.now().toString() + Math.random().toString(36).substring(2, 9);
@@ -339,10 +333,10 @@ export class ChatRoomComponent implements OnInit, OnDestroy, AfterViewChecked {
 
     this.attachmentService.uploadDirect(file).subscribe({
       next: (resp) => {
-        const msg: any = {
+        const msg: ChatMessage = {
           type: this.chatType === 'private' ? 'CHAT' : 'GROUP',
           sender: this.username,
-          recipient: this.activeRecipientId,
+          recipient: this.activeRecipientId || undefined,
           content: '',
           
 attachment: { id: resp.id, filename: resp.filename, contentType: resp.contentType, size: resp.size }

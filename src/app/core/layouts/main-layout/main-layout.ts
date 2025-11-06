@@ -7,6 +7,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatBadgeModule } from '@angular/material/badge';
 import { filter } from 'rxjs/operators';
+import { LoadingSpinnerComponent } from '../../../shared/components/ui/loading-spinner/loading-spinner.component';
 
 import { UserProfileMenuComponent } from '../../../shared/components/user-profile-menu/user-profile-menu.component';
 import { UnreadNotificationService, UnreadSummaryDto } from '../../services/unread-notification.service';
@@ -23,7 +24,8 @@ import { UnreadNotificationService, UnreadSummaryDto } from '../../services/unre
     MatIconModule,
     MatMenuModule,
     MatBadgeModule,
-    UserProfileMenuComponent
+    UserProfileMenuComponent,
+    LoadingSpinnerComponent
   ],
   templateUrl: './main-layout.html',
   styleUrl: './main-layout.scss'

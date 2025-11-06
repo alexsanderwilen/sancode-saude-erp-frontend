@@ -4,7 +4,7 @@ import { Client, IMessage } from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
 import { environment } from '../../../../environments/environment';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { ChatMessage } from '../components/chat-room/chat-room.component';
+import { ChatMessage } from '../models/message.model';
 import { ConversationDto } from '../models/conversation.model';
 
 const WEBSOCKET_URL = environment.chatWsUrl;

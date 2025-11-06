@@ -1,13 +1,14 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AgGridModule } from 'ag-grid-angular';
-import { ColDef, GridApi, GridOptions, GridReadyEvent, IDatasource, IGetRowsParams } from 'ag-grid-community';
+import { ColDef, GridApi, GridOptions, GridReadyEvent, IDatasource, IGetRowsParams, CellClickedEvent } from 'ag-grid-community';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AgGridLocaleService } from '../../../../shared/services/ag-grid-locale.service';
 import { TipoPagamentoService } from '../tipo-pagamento.service';
 import { TipoPagamentoFormComponent } from '../tipo-pagamento-form/tipo-pagamento-form.component';
+import { TipoPagamento } from '../tipo-pagamento.model';
 
 @Component({
   selector: 'app-tipo-pagamento-list',
@@ -17,11 +18,11 @@ import { TipoPagamentoFormComponent } from '../tipo-pagamento-form/tipo-pagament
   styleUrls: ['./tipo-pagamento-list.component.scss']
 })
 export class TipoPagamentoListComponent {
-  gridOptions: GridOptions;
+  gridOptions: GridOptions<TipoPagamento>;
   datasource!: IDatasource;
-  private gridApi!: GridApi;
+  private gridApi!: GridApi<TipoPagamento>;
 
-  columnDefs: ColDef[] = [
+  columnDefs: ColDef<TipoPagamento>[] = [
     { headerName: 'ID', field: 'id', width: 120 },
     { headerName: 'Descrição', field: 'descricao', flex: 1 },
     {
@@ -31,10 +32,10 @@ export class TipoPagamentoListComponent {
         <button data-action="edit" class="btn btn-sm btn-outline-primary">Editar</button>
         <button data-action="delete" class="btn btn-sm btn-outline-danger">Excluir</button>
       `,
-      onCellClicked: (p: any) => {
+      onCellClicked: (p: CellClickedEvent<TipoPagamento>) => {
         const action = (p.event?.target as HTMLElement)?.getAttribute('data-action');
-        if (action === 'edit') this.openDialog(p.data);
-        if (action === 'delete') this.remove(p.data);
+        if (action === 'edit') this.openDialog(p.data!);
+        if (action === 'delete') this.remove(p.data!);
       }
     }
   ];
@@ -56,7 +57,7 @@ export class TipoPagamentoListComponent {
     };
   }
 
-  onGridReady(params: GridReadyEvent): void { this.gridApi = params.api; }
+  onGridReady(params: GridReadyEvent<TipoPagamento>): void { this.gridApi = params.api; }
 
   createDatasource(): IDatasource {
     return {
@@ -74,7 +75,7 @@ export class TipoPagamentoListComponent {
     };
   }
 
-  openDialog(row?: any): void {
+  openDialog(row?: TipoPagamento): void {
     const form: FormGroup = this.fb.group({ id: [row?.id || null], descricao: [row?.descricao || '', Validators.required] });
     const ref = this.dialog.open(TipoPagamentoFormComponent, { width: '520px', data: { form, title: row ? 'Editar' : 'Novo' }, disableClose: true });
     ref.afterClosed().subscribe(res => {
@@ -86,5 +87,5 @@ export class TipoPagamentoListComponent {
     });
   }
 
-  remove(row: any): void { this.service.delete(row.id).subscribe(() => this.gridApi?.refreshInfiniteCache()); }
+  remove(row: TipoPagamento): void { this.service.delete(row.id).subscribe(() => this.gridApi?.refreshInfiniteCache()); }
 }

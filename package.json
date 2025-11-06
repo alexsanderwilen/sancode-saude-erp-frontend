@@ -9,6 +9,8 @@
     "build:cloud": "ng build --configuration production",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
+    "lint": "eslint \"src/**/*.ts\"",
+    "lint:fix": "eslint \"src/**/*.ts\" --fix",
     "deploy:firebase": "npm run build:prod && firebase deploy --only hosting"
   },
   "prettier": {
@@ -59,6 +61,12 @@
     "karma-coverage": "~2.2.0",
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.1.0",
-    "typescript": "~5.9.2"
+    "typescript": "~5.9.2",
+    "eslint": "^9.13.0",
+    "@typescript-eslint/eslint-plugin": "^8.9.0",
+    "@typescript-eslint/parser": "^8.9.0",
+    "@angular-eslint/eslint-plugin": "^18.3.0",
+    "@angular-eslint/eslint-plugin-template": "^18.3.0",
+    "@angular-eslint/template-parser": "^18.3.0"
   }
 }

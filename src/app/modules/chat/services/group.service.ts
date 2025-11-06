@@ -4,13 +4,15 @@ import { Observable } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 
 // Definindo a interface para o objeto do grupo, para tipagem forte.
+export interface GroupMember { username: string; displayName?: string }
+
 export interface ChatGroup {
   id: number;
   name: string;
   description: string;
   createdBy: string;
   createdAt: string; // ou Date
-  members: any[]; // Pode ser uma interface mais específica de GroupMember
+  members: GroupMember[];
 }
 
 @Injectable({

@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatListModule, MatSelectionListChange } from '@angular/material/list';
 import { MatButtonModule } from '@angular/material/button';
-import { GroupService } from '../../services/group.service';
+import { GroupService, GroupMember } from '../../services/group.service';
 import { Usuario } from '@shared/models/usuario.model';
 import { AuthService } from '@core/services/auth.service';
 
@@ -14,7 +14,7 @@ import { AuthService } from '@core/services/auth.service';
   templateUrl: './remove-user-from-group-dialog.component.html',
 })
 export class RemoveUserFromGroupDialogComponent implements OnInit {
-  members: Usuario[] = [];
+  members: GroupMember[] = [];
   selectedUsernames: string[] = [];
   currentUsername: string | null = null;
 

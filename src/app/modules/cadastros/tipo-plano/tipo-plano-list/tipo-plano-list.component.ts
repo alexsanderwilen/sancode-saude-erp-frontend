@@ -1,13 +1,14 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AgGridModule } from 'ag-grid-angular';
-import { ColDef, GridApi, GridOptions, GridReadyEvent, IDatasource, IGetRowsParams } from 'ag-grid-community';
+import { ColDef, GridApi, GridOptions, GridReadyEvent, IDatasource, IGetRowsParams, CellClickedEvent } from 'ag-grid-community';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AgGridLocaleService } from '../../../../shared/services/ag-grid-locale.service';
 import { TipoPlanoService } from '../tipo-plano.service';
 import { TipoPlanoFormComponent } from '../tipo-plano-form/tipo-plano-form.component';
+import { TipoPlano } from '../tipo-plano.model';
 
 @Component({
   selector: 'app-tipo-plano-list',
@@ -17,11 +18,11 @@ import { TipoPlanoFormComponent } from '../tipo-plano-form/tipo-plano-form.compo
   styleUrls: ['./tipo-plano-list.component.scss']
 })
 export class TipoPlanoListComponent {
-  gridOptions: GridOptions;
+  gridOptions: GridOptions<TipoPlano>;
   datasource!: IDatasource;
-  private gridApi!: GridApi;
+  private gridApi!: GridApi<TipoPlano>;
 
-  columnDefs: ColDef[] = [
+  columnDefs: ColDef<TipoPlano>[] = [
     { headerName: 'ID', field: 'id', width: 120 },
     { headerName: 'Descrição', field: 'descricao', flex: 1 },
     { headerName: 'Descrição ANS', field: 'descricaoAns', flex: 1 },
@@ -33,10 +34,10 @@ export class TipoPlanoListComponent {
         <button data-action="edit" class="btn btn-sm btn-outline-primary">Editar</button>
         <button data-action="delete" class="btn btn-sm btn-outline-danger">Excluir</button>
       `,
-      onCellClicked: (p: any) => {
+      onCellClicked: (p: CellClickedEvent<TipoPlano>) => {
         const action = (p.event?.target as HTMLElement)?.getAttribute('data-action');
-        if (action === 'edit') this.openDialog(p.data);
-        if (action === 'delete') this.remove(p.data);
+        if (action === 'edit') this.openDialog(p.data!);
+        if (action === 'delete') this.remove(p.data!);
       }
     }
   ];
@@ -58,7 +59,7 @@ export class TipoPlanoListComponent {
     };
   }
 
-  onGridReady(params: GridReadyEvent): void { this.gridApi = params.api; }
+  onGridReady(params: GridReadyEvent<TipoPlano>): void { this.gridApi = params.api; }
 
   createDatasource(): IDatasource {
     return {
@@ -86,7 +87,7 @@ export class TipoPlanoListComponent {
     };
   }
 
-  openDialog(row?: any): void {
+  openDialog(row?: TipoPlano): void {
     const form: FormGroup = this.fb.group({
       id: [row?.id || null],
       descricao: [row?.descricao || '', Validators.required],
@@ -103,5 +104,5 @@ export class TipoPlanoListComponent {
     });
   }
 
-  remove(row: any): void { this.service.delete(row.id).subscribe(() => this.gridApi?.refreshInfiniteCache()); }
+  remove(row: TipoPlano): void { this.service.delete(row.id).subscribe(() => this.gridApi?.refreshInfiniteCache()); }
 }
