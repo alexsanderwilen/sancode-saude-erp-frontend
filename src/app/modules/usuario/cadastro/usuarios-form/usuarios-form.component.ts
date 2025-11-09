@@ -1,4 +1,4 @@
-﻿import { Component, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, FormArray } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
@@ -62,21 +62,21 @@ export class UsuariosFormComponent implements OnInit {
     private dominioTipoService: DominioTipoService
   ) {
     this.colDefsTelefones = [
-      { headerName: 'Tipo', field: 'tipo', sortable: true, filter: true, cellStyle: { 'display': 'flex', 'align-items': 'center' } },
-      { headerName: 'DDD', field: 'ddd', width: 100, cellStyle: { 'display': 'flex', 'align-items': 'center' } },
-      { headerName: 'Número', field: 'numero', cellStyle: { 'display': 'flex', 'align-items': 'center' } },
-      { headerName: 'WhatsApp', field: 'whatsapp', cellRenderer: (p: any) => p.value ? 'Sim' : 'Não', width: 120, cellStyle: { 'display': 'flex', 'align-items': 'center' } },
-      { headerName: 'Ações', cellRenderer: this.actionsRenderer.bind(this), width: 100, cellStyle: { 'display': 'flex', 'align-items': 'center' } }
+      { headerName: 'Tipo', field: 'tipo', sortable: true, filter: true },
+      { headerName: 'DDD', field: 'ddd', width: 100 },
+      { headerName: 'Número', field: 'numero' },
+      { headerName: 'WhatsApp', field: 'whatsapp', cellRenderer: (p: any) => p.value ? 'Sim' : 'Não', width: 120 },
+      { headerName: 'Ações', cellRenderer: this.actionsRenderer.bind(this), width: 100 }
     ];
 
     this.colDefsEmails = [
-      { headerName: 'Tipo', field: 'tipo', sortable: true, filter: true, cellStyle: { 'display': 'flex', 'align-items': 'center' } },
-      { headerName: 'E-mail', field: 'email', flex: 1, cellStyle: { 'display': 'flex', 'align-items': 'center' } },
-      { headerName: 'Ações', cellRenderer: this.actionsRenderer.bind(this), width: 100, cellStyle: { 'display': 'flex', 'align-items': 'center' } }
+      { headerName: 'Tipo', field: 'tipo', sortable: true, filter: true },
+      { headerName: 'E-mail', field: 'email', flex: 1 },
+      { headerName: 'Ações', cellRenderer: this.actionsRenderer.bind(this), width: 100 }
     ];
 
-    this.gridOptionsTelefones = { ...this.agGridLocaleService.getDefaultGridOptions(), context: { componentParent: this, type: 'telefones' }, rowHeight: 42 };
-    this.gridOptionsEmails = { ...this.agGridLocaleService.getDefaultGridOptions(), context: { componentParent: this, type: 'emails' }, rowHeight: 42 };
+    this.gridOptionsTelefones = { ...this.agGridLocaleService.getDefaultGridOptions(), theme: 'legacy', context: { componentParent: this, type: 'telefones' } };
+    this.gridOptionsEmails = { ...this.agGridLocaleService.getDefaultGridOptions(), theme: 'legacy', context: { componentParent: this, type: 'emails' } };
   }
 
   ngOnInit(): void {
@@ -236,5 +236,3 @@ export class UsuariosFormComponent implements OnInit {
     this.router.navigate(['/usuarios/cadastro']);
   }
 }
-
-

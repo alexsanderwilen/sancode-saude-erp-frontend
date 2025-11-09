@@ -1,4 +1,4 @@
-﻿import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators, FormArray } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
@@ -93,45 +93,45 @@ export class OperadorasFormComponent implements OnInit {
     });
 
     this.colDefsEnderecos = [
-      { headerName: 'Tipo', field: 'tipo', sortable: true, filter: true, cellStyle: { 'display': 'flex', 'align-items': 'center' } },
-      { headerName: 'CEP', field: 'cep', sortable: true, filter: true, cellStyle: { 'display': 'flex', 'align-items': 'center' } },
-      { headerName: 'Logradouro', field: 'logradouro', sortable: true, filter: true, cellStyle: { 'display': 'flex', 'align-items': 'center' } },
-      { headerName: 'Cidade', field: 'cidade', sortable: true, filter: true, cellStyle: { 'display': 'flex', 'align-items': 'center' } },
-      { headerName: 'UF', field: 'uf', sortable: true, filter: true, cellStyle: { 'display': 'flex', 'align-items': 'center' } },
-      { headerName: 'Ações', cellRenderer: this.actionsRenderer.bind(this), cellStyle: { 'display': 'flex', 'align-items': 'center' } }
+      { headerName: 'Tipo', field: 'tipo', sortable: true, filter: true },
+      { headerName: 'CEP', field: 'cep', sortable: true, filter: true },
+      { headerName: 'Logradouro', field: 'logradouro', sortable: true, filter: true },
+      { headerName: 'Cidade', field: 'cidade', sortable: true, filter: true },
+      { headerName: 'UF', field: 'uf', sortable: true, filter: true },
+      { headerName: 'Ações', cellRenderer: this.actionsRenderer.bind(this) }
     ];
 
     this.colDefsTelefones = [
-      { headerName: 'Tipo', field: 'tipo', sortable: true, filter: true, cellStyle: { 'display': 'flex', 'align-items': 'center' } },
-      { headerName: 'DDD', field: 'ddd', sortable: true, filter: true, cellStyle: { 'display': 'flex', 'align-items': 'center' } },
-      { headerName: 'Número', field: 'numero', sortable: true, filter: true, cellStyle: { 'display': 'flex', 'align-items': 'center' } },
-      { headerName: 'WhatsApp', field: 'whatsapp', sortable: true, filter: true, cellStyle: { 'display': 'flex', 'align-items': 'center' } },
-      { headerName: 'Ações', cellRenderer: this.actionsRenderer.bind(this), cellStyle: { 'display': 'flex', 'align-items': 'center' } }
+      { headerName: 'Tipo', field: 'tipo', sortable: true, filter: true },
+      { headerName: 'DDD', field: 'ddd', sortable: true, filter: true },
+      { headerName: 'Número', field: 'numero', sortable: true, filter: true },
+      { headerName: 'WhatsApp', field: 'whatsapp', sortable: true, filter: true },
+      { headerName: 'Ações', cellRenderer: this.actionsRenderer.bind(this) }
     ];
 
     this.colDefsEmails = [
-      { headerName: 'Tipo', field: 'tipo', sortable: true, filter: true, cellStyle: { 'display': 'flex', 'align-items': 'center' } },
-      { headerName: 'E-mail', field: 'email', sortable: true, filter: true, flex: 1, cellStyle: { 'display': 'flex', 'align-items': 'center' } },
-      { headerName: 'Ações', cellRenderer: this.actionsRenderer.bind(this), cellStyle: { 'display': 'flex', 'align-items': 'center' } }
+      { headerName: 'Tipo', field: 'tipo', sortable: true, filter: true },
+      { headerName: 'E-mail', field: 'email', sortable: true, filter: true, flex: 1 },
+      { headerName: 'Ações', cellRenderer: this.actionsRenderer.bind(this) }
     ];
 
     this.gridOptionsEnderecos = { 
       ...this.agGridLocaleService.getDefaultGridOptions(),
+      theme: 'legacy',
       context: { componentParent: this, type: 'enderecos' }, 
-      suppressRowClickSelection: true,
-      rowHeight: 42
+      suppressRowClickSelection: true
     };
     this.gridOptionsTelefones = { 
       ...this.agGridLocaleService.getDefaultGridOptions(),
+      theme: 'legacy',
       context: { componentParent: this, type: 'telefones' }, 
-      suppressRowClickSelection: true,
-      rowHeight: 42
+      suppressRowClickSelection: true
     };
     this.gridOptionsEmails = { 
       ...this.agGridLocaleService.getDefaultGridOptions(),
+      theme: 'legacy',
       context: { componentParent: this, type: 'emails' }, 
-      suppressRowClickSelection: true,
-      rowHeight: 42
+      suppressRowClickSelection: true
     };
   }
 
@@ -333,4 +333,3 @@ export class OperadorasFormComponent implements OnInit {
     this.router.navigate(['/cadastros/operadoras']);
   }
 }
-

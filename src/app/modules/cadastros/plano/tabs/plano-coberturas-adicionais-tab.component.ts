@@ -1,4 +1,4 @@
-﻿import { Component, Input, OnInit, Output, EventEmitter, Inject } from '@angular/core';
+import { Component, Input, OnInit, Output, EventEmitter, Inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AgGridModule } from 'ag-grid-angular';
 import { ColDef, GridOptions } from 'ag-grid-community';
@@ -34,7 +34,7 @@ import { AgGridLocaleService } from '../../../../shared/services/ag-grid-locale.
   <div class="mb-2">
     <button type="button" mat-stroked-button color="primary" (click)="openAddDialog()">Adicionar</button>
   </div>
-  <ag-grid-angular class="ag-theme-quartz" style="width: 100%; height: 320px;"
+  <ag-grid-angular class="ag-theme-alpine" style="width: 100%; height: 320px;"
                    [gridOptions]="gridOptions"
                    [rowData]="rowData"
                    [columnDefs]="columnDefs">
@@ -75,7 +75,7 @@ export class PlanoCoberturasAdicionaisTabComponent implements OnInit {
   ) {}
 
   ngOnInit(): void { 
-    this.gridOptions = { ...this.agGridLocaleService.getDefaultGridOptions(), pagination: true, paginationPageSize: 10, rowHeight: 42 }; 
+    this.gridOptions = { ...this.agGridLocaleService.getDefaultGridOptions(), theme: 'legacy', pagination: true, paginationPageSize: 10 }; 
     this.load();
   }
 
@@ -200,4 +200,3 @@ export class PlanoCoberturasDialogComponent {
   onSave(): void { this.ref.close({ saved: true }); }
   onCancel(): void { this.ref.close(); }
 }
-
