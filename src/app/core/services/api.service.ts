@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
@@ -13,7 +13,9 @@ export class ApiService {
 
   get<T>(endpoint: string, params?: Record<string, string | number | boolean | undefined>): Observable<T> {
     const httpParams = this.toHttpParams(params);
-    return this.http.get<T>(this.url(endpoint), { params: httpParams });
+    const shouldSkipGlobal = !!httpParams && httpParams.has('page') && httpParams.has('size');
+    const headers = shouldSkipGlobal ? new HttpHeaders({ 'x-no-global-loading': '1' }) : undefined;
+    return this.http.get<T>(this.url(endpoint), { params: httpParams, headers });
   }
 
   post<T>(endpoint: string, body: unknown, params?: Record<string, string | number | boolean | undefined>): Observable<T> {
@@ -38,7 +40,9 @@ export class ApiService {
     if (typeof size === 'number') params['size'] = String(size);
     if (sort) params['sort'] = order ? `${sort},${order}` : sort;
 
-    return this.http.get<unknown>(this.url(endpoint), { params: this.toHttpParams(params) }).pipe(
+    const httpParams = this.toHttpParams(params);
+    const headers = new HttpHeaders({ 'x-no-global-loading': '1' });
+    return this.http.get<unknown>(this.url(endpoint), { params: httpParams, headers }).pipe(
       map((res: unknown) => {
         if (Array.isArray(res)) {
           const content = res as T[];
@@ -73,4 +77,3 @@ export class ApiService {
     return httpParams;
   }
 }
-

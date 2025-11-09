@@ -57,3 +57,11 @@ Angular CLI does not come with an end-to-end testing framework by default. You c
 ## Additional Resources
 
 For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+
+## Lista (ag-Grid) – Padrão de Carregamento
+
+- Use `ApiService.page(...)` para requisições paginadas; ele já inclui o header `x-no-global-loading` para evitar o overlay global em paginações/ordenações rápidas.
+- Caso use `HttpClient` diretamente para GETs paginados, inclua o header `x-no-global-loading: 1` e envie `page` e `size` em `HttpParams`.
+- O interceptor global também ignora o overlay automaticamente para GETs que tenham `page` e `size`.
+- Preferir `rowModelType: 'infinite'`, `paginationPageSize`, `cacheBlockSize` nas listas com ag-Grid.
+- As rotas de listas são reutilizadas via `RouteReuseStrategy` (por convenção, componentes que terminam com `ListComponent` são mantidos em cache), evitando reconstrução e “piscar” ao navegar entre listagem e formulário.
