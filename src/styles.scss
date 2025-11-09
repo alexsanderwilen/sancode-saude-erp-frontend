@@ -105,3 +105,17 @@ html { scroll-behavior: smooth; }
 // Ag-Grid global styles
 @import 'ag-grid-community/styles/ag-grid.css';
 @import 'ag-grid-community/styles/ag-theme-quartz.css';
+@import 'ag-grid-community/styles/ag-theme-alpine.css';
+
+/* Custom ag-Grid styles */
+.ag-theme-quartz, .ag-theme-alpine {
+  /* Aumenta a altura da linha para acomodar melhor os botões de ação */
+  --ag-row-height: 52px !important;
+}
+
+.ag-theme-quartz .ag-cell, .ag-theme-alpine .ag-cell {
+  /* Centraliza verticalmente o conteúdo de todas as células */
+  display: flex !important;
+  align-items: center !important;
+}
+

@@ -41,7 +41,7 @@ export class CoberturaAdicionalListComponent {
     private fb: FormBuilder,
     private agGridLocaleService: AgGridLocaleService
   ) {
-    this.gridOptions = { ...this.agGridLocaleService.getDefaultGridOptions(), pagination: true, paginationPageSize: 20 };
+    this.gridOptions = { ...this.agGridLocaleService.getDefaultGridOptions(), theme: 'legacy', pagination: true, paginationPageSize: 20 };
     this.load();
   }
 

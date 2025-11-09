@@ -57,6 +57,7 @@ export class BeneficiariosListComponent {
     this.datasource = this.createDatasource();
     this.gridOptions = {
       ...this.agGridLocaleService.getDefaultGridOptions(),
+      theme: 'legacy',
       rowModelType: 'infinite',
       pagination: true,
       paginationPageSize: 20,

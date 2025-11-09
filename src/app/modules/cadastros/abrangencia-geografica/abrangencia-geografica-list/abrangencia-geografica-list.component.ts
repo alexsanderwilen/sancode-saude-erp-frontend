@@ -42,7 +42,7 @@ export class AbrangenciaGeograficaListComponent {
     private agGridLocaleService: AgGridLocaleService
   ) {
     this.datasource = this.createDatasource();
-    this.gridOptions = { ...this.agGridLocaleService.getDefaultGridOptions(), rowModelType: 'infinite', pagination: true, paginationPageSize: 20, cacheBlockSize: 20 };
+    this.gridOptions = { ...this.agGridLocaleService.getDefaultGridOptions(), theme: 'legacy', rowModelType: 'infinite', pagination: true, paginationPageSize: 20, cacheBlockSize: 20 };
   }
 
   onGridReady(params: GridReadyEvent<AbrangenciaGeografica>): void { this.gridApi = params.api; }

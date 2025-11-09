@@ -42,7 +42,7 @@ export class SegmentacaoAssistencialListComponent {
     private agGridLocaleService: AgGridLocaleService
   ) {
     this.datasource = this.createDatasource();
-    this.gridOptions = { ...this.agGridLocaleService.getDefaultGridOptions(), rowModelType: 'infinite', pagination: true, paginationPageSize: 20, cacheBlockSize: 20, defaultColDef: { sortable: true, filter: true } };
+    this.gridOptions = { ...this.agGridLocaleService.getDefaultGridOptions(), theme: 'legacy', rowModelType: 'infinite', pagination: true, paginationPageSize: 20, cacheBlockSize: 20, defaultColDef: { sortable: true, filter: true } };
   }
 
   onGridReady(params: GridReadyEvent<SegmentacaoAssistencial>): void { this.gridApi = params.api; }
