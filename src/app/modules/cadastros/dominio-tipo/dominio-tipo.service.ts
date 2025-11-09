@@ -1,5 +1,5 @@
 ﻿import { inject, Injectable } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable, map } from 'rxjs';
 import { DominioTipo } from './dominio-tipo.model';
 import { environment } from '@environments/environment';
@@ -27,7 +27,8 @@ export class DominioTipoService {
       .set('page', page.toString())
       .set('size', size.toString())
       .set('sort', `${sort},${order}`);
-    return this.http.get<any>(this.apiUrl, { params }).pipe(
+    const headers = new HttpHeaders({ 'x-no-global-loading': '1' });
+    return this.http.get<any>(this.apiUrl, { params, headers }).pipe(
       map((res: any) => {
         if (Array.isArray(res)) {
           const total = res.length;

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { PlanoBase } from './plano-base.model';
@@ -25,7 +25,8 @@ export class PlanoBaseService {
       .set('page', page.toString())
       .set('size', size.toString())
       .set('sort', `${sort},${order}`);
-    return this.http.get<Page<PlanoBase>>(this.apiUrl, { params });
+    const headers = new HttpHeaders({ 'x-no-global-loading': '1' });
+    return this.http.get<Page<PlanoBase>>(this.apiUrl, { params, headers });
   }
 
   create(payload: Partial<PlanoBase>): Observable<PlanoBase> {
