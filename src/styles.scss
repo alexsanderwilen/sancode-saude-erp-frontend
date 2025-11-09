@@ -116,6 +116,7 @@ html { scroll-behavior: smooth; }
 .ag-theme-quartz .ag-cell, .ag-theme-alpine .ag-cell {
   /* Centraliza verticalmente o conteúdo de todas as células */
   display: flex !important;
+  flex-direction: row !important; /* Explicitly set flex direction */
   align-items: center !important;
 }
 

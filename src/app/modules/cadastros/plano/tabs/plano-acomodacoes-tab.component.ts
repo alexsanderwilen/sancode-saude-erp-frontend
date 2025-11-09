@@ -67,7 +67,7 @@ export class PlanoAcomodacoesTabComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.gridOptions = { ...this.agGridLocaleService.getDefaultGridOptions(), pagination: true, paginationPageSize: 10 };
+    this.gridOptions = { ...this.agGridLocaleService.getDefaultGridOptions(), pagination: true, paginationPageSize: 10, rowHeight: 42 };
     this.load();
   }
 

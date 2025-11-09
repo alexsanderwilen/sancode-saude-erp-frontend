@@ -142,6 +142,7 @@ export class BeneficiariosFormComponent implements OnInit {
 
     this.gridOptionsEnderecos = {
       ...this.agGridLocaleService.getDefaultGridOptions(),
+      theme: 'legacy',
       columnDefs: this.colDefsEnderecos,
       rowSelection: 'single',
       context: { componentParent: this, type: 'enderecos' },
@@ -149,6 +150,7 @@ export class BeneficiariosFormComponent implements OnInit {
     };
     this.gridOptionsTelefones = {
       ...this.agGridLocaleService.getDefaultGridOptions(),
+      theme: 'legacy',
       columnDefs: this.colDefsTelefones,
       rowSelection: 'single',
       context: { componentParent: this, type: 'telefones' },
@@ -156,6 +158,7 @@ export class BeneficiariosFormComponent implements OnInit {
     };
     this.gridOptionsEmails = {
       ...this.agGridLocaleService.getDefaultGridOptions(),
+      theme: 'legacy',
       columnDefs: this.colDefsEmails,
       rowSelection: 'single',
       context: { componentParent: this, type: 'emails' },
@@ -177,6 +180,7 @@ export class BeneficiariosFormComponent implements OnInit {
     ];
     this.gridOptionsPlanos = {
       ...this.agGridLocaleService.getDefaultGridOptions(),
+      theme: 'legacy',
       columnDefs: this.colDefsPlanos,
       rowSelection: 'single',
       context: { componentParent: this, type: 'planos' },
