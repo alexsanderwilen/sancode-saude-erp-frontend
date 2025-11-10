@@ -11,9 +11,8 @@
 ﻿import { MatButtonModule } from '@angular/material/button';
 ﻿import { MatCheckboxModule } from '@angular/material/checkbox';
 ﻿import { MatTabsModule } from '@angular/material/tabs';
-﻿import { Subscription } from 'rxjs';
-﻿import { OperadoraService } from '../../operadora.service'; // Importar OperadoraService
-﻿import { Operadora } from '../../operadora.model'; // Importar Operadora
+﻿import { OperadoraService } from '../../operadora.service';
+﻿import { Operadora } from '../../operadora.model';
 ﻿
 ﻿@Component({
 ﻿  selector: 'app-prestadores-form',
@@ -38,15 +37,14 @@
 ﻿  prestadorForm: FormGroup;
 ﻿  isEditMode = false;
 ﻿  prestadorId: number | null = null;
-﻿  private formStatusSubscription: Subscription | undefined;
-﻿  operadoras: Operadora[] = []; // Propriedade para armazenar as operadoras
+﻿  operadoras: Operadora[] = [];
 ﻿
 ﻿  constructor(
 ﻿    private fb: FormBuilder,
 ﻿    private prestadorService: PrestadorService,
 ﻿    private router: Router,
 ﻿    private route: ActivatedRoute,
-﻿    private operadoraService: OperadoraService // Injetar OperadoraService
+﻿    private operadoraService: OperadoraService
 ﻿  ) {
 ﻿    this.prestadorForm = this.fb.group({
 ﻿      id: [null],
@@ -81,7 +79,7 @@
 ﻿  }
 ﻿
 ﻿  ngOnInit(): void {
-﻿    this.loadOperadoras(); // Carregar operadoras ao inicializar o componente
+﻿    this.loadOperadoras();
 ﻿
 ﻿    this.prestadorId = this.route.snapshot.params['id'];
 ﻿    if (this.prestadorId) {
@@ -90,17 +88,10 @@
 ﻿        this.prestadorForm.patchValue(prestador);
 ﻿      });
 ﻿    }
-﻿
-﻿    this.formStatusSubscription = this.prestadorForm.valueChanges.subscribe(() => {
-﻿      this.logFormValidation();
-﻿    });
-﻿    this.logFormValidation();
 ﻿  }
 ﻿
 ﻿  ngOnDestroy(): void {
-﻿    if (this.formStatusSubscription) {
-﻿      this.formStatusSubscription.unsubscribe();
-﻿    }
+﻿    // Manter OnDestroy caso haja outras subscriptions no futuro
 ﻿  }
 ﻿
 ﻿  loadOperadoras(): void {
@@ -112,21 +103,6 @@
 ﻿        console.error('Erro ao carregar operadoras:', error);
 ﻿      }
 ﻿    );
-﻿  }
-﻿
-﻿  logFormValidation(): void {
-﻿    console.log('--- Validação do Formulário Prestador ---');
-﻿    console.log('Formulário Válido:', this.prestadorForm.valid);
-﻿    console.log('Formulário Tocado:', this.prestadorForm.touched);
-﻿    console.log('Formulário Sujo:', this.prestadorForm.dirty);
-﻿
-﻿    Object.keys(this.prestadorForm.controls).forEach(key => {
-﻿      const control = this.prestadorForm.get(key);
-﻿      if (control) {
-﻿        console.log(`Campo: ${key}, Válido: ${control.valid}, Erros:`, control.errors);
-﻿      }
-﻿    });
-﻿    console.log('---------------------------------------');
 ﻿  }
 ﻿
 ﻿  onSubmit(): void {
@@ -141,8 +117,6 @@
 ﻿          this.router.navigate(['/cadastros/prestadores']);
 ﻿        });
 ﻿      }
-﻿    } else {
-﻿      this.logFormValidation();
 ﻿    }
 ﻿  }
 ﻿}
