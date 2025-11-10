@@ -10,7 +10,7 @@ import { ApiService } from '../../../core/services/api.service';
 })
 export class AbrangenciaGeograficaService {
 
-  private readonly endpoint = `${environment.apiUrl}/abrangencias-geograficas`;
+  private readonly endpoint = '/abrangencias-geograficas';
 
   constructor(private api: ApiService) { }
 

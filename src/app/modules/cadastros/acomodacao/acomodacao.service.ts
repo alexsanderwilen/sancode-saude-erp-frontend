@@ -7,7 +7,7 @@ import { ApiService } from '../../../core/services/api.service';
 
 @Injectable({ providedIn: 'root' })
 export class AcomodacaoService {
-  private readonly endpoint = `${environment.apiUrl}/acomodacoes`;
+  private readonly endpoint = '/acomodacoes';
   constructor(private api: ApiService) {}
   getAcomodacoes(): Observable<Acomodacao[]> {
     return this.api.get<any>(this.endpoint).pipe(

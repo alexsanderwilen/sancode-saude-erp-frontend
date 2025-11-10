@@ -7,7 +7,7 @@ import { ApiService } from '../../../core/services/api.service';
 
 @Injectable({ providedIn: 'root' })
 export class TipoPlanoService {
-  private readonly endpoint = `${environment.apiUrl}/tipos-plano`;
+  private readonly endpoint = '/tipos-plano';
   constructor(private api: ApiService) {}
 
   getTiposPlano(): Observable<TipoPlano[]> {

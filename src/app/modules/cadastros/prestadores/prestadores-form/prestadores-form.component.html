@@ -46,6 +46,18 @@
               <mat-label>Tipo de Prestador</mat-label>
               <input matInput formControlName="tipoPrestador" required>
             </mat-form-field>
+
+            <mat-form-field appearance="outline" class="w-full">
+              <mat-label>Operadora</mat-label>
+              <mat-select formControlName="idOperadora" required>
+                <mat-option *ngFor="let operadora of operadoras" [value]="operadora.idOperadora">
+                  {{ operadora.razaoSocial}}
+                </mat-option>
+              </mat-select>
+              <mat-error *ngIf="prestadorForm.get('idOperadora')?.hasError('required')">
+                Operadora é obrigatória.
+              </mat-error>
+            </mat-form-field>
           </div>
         </mat-tab>
 

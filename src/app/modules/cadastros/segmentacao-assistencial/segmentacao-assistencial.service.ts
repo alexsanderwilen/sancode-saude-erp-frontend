@@ -10,7 +10,7 @@ import { ApiService } from '../../../core/services/api.service';
 })
 export class SegmentacaoAssistencialService {
 
-  private readonly endpoint = `${environment.apiUrl}/segmentacoes-assistenciais`;
+  private readonly endpoint = '/segmentacoes-assistenciais';
 
   constructor(private api: ApiService) { }
 

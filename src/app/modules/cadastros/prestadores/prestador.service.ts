@@ -10,7 +10,7 @@ import { ApiService } from '../../../core/services/api.service';
 })
 export class PrestadorService {
 
-  private readonly endpoint = `${environment.apiUrl}/prestadores`;
+  private readonly endpoint = '/prestadores';
 
   constructor(private api: ApiService) { }
 

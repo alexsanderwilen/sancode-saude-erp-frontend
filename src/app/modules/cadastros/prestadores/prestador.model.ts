@@ -31,6 +31,6 @@
   dataCadastro?: string;
   dataAtualizacao?: string;
   observacoes?: string;
-  idOperadora: number;
+  idOperadora: string;
 }
 

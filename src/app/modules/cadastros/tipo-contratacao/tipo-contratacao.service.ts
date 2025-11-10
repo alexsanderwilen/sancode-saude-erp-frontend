@@ -9,7 +9,7 @@ import { ApiService } from '../../../core/services/api.service';
   providedIn: 'root'
 })
 export class TipoContratacaoService {
-  private readonly endpoint = `${environment.apiUrl}/tipos-contratacao`;
+  private readonly endpoint = '/tipos-contratacao';
 
   constructor(private api: ApiService) { }
 
