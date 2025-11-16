@@ -1,5 +1,6 @@
-﻿import { Component, inject, OnInit } from '@angular/core';
+﻿import { Component, inject, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Subscription } from 'rxjs';
 
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -7,7 +8,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { MatIconModule } from '@angular/material/icon'; 
+import { MatIconModule } from '@angular/material/icon';
 import { DominioTipo } from '../dominio-tipo.model';
 import { DominioTipoService } from '../dominio-tipo.service';
 import { ConfirmDialogComponent } from '../../../../shared/components/confirm-dialog/confirm-dialog';
@@ -34,9 +35,10 @@ import { StatusChipRenderer } from './status-chip-renderer.component';
   templateUrl: './dominio-tipo-list.html',
   styleUrl: './dominio-tipo-list.scss',
 })
-export class DominioTipoListComponent implements OnInit {
+export class DominioTipoListComponent implements OnInit, OnDestroy {
   private readonly snackBar = inject(MatSnackBar);
   private readonly dialog = inject(MatDialog);
+  private refreshSubscription!: Subscription;
 
   gridOptions: GridOptions;
   datasource!: IDatasource;
@@ -79,7 +81,19 @@ export class DominioTipoListComponent implements OnInit {
     };
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.refreshSubscription = this.dominioTipoService.refreshNeeded$.subscribe(() => {
+      if (this.gridApi) {
+        this.gridApi.refreshInfiniteCache();
+      }
+    });
+  }
+
+  ngOnDestroy(): void {
+    if (this.refreshSubscription) {
+      this.refreshSubscription.unsubscribe();
+    }
+  }
 
   onGridReady(params: GridReadyEvent) {
     this.gridApi = params.api;
@@ -120,7 +134,7 @@ export class DominioTipoListComponent implements OnInit {
           this.dominioTipoService.delete(id).subscribe({
             next: () => {
               this.snackBar.open('Tipo de domínio excluído com sucesso!', 'Fechar', { duration: 3000 });
-              this.gridApi.refreshInfiniteCache();
+              // O refresh agora é acionado pelo Subject no serviço
             },
             error: (error) => {
               console.error('Erro ao excluir tipo de domínio:', error);
@@ -143,18 +157,18 @@ export class DominioTipoListComponent implements OnInit {
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
         const isEdit = !!data;
-        const request = isEdit 
+        const request = isEdit
           ? this.dominioTipoService.update(data!.id, result)
           : this.dominioTipoService.create(result);
-        
-        const successMessage = isEdit 
+
+        const successMessage = isEdit
           ? 'Tipo de domínio atualizado com sucesso!'
           : 'Tipo de domínio criado com sucesso!';
 
         request.subscribe({
           next: () => {
             this.snackBar.open(successMessage, 'Fechar', { duration: 3000 });
-            this.gridApi && this.gridApi.refreshInfiniteCache();
+            // O refresh agora é acionado pelo Subject no serviço
           },
           error: (error) => {
             console.error('Erro ao salvar tipo de domínio:', error);
@@ -175,7 +189,7 @@ export class DominioTipoListComponent implements OnInit {
         this.dominioTipoService.delete(id).subscribe({
           next: () => {
             this.snackBar.open('Tipo de domínio excluído com sucesso!', 'Fechar', { duration: 3000 });
-            this.gridApi && this.gridApi.refreshInfiniteCache();
+            // O refresh agora é acionado pelo Subject no serviço
           },
           error: (error) => {
             console.error('Erro ao excluir tipo de domínio:', error);

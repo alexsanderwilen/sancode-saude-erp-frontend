@@ -1,4 +1,4 @@
-﻿import { Component, inject } from '@angular/core';
+﻿import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AgGridModule } from 'ag-grid-angular';
 import { ColDef, GridApi, GridOptions, IDatasource, GridReadyEvent, CellClickedEvent, IGetRowsParams } from 'ag-grid-community';
@@ -9,6 +9,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { Router, RouterModule } from '@angular/router';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { Subscription } from 'rxjs';
 import { ConfirmDialogComponent } from '../../../shared/components/confirm-dialog/confirm-dialog';
 import { AgGridLocaleService } from '../../../shared/services/ag-grid-locale.service';
 
@@ -27,11 +28,12 @@ import { AgGridLocaleService } from '../../../shared/services/ag-grid-locale.ser
   templateUrl: './operadoras-list.html',
   styleUrl: './operadoras-list.scss'
 })
-export class OperadorasListComponent {
+export class OperadorasListComponent implements OnInit, OnDestroy {
 
   private gridApi!: GridApi<Operadora>;
   public datasource!: IDatasource;
   public gridOptions: GridOptions<Operadora>;
+  private refreshSubscription!: Subscription;
 
   public columnDefs: ColDef[] = [
     { headerName: 'Registro ANS', field: 'registroAns', sortable: true, filter: true },
@@ -72,6 +74,20 @@ export class OperadorasListComponent {
     };
   }
 
+  ngOnInit(): void {
+    this.refreshSubscription = this.operadoraService.refreshNeeded$.subscribe(() => {
+      if (this.gridApi) {
+        this.gridApi.refreshInfiniteCache();
+      }
+    });
+  }
+
+  ngOnDestroy(): void {
+    if (this.refreshSubscription) {
+      this.refreshSubscription.unsubscribe();
+    }
+  }
+
   onGridReady(params: GridReadyEvent<Operadora>): void {
     this.gridApi = params.api;
   }
@@ -110,7 +126,7 @@ export class OperadorasListComponent {
           this.operadoraService.delete(params.data.idOperadora!).subscribe({
             next: () => {
               this.snackBar.open('Operadora excluída com sucesso!', 'Fechar', { duration: 3000 });
-              this.gridApi.refreshInfiniteCache(); // Atualiza a grid
+              // O refresh agora é acionado pelo Subject no serviço
             },
             error: (err) => {
               console.error('Erro ao excluir operadora:', err);

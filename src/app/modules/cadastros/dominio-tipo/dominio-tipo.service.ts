@@ -1,6 +1,7 @@
 ﻿import { inject, Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
-import { Observable, map } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
+import { map, tap } from 'rxjs/operators';
 import { DominioTipo } from './dominio-tipo.model';
 import { environment } from '@environments/environment';
 import { Page } from '../../../shared/models/page.model';
@@ -12,6 +13,12 @@ export class DominioTipoService {
   private apiUrl = `${environment.apiUrl}/dominio-tipos`; // Ajuste a URL da API conforme necessário
 
   private http = inject(HttpClient);
+
+  private _refreshNeeded$ = new Subject<void>();
+
+  get refreshNeeded$() {
+    return this._refreshNeeded$;
+  }
 
   findAll(): Observable<DominioTipo[]> {
     return this.http.get<any>(this.apiUrl).pipe(
@@ -72,19 +79,23 @@ export class DominioTipoService {
   create(dominioTipo: DominioTipo): Observable<DominioTipo> {
     const backendData = this.mapToBackend(dominioTipo);
     return this.http.post<any>(this.apiUrl, backendData).pipe(
-      map(item => this.mapToFrontend(item))
+      map(item => this.mapToFrontend(item)),
+      tap(() => this._refreshNeeded$.next())
     );
   }
 
   update(id: number, dominioTipo: DominioTipo): Observable<DominioTipo> {
     const backendData = this.mapToBackend(dominioTipo);
     return this.http.put<any>(`${this.apiUrl}/${id}`, backendData).pipe(
-      map(item => this.mapToFrontend(item))
+      map(item => this.mapToFrontend(item)),
+      tap(() => this._refreshNeeded$.next())
     );
   }
 
   delete(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/${id}`);
+    return this.http.delete<void>(`${this.apiUrl}/${id}`).pipe(
+      tap(() => this._refreshNeeded$.next())
+    );
   }
 
   private mapToBackend(dominioTipo: DominioTipo): any {

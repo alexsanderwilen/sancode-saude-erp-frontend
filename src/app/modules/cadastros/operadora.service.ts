@@ -1,6 +1,7 @@
 ﻿import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
+import { tap } from 'rxjs/operators';
 import { Operadora, Page } from './operadora.model';
 import { environment } from '../../../environments/environment';
 
@@ -11,6 +12,12 @@ export class OperadoraService {
 
   private readonly http = inject(HttpClient);
   private readonly apiUrl = environment.apiUrl + '/operadoras';
+
+  private _refreshNeeded$ = new Subject<void>();
+
+  get refreshNeeded$() {
+    return this._refreshNeeded$;
+  }
 
   getOperadoras(page: number, size: number, sort: string, order: string): Observable<Page<Operadora>> {
     const params = new HttpParams()
@@ -26,15 +33,27 @@ export class OperadoraService {
   }
 
   create(operadora: Operadora): Observable<Operadora> {
-    return this.http.post<Operadora>(this.apiUrl, operadora);
+    return this.http.post<Operadora>(this.apiUrl, operadora).pipe(
+      tap(() => {
+        this._refreshNeeded$.next();
+      })
+    );
   }
 
   update(id: string, operadora: Operadora): Observable<Operadora> {
-    return this.http.put<Operadora>(`${this.apiUrl}/${id}`, operadora);
+    return this.http.put<Operadora>(`${this.apiUrl}/${id}`, operadora).pipe(
+      tap(() => {
+        this._refreshNeeded$.next();
+      })
+    );
   }
 
   delete(id: string): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/${id}`);
+    return this.http.delete<void>(`${this.apiUrl}/${id}`).pipe(
+      tap(() => {
+        this._refreshNeeded$.next();
+      })
+    );
   }
 }
 
