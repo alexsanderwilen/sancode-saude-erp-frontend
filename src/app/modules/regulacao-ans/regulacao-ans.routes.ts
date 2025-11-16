@@ -7,6 +7,7 @@ import { ExportacoesComponent } from './exportacoes/exportacoes.component';
 import { TissPageComponent } from './tiss/tiss-page.component';
 import { RegulacaoAnsHomeComponent } from './regulacao-ans.home';
 import { RegulacaoAnsLayoutComponent } from './regulacao-ans-layout/regulacao-ans-layout';
+import { SibLoteManagerComponent } from './sib/sib-lote-manager/sib-lote-manager';
 
 export const REGULACAO_ANS_ROUTES: Routes = [
   {
@@ -19,7 +20,8 @@ export const REGULACAO_ANS_ROUTES: Routes = [
       { path: 'validacoes/resultados', component: ResultadosGridComponent, title: 'Resultados de Validação' },
       { path: 'validacoes/regras', component: RegrasListComponent, title: 'Regras ANS' },
       { path: 'exportacoes', component: ExportacoesComponent, title: 'Exportações ANS' },
-      { path: 'tiss', component: TissPageComponent, title: 'TISS' }
+      { path: 'tiss', component: TissPageComponent, title: 'TISS' },
+      { path: 'sib/lotes', component: SibLoteManagerComponent, title: 'Gestão de Lotes SIB' }
     ]
   }
 ];
